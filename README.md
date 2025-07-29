@@ -28,7 +28,7 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 4. Agree to the risks of using community nodes.
 5. Select `Install`.
 
-![Install](./assets/install.png)
+![Install](assets/install.png)
 
 ## Operations
 
@@ -102,7 +102,7 @@ To use this node, you'll need a PDF Vector API key. Here's how to get one:
    - Enter your API key
    - Click **Save**
 
-![Credentials](./assets/credentials.png)
+![Credentials](assets/credentials.png)
 
 ## Compatibility
 
