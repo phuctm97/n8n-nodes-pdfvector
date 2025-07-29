@@ -32,6 +32,27 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## Operations
 
+### Document Resource
+
+#### Parse Document
+
+Extract content from PDF/Word documents and convert to clean Markdown format.
+
+**Parameters:**
+
+- **Document URL**: Direct URL to the PDF or Word document
+- **Use LLM**:
+  - `auto` (default) - System decides if LLM parsing is needed
+  - `never` - Basic parsing only (1 credit per page)
+  - `always` - Force LLM parsing (2 credits per page)
+
+**Supported Formats:**
+
+- PDF files
+- Word documents (.doc, .docx)
+
+**Credit Usage**: 1-2 credits per page depending on LLM usage
+
 ### Academic Resource
 
 #### Search Publications
@@ -67,27 +88,6 @@ Retrieve specific academic publications by their identifiers with automatic prov
 - ERIC ID (e.g., `ED123456`)
 
 **Credit Usage**: 2 credit per fetch request
-
-### Document Resource
-
-#### Parse Document
-
-Extract content from PDF/Word documents and convert to clean Markdown format.
-
-**Parameters:**
-
-- **Document URL**: Direct URL to the PDF or Word document
-- **Use LLM**:
-  - `auto` (default) - System decides if LLM parsing is needed
-  - `never` - Basic parsing only (1 credit per page)
-  - `always` - Force LLM parsing (2 credits per page)
-
-**Supported Formats:**
-
-- PDF files
-- Word documents (.doc, .docx)
-
-**Credit Usage**: 1-2 credits per page depending on LLM usage
 
 ## Credentials
 
