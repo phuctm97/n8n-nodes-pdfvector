@@ -1,8 +1,8 @@
 # n8n-nodes-pdfvector
 
-This is an n8n community node. It lets you use PDFVector in your n8n workflows.
+This is an n8n community node. It lets you use PDF Vector in your n8n workflows.
 
-PDFVector is a powerful document processing and academic research API service. It enables you to parse PDFs and Word documents into clean Markdown, extract structured data, and search across millions of academic publications from multiple databases.
+PDF Vector is a powerful document processing and academic research API service. It enables you to parse PDFs and Word documents into clean Markdown, extract structured data, and search across millions of academic publications from multiple databases.
 
 [n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
@@ -15,6 +15,8 @@ PDFVector is a powerful document processing and academic research API service. I
 - [Usage](#usage)
 - [Resources](#resources)
 - [Version history](#version-history)
+- [Development](#development)
+- [License](#license)
 
 ## Installation
 
@@ -89,14 +91,14 @@ Extract content from PDF/Word documents and convert to clean Markdown format.
 
 ## Credentials
 
-To use this node, you'll need a PDFVector API key. Here's how to get one:
+To use this node, you'll need a PDF Vector API key. Here's how to get one:
 
-1. Sign up for a [PDFVector account](https://www.pdfvector.com/sign-up)
+1. Sign up for a [PDF Vector account](https://www.pdfvector.com/sign-up)
 2. Navigate to your [Dashboard](https://www.pdfvector.com/dashboard)
 3. Generate a new API key (it will start with `pdfvector_`)
 4. In n8n:
    - Go to **Credentials** → **Add Credential**
-   - Select **PDFVector API** from the list
+   - Select **PDF Vector API** from the list
    - Enter your API key
    - Click **Save**
 
@@ -166,7 +168,7 @@ Fetch multiple publications by their DOIs:
 All operations return structured JSON responses. Handle errors gracefully:
 
 ```javascript
-// In a Function node after PDFVector
+// In a Function node after PDF Vector
 if ($json.error) {
   throw new Error($json.error.message);
 }
@@ -182,9 +184,9 @@ return $json.results;
 ## Resources
 
 - [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
-- [PDFVector API Documentation](https://www.pdfvector.com/v1/api/scalar)
-- [PDFVector Dashboard](https://www.pdfvector.com/dashboard)
-- [PDFVector Pricing](https://www.pdfvector.com/#pricing)
+- [PDF Vector API Documentation](https://www.pdfvector.com/v1/api/scalar)
+- [PDF Vector Dashboard](https://www.pdfvector.com/dashboard)
+- [PDF Vector Pricing](https://www.pdfvector.com/#pricing)
 
 
 ## Version history
@@ -226,10 +228,6 @@ n8n start
 ```
 
 Once the node is linked, you need to only rebuild and restart n8n to see the changes.
-
-## License
-
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
 
 ## License
 
