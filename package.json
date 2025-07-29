@@ -1,19 +1,25 @@
 {
-  "name": "n8n-nodes-<...>",
+  "name": "n8n-nodes-pdfvector",
   "version": "0.1.0",
-  "description": "",
+  "description": "PDF Vector node for n8n to parse any PDF or Word document, extract structured data, and access millions of academic papers.",
   "keywords": [
-    "n8n-community-node-package"
+    "n8n-community-node-package",
+    "pdfvector",
+    "PDF",
+    "parse-document",
+    "academic",
+    "academic-search",
+    "academic-fetch"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://www.pdfvector.com",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "PDF Vector",
+    "email": "team@pdfvector.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/<...>/n8n-nodes-<...>.git"
+    "url": "https://github.com/phuctm97/n8n-nodes-pdfvector"
   },
   "engines": {
     "node": ">=20.15"
@@ -33,12 +39,10 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/ExampleCredentialsApi.credentials.js",
-      "dist/credentials/HttpBinApi.credentials.js"
+      "dist/credentials/PDFVectorApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/ExampleNode/ExampleNode.node.js",
-      "dist/nodes/HttpBin/HttpBin.node.js"
+      "dist/nodes/PdfVector/PdfVector.node.js"
     ]
   },
   "devDependencies": {

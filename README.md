@@ -1,48 +1,230 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-pdfvector
 
-# n8n-nodes-starter
+This is an n8n community node. It lets you use PDFVector in your n8n workflows.
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+PDFVector is a powerful document processing and academic research API service. It enables you to parse PDFs and Word documents into clean Markdown, extract structured data, and search across millions of academic publications from multiple databases.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+## Table of Contents
 
-## Prerequisites
+- [Installation](#installation)
+- [Operations](#operations)
+- [Credentials](#credentials)
+- [Compatibility](#compatibility)
+- [Usage](#usage)
+- [Resources](#resources)
+- [Version history](#version-history)
 
-You need the following installed on your development machine:
+## Installation
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
-## Using this starter
+1. Go to `Settings` > `Community Nodes`.
+2. Select `Install`.
+3. Enter `n8n-nodes-pdfvector` in `Enter npm package name`.
+4. Agree to the risks of using community nodes.
+5. Select `Install`.
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+![Install](./assets/install.png)
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+## Operations
 
-## More information
+### Academic Resource
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+#### Search Publications
 
-## License
+Search for academic publications across multiple databases with intelligent ranking.
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+**Parameters:**
+
+- **Query**: Search query string
+- **Providers**: Select which academic databases to search (PubMed, Semantic Scholar, Google Scholar, ArXiv, ERIC)
+- **Limit**: Maximum results per provider (1-100, default: 50)
+- **Offset**: Skip this many results per provider
+- **Year From/To**: Filter by publication year range
+- **Fields**: Choose which fields to include in the response
+
+**Credit Usage**: 1 credit per search request
+
+#### Fetch Publications
+
+Retrieve specific academic publications by their identifiers with automatic provider detection.
+
+**Parameters:**
+
+- **IDs**: Comma-separated list of publication IDs (DOI, PubMed ID, ArXiv ID, etc.)
+- **Fields**: Choose which fields to include in the response
+
+**Supported ID Types:**
+
+- DOI (e.g., `10.1038/nature12373`)
+- PubMed ID (e.g., `12345678`)
+- ArXiv ID (e.g., `2301.12345`)
+- Semantic Scholar ID (e.g., `85128297772`)
+- ERIC ID (e.g., `ED123456`)
+
+**Credit Usage**: 1 credit per fetch request
+
+### Document Resource
+
+#### Parse Document
+
+Extract content from PDF/Word documents and convert to clean Markdown format.
+
+**Parameters:**
+
+- **Document URL**: Direct URL to the PDF or Word document
+- **Use LLM**:
+  - `auto` (default) - System decides if LLM parsing is needed
+  - `never` - Basic parsing only (1 credit per page)
+  - `always` - Force LLM parsing (2 credits per page)
+
+**Supported Formats:**
+
+- PDF files
+- Word documents (.doc, .docx)
+
+**Credit Usage**: 1-2 credits per page depending on LLM usage
+
+#### Get Upload URL
+
+Generate a temporary upload URL for large documents.
+
+**Parameters:**
+
+- **File Type**: Type of file to upload (PDF or Word)
+
+**Returns**: A signed URL valid for 1 hour for uploading documents
+
+**Credit Usage**: Free (0 credits)
+
+### API Key Resource
+
+#### Validate Key
+
+Check your API key status and remaining credits.
+
+**Returns:**
+
+- Validity status
+- User ID and plan details
+- Credit usage and limits
+- Remaining credits
+
+**Credit Usage**: Free (0 credits)
+
+## Credentials
+
+To use this node, you'll need a PDFVector API key. Here's how to get one:
+
+1. Sign up for a [PDFVector account](https://www.pdfvector.com/sign-up)
+2. Navigate to your [API Dashboard](https://www.pdfvector.com/dashboard)
+3. Generate a new API key (it will start with `pdfvector_`)
+4. In n8n:
+   - Go to **Credentials** → **Add Credential**
+   - Select **PDFVector API** from the list
+   - Enter your API key
+   - Click **Save**
+
+![Credentials](./assets/credentials.png)
+
+### API Plans and Credits
+
+PDFVector uses a credit-based system for API usage:
+
+| Plan       | Monthly Credits | Yearly Credits |
+|------------|----------------|----------------|
+| Free       | 100            | 1,200          |
+| Basic      | 3,000          | 36,000         |
+| Pro        | 100,000        | 1,200,000      |
+| Enterprise | 500,000        | 6,000,000      |
+
+Credit costs:
+- Academic search/fetch: 1 credit per request
+- Document parsing: 1 credit per page (basic) or 2 credits per page (with LLM)
+- API key validation and upload URL generation: Free
+
+## Compatibility
+
+- **n8n version:** 0.202.0 or later
+- **Node.js version:** 20.15 or later
+
+## Usage
+
+### Example: Parse a PDF and Search Related Papers
+
+This workflow demonstrates how to:
+
+1. Parse a PDF document to extract its content
+2. Use the extracted content to search for related academic papers
+
+```json
+{
+  "nodes": [
+    {
+      "name": "Parse PDF",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "position": [250, 300],
+      "parameters": {
+        "resource": "document",
+        "operation": "parse",
+        "url": "https://example.com/paper.pdf",
+        "useLLM": "auto"
+      }
+    },
+    {
+      "name": "Search Related Papers",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "position": [450, 300],
+      "parameters": {
+        "resource": "academic",
+        "operation": "search",
+        "query": "={{ $json.markdown.substring(0, 200) }}",
+        "providers": ["semantic-scholar", "pubmed"],
+        "limit": 10,
+        "offset": 0
+      }
+    }
+  ]
+}
+```
+
+### Example: Batch Fetch Publications
+
+Fetch multiple publications by their DOIs:
+
+```json
+{
+  "parameters": {
+    "resource": "academic",
+    "operation": "fetch",
+    "ids": "10.1038/nature12373,10.1126/science.1234567,PMC123456"
+  }
+}
+```
+
+### Response Handling
+
+All operations return structured JSON responses. Handle errors gracefully:
+
+```javascript
+// In a Function node after PDFVector
+if ($json.error) {
+  throw new Error($json.error.message);
+}
+
+// For academic search - check for partial errors
+if ($json.errors && $json.errors.length > 0) {
+  console.warn("Some providers failed:", $json.errors);
+}
+
+return $json.results;
+```
+
+## Resources
+
+- [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
+- [PDFVector API Documentation](https://www.pdfvector.com/v1/api/scalar)
+- [PDFVector Dashboard](https://www.pdfvector.com/dashboard)
+- [PDFVector Pricing](https://www.pdfvector.com/#pricing)
