@@ -45,7 +45,7 @@ Search for academic publications across multiple databases with intelligent rank
 - **Year From/To**: Filter by publication year range
 - **Fields**: Choose which fields to include in the response
 
-**Credit Usage**: 1 credit per search request
+**Credit Usage**: 2 credit per search request
 
 #### Fetch Publications
 
@@ -64,7 +64,7 @@ Retrieve specific academic publications by their identifiers with automatic prov
 - Semantic Scholar ID (e.g., `85128297772`)
 - ERIC ID (e.g., `ED123456`)
 
-**Credit Usage**: 1 credit per fetch request
+**Credit Usage**: 2 credit per fetch request
 
 ### Document Resource
 
@@ -87,39 +87,12 @@ Extract content from PDF/Word documents and convert to clean Markdown format.
 
 **Credit Usage**: 1-2 credits per page depending on LLM usage
 
-#### Get Upload URL
-
-Generate a temporary upload URL for large documents.
-
-**Parameters:**
-
-- **File Type**: Type of file to upload (PDF or Word)
-
-**Returns**: A signed URL valid for 1 hour for uploading documents
-
-**Credit Usage**: Free (0 credits)
-
-### API Key Resource
-
-#### Validate Key
-
-Check your API key status and remaining credits.
-
-**Returns:**
-
-- Validity status
-- User ID and plan details
-- Credit usage and limits
-- Remaining credits
-
-**Credit Usage**: Free (0 credits)
-
 ## Credentials
 
 To use this node, you'll need a PDFVector API key. Here's how to get one:
 
 1. Sign up for a [PDFVector account](https://www.pdfvector.com/sign-up)
-2. Navigate to your [API Dashboard](https://www.pdfvector.com/dashboard)
+2. Navigate to your [Dashboard](https://www.pdfvector.com/dashboard)
 3. Generate a new API key (it will start with `pdfvector_`)
 4. In n8n:
    - Go to **Credentials** → **Add Credential**
@@ -128,22 +101,6 @@ To use this node, you'll need a PDFVector API key. Here's how to get one:
    - Click **Save**
 
 ![Credentials](./assets/credentials.png)
-
-### API Plans and Credits
-
-PDFVector uses a credit-based system for API usage:
-
-| Plan       | Monthly Credits | Yearly Credits |
-|------------|----------------|----------------|
-| Free       | 100            | 1,200          |
-| Basic      | 3,000          | 36,000         |
-| Pro        | 100,000        | 1,200,000      |
-| Enterprise | 500,000        | 6,000,000      |
-
-Credit costs:
-- Academic search/fetch: 1 credit per request
-- Document parsing: 1 credit per page (basic) or 2 credits per page (with LLM)
-- API key validation and upload URL generation: Free
 
 ## Compatibility
 
@@ -228,3 +185,52 @@ return $json.results;
 - [PDFVector API Documentation](https://www.pdfvector.com/v1/api/scalar)
 - [PDFVector Dashboard](https://www.pdfvector.com/dashboard)
 - [PDFVector Pricing](https://www.pdfvector.com/#pricing)
+
+
+## Version history
+
+- 0.1.0 - Initial release of the PDF Vector node for n8n.
+
+## Development
+
+Check out [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building and developing the node.
+
+0. Install dependencies:
+
+```bash
+npm install
+```
+
+1. Build the node
+
+```bash
+npm run build
+```
+
+2. Link the node to n8n from the node directory
+
+```bash
+npm link
+```
+
+3. In your `~/.n8n/nodes` directory, link the node:
+
+```bash
+npm link n8n-nodes-pdfvector
+```
+
+4. Run n8n:
+
+```bash
+n8n start
+```
+
+Once the node is linked, you need to only rebuild and restart n8n to see the changes.
+
+## License
+
+[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+
+## License
+
+This project is licensed [under the MIT License](LICENSE.md).

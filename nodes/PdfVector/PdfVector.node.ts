@@ -46,10 +46,6 @@ export class PdfVector implements INodeType {
 						name: 'Document',
 						value: 'document',
 					},
-					{
-						name: 'Key',
-						value: 'key',
-					},
 				],
 				default: 'academic',
 			},
@@ -98,26 +94,6 @@ export class PdfVector implements INodeType {
 					},
 				],
 				default: 'parse',
-			},
-			{
-				displayName: 'Operation',
-				name: 'operation',
-				type: 'options',
-				noDataExpression: true,
-				displayOptions: {
-					show: {
-						resource: ['key'],
-					},
-				},
-				options: [
-					{
-						name: 'Validate',
-						value: 'validate',
-						description: 'Validate API key',
-						action: 'Validate API key',
-					},
-				],
-				default: 'validate',
 			},
 			// Academic Search Parameters
 			{
@@ -541,21 +517,6 @@ export class PdfVector implements INodeType {
 								},
 							)) as IDataObject;
 						}
-						break;
-					}
-					case 'key': {
-						if (operation === 'validate') {
-							responseData = (await this.helpers.httpRequestWithAuthentication.call(
-								this,
-								'pdfVectorApi',
-								{
-									method: 'GET' as IHttpRequestMethods,
-									url: `${baseURL}/validate-key`,
-									json: true,
-								},
-							)) as IDataObject;
-						}
-
 						break;
 					}
 					// No default
