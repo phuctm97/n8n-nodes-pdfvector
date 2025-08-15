@@ -17,9 +17,9 @@ export class PdfVector implements INodeType {
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Interact with PDFVector API for academic search and document parsing',
+		description: 'Turn complex PDF or Word documents into clean Markdown texts and search across millions of academic papers using PDF Vector.',
 		defaults: {
-			name: 'PDFVector',
+			name: 'PDF Vector',
 		},
 		documentationUrl: 'https://www.pdfvector.com/v1/api/scalar',
 		inputs: [NodeConnectionType.Main],
