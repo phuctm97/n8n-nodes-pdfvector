@@ -1316,25 +1316,157 @@ Stay updated with the latest research in your field. This bot monitors multiple 
 
 ## 7. Research Paper Summarizer
 
-**Name:** AI-Powered Paper Summarizer
+**Name:** Generate Multi-Format Research Paper Summaries with GPT-4 and PDF Vector
 
 **Description:**
-## Instant Research Paper Summaries
+## Transform Complex Research Papers into Accessible Summaries
 
-Generate concise, accurate summaries of research papers in seconds. Perfect for quickly understanding papers outside your expertise or reviewing large volumes of literature.
+This workflow automatically generates multiple types of summaries from research papers, making complex academic content accessible to different audiences. By combining PDF Vector's advanced parsing capabilities with GPT-4's language understanding, researchers can quickly digest papers outside their expertise, communicate findings to diverse stakeholders, and create social media-friendly research highlights.
 
-### Key Features:
-- Parse complex academic PDFs
-- Generate multiple summary types (abstract, lay summary, technical summary)
-- Extract key figures and tables
-- Highlight methodology and findings
-- Create Twitter-length summaries
+### Target Audience & Problem Solved
+This template is designed for:
+- **Research communicators** translating complex findings for public audiences
+- **Journal editors** creating accessible abstracts and highlights
+- **Science journalists** quickly understanding technical papers
+- **Academic institutions** improving research visibility and impact
+- **Funding agencies** reviewing large volumes of research outputs
+
+It solves the critical challenge of research accessibility by automatically generating summaries tailored to different audience needs - from technical experts to the general public.
+
+### Prerequisites
+- n8n instance with PDF Vector node installed
+- OpenAI API key with GPT-4 or GPT-3.5 access
+- PDF Vector API credentials
+- Basic understanding of webhook setup
+- Optional: Slack/Email integration for notifications
+- Minimum 20 API credits per paper summarized
+
+### Step-by-Step Setup Instructions
+
+1. **Configure API Credentials**
+   - Navigate to n8n Credentials section
+   - Add PDF Vector credentials with your API key
+   - Add OpenAI credentials with your API key
+   - Test both connections to ensure they work
+
+2. **Set Up the Webhook Endpoint**
+   - Import the workflow template into n8n
+   - Note the webhook URL from the "Webhook - Paper URL" node
+   - This URL will receive POST requests with paper URLs
+   - Example request format:
+     ```json
+     {
+       "paperUrl": "https://example.com/paper.pdf"
+     }
+     ```
+
+3. **Configure Summary Models**
+   - Review the OpenAI model settings in each summary node
+   - GPT-4 recommended for executive and technical summaries
+   - GPT-3.5-turbo suitable for lay and social media summaries
+   - Adjust temperature settings for creativity vs accuracy
+
+4. **Customize Output Formats**
+   - Modify the "Combine All Summaries" node for your needs
+   - Add additional fields or metadata as required
+   - Configure response format (JSON, HTML, plain text)
+
+5. **Test the Workflow**
+   - Use a tool like Postman or curl to send a test request
+   - Monitor the execution for any errors
+   - Verify all four summary types are generated
+   - Check response time and adjust timeout if needed
+
+### Implementation Details
+
+The workflow implements a sophisticated summarization pipeline:
+
+1. **PDF Parsing**: Uses LLM-enhanced parsing for accurate extraction from complex layouts
+2. **Parallel Processing**: Generates all summary types simultaneously for efficiency
+3. **Audience Targeting**: Each summary type uses specific prompts and constraints
+4. **Quality Control**: Structured prompts ensure consistent, high-quality outputs
+5. **Flexible Output**: Returns all summaries in a single API response
+
+### Customization Guide
+
+**Adding Custom Summary Types:**
+Create new summary nodes with specialized prompts:
+```javascript
+// Example: Policy Brief Summary
+{
+  "content": "Create a policy brief (max 300 words) highlighting:
+  1. Policy-relevant findings
+  2. Recommendations for policymakers
+  3. Societal implications
+  4. Implementation considerations
+  
+  Paper content: {{ $json.content }}"
+}
+```
+
+**Modifying Summary Lengths:**
+Adjust word limits in each summary prompt:
+```javascript
+// In Executive Summary node:
+"max 500 words" // Change to your desired length
+// In Tweet Summary node:
+"max 280 characters" // Twitter limit
+```
+
+**Adding Language Translation:**
+Extend the workflow with translation nodes:
+```javascript
+// After summary generation, add:
+"Translate this summary to Spanish:
+{{ $json.executiveSummary }}"
+```
+
+**Implementing Caching:**
+Add a caching layer to avoid reprocessing:
+- Use Redis or n8n's static data
+- Cache based on paper DOI or URL hash
+- Set appropriate TTL for cache entries
+
+**Batch Processing Enhancement:**
+For multiple papers, modify the workflow:
+- Accept array of paper URLs
+- Use SplitInBatches node for processing
+- Aggregate results before responding
 
 ### Summary Types:
 1. **Executive Summary**: 1-page overview for decision makers
 2. **Technical Summary**: Detailed summary for researchers
 3. **Lay Summary**: Plain language for general audience
 4. **Social Media**: Tweet-sized key findings
+
+### Key Features:
+- Parse complex academic PDFs with LLM enhancement
+- Generate multiple summary types simultaneously
+- Extract and highlight key methodology and findings
+- Create audience-appropriate language and depth
+- API-driven for easy integration
+
+### Advanced Features
+
+**Quality Metrics:**
+Add a quality assessment node:
+```javascript
+// Evaluate summary quality
+const qualityChecks = {
+  hasKeyFindings: summary.includes('findings'),
+  appropriateLength: summary.length <= maxLength,
+  noJargon: !technicalTerms.some(term => summary.includes(term))
+};
+```
+
+**Template Variations:**
+Create field-specific templates:
+- Medical research: Include clinical implications
+- Engineering papers: Focus on technical specifications
+- Social sciences: Emphasize methodology and limitations
+
+### Template Image
+![Paper Summarizer Workflow](template-image-placeholder-7.png)
 
 **Template Code:**
 ```json
@@ -1570,12 +1702,105 @@ Generate concise, accurate summaries of research papers in seconds. Perfect for 
 
 ## 8. Multi-Database Academic Search
 
-**Name:** Universal Academic Search Engine
+**Name:** Multi-Database Academic Search with PubMed, ArXiv, Google Scholar & Export
 
 **Description:**
-## Search All Academic Databases at Once
+## Unified Academic Search Across Major Research Databases
 
-Search across PubMed, ArXiv, Google Scholar, Semantic Scholar, and ERIC simultaneously. Compare results, remove duplicates, and export comprehensive bibliographies.
+This powerful workflow enables researchers to search multiple academic databases simultaneously, automatically deduplicate results, and export formatted bibliographies. By leveraging PDF Vector's multi-database search capabilities, researchers can save hours of manual searching and ensure comprehensive literature coverage across PubMed, ArXiv, Google Scholar, Semantic Scholar, and ERIC databases.
+
+### Target Audience & Problem Solved
+This template is designed for:
+- **Graduate students** conducting systematic literature reviews
+- **Researchers** ensuring comprehensive coverage of their field
+- **Librarians** helping patrons with complex searches
+- **Academic teams** building shared bibliographies
+
+It solves the critical problem of fragmented academic search by providing a single interface to query all major databases, eliminating duplicate results, and standardizing output formats.
+
+### Prerequisites
+- n8n instance with PDF Vector node installed
+- PDF Vector API credentials with search permissions
+- Basic understanding of academic search syntax
+- Optional: PostgreSQL for search history logging
+- Minimum 50 API credits for comprehensive searches
+
+### Step-by-Step Setup Instructions
+
+1. **Configure PDF Vector Credentials**
+   - Go to n8n Credentials section
+   - Create new PDF Vector credentials
+   - Enter your API key from pdfvector.io
+   - Test the connection to verify setup
+
+2. **Import the Workflow Template**
+   - Copy the template JSON code
+   - In n8n, click "Import Workflow"
+   - Paste the JSON and save
+   - Review all nodes for any configuration needs
+
+3. **Customize Search Parameters**
+   - Open the "Set Search Parameters" node
+   - Modify the default search query for your field
+   - Adjust the year range (default: 2020-present)
+   - Set results per source limit (default: 25)
+
+4. **Configure Export Options**
+   - Choose your preferred export formats (BibTeX, CSV, JSON)
+   - Set the output directory for files
+   - Configure file naming conventions
+   - Enable/disable specific export types
+
+5. **Test Your Configuration**
+   - Run the workflow with a sample query
+   - Check that all databases return results
+   - Verify deduplication is working correctly
+   - Confirm export files are created properly
+
+### Implementation Details
+
+The workflow implements a sophisticated search pipeline:
+
+1. **Parallel Database Queries**: Searches all configured databases simultaneously for efficiency
+2. **Smart Deduplication**: Uses DOI matching and fuzzy title comparison to remove duplicates
+3. **Relevance Scoring**: Combines citation count, title relevance, and recency for ranking
+4. **Format Generation**: Creates properly formatted citations in multiple styles
+5. **Batch Processing**: Handles large result sets without memory issues
+
+### Customization Guide
+
+**Adding Custom Databases:**
+```javascript
+// In the PDF Vector search node, add to providers array:
+"providers": ["pubmed", "semantic_scholar", "arxiv", "google_scholar", "eric", "your_custom_db"]
+```
+
+**Modifying Relevance Algorithm:**
+Edit the "Rank by Relevance" node to adjust scoring weights:
+```javascript
+// Adjust these weights for your needs:
+const titleWeight = 10;    // Title match importance
+const citationWeight = 5;  // Citation count importance
+const recencyWeight = 10;  // Recent publication bonus
+const fulltextWeight = 15; // Full-text availability bonus
+```
+
+**Custom Export Formats:**
+Add new format generators in the workflow:
+```javascript
+// Example: Add APA format export
+const apaFormat = papers.map(p => {
+  const authors = p.authors.slice(0, 3).join(', ');
+  return `${authors} (${p.year}). ${p.title}. ${p.journal || 'Preprint'}.`;
+});
+```
+
+**Advanced Filtering:**
+Implement additional filters:
+- Journal impact factor thresholds
+- Open access only options
+- Language restrictions
+- Methodology filters for systematic reviews
 
 ### Search Features:
 - Query multiple databases in parallel
@@ -1591,6 +1816,9 @@ Search across PubMed, ArXiv, Google Scholar, Semantic Scholar, and ERIC simultan
 4. **Rank**: Sort by relevance/citations
 5. **Enrich**: Add full-text links
 6. **Export**: Multiple format options
+
+### Template Image
+![Multi-Database Search Workflow](template-image-placeholder-8.png)
 
 **Template Code:**
 ```json
@@ -1792,25 +2020,187 @@ Search across PubMed, ArXiv, Google Scholar, Semantic Scholar, and ERIC simultan
 
 ## 9. PDF Report to Slack/Email Notifier
 
-**Name:** Smart Document Alert System
+**Name:** Automated PDF Report Monitor with AI Insights and Slack/Email Alerts
 
 **Description:**
-## Automated Document Processing & Notifications
+## Intelligent Document Monitoring and Alert System
 
-Monitor folders or URLs for new PDF reports and automatically parse, summarize, and notify teams via Slack or email with key insights.
+This workflow creates an automated monitoring system that watches for new PDF reports across multiple sources, extracts key insights using AI, and sends formatted alerts to your team via Slack or email. By combining PDF Vector's parsing capabilities with GPT-powered analysis, teams can stay informed about critical documents without manual review, ensuring important information never gets missed.
+
+### Target Audience & Problem Solved
+This template is designed for:
+- **Finance teams** monitoring quarterly reports and regulatory filings
+- **Compliance officers** tracking policy updates and audit reports
+- **Research departments** alerting on new publications and preprints
+- **Operations teams** monitoring supplier reports and KPI documents
+- **Executive assistants** summarizing board materials and briefings
+
+It solves the problem of information overload by automatically processing incoming documents, extracting only the most relevant insights, and delivering them in digestible formats to the right people at the right time.
+
+### Prerequisites
+- n8n instance with PDF Vector node installed
+- PDF Vector API credentials with parsing capabilities
+- OpenAI API key for insight extraction
+- Slack workspace admin access (for Slack alerts)
+- SMTP credentials (for email alerts)
+- FTP/Cloud storage access for document sources
+- Minimum 50 API credits for continuous monitoring
+
+### Step-by-Step Setup Instructions
+
+1. **Configure Document Sources**
+   - Set up FTP credentials in n8n for folder monitoring
+   - Or configure Google Drive/Dropbox integration
+   - Define the folder paths to monitor
+   - Set file naming patterns to watch (e.g., "*report*.pdf")
+
+2. **Set Up API Integrations**
+   - Add PDF Vector credentials in n8n
+   - Configure OpenAI credentials with appropriate model access
+   - Set up Slack app and add webhook URL
+   - Configure SMTP settings for email alerts
+
+3. **Configure Monitoring Schedule**
+   - Open the "Check Every 15 Minutes" node
+   - Adjust frequency based on your needs:
+     ```javascript
+     // For hourly checks:
+     "interval": 60
+     // For real-time monitoring (every 5 min):
+     "interval": 5
+     ```
+
+4. **Customize Alert Channels**
+   - **Slack Setup**:
+     - Create dedicated channels (#reports, #alerts)
+     - Configure webhook for each channel
+     - Set up user mentions for urgent alerts
+   
+   - **Email Setup**:
+     - Define recipient lists by document type
+     - Configure email templates
+     - Set up priority levels for subject lines
+
+5. **Define Alert Rules**
+   - Modify the "Extract Key Insights" prompt for your domain
+   - Set conditions for high-priority alerts
+   - Configure which metrics trigger notifications
+   - Define sentiment thresholds
+
+### Implementation Details
+
+The workflow implements a comprehensive monitoring pipeline:
+
+1. **Source Monitoring**: Polls multiple sources for new PDFs
+2. **Intelligent Parsing**: Uses LLM-enhanced parsing for complex documents
+3. **Insight Extraction**: AI analyzes content for key information
+4. **Priority Classification**: Determines alert urgency based on content
+5. **Multi-Channel Delivery**: Sends formatted alerts via configured channels
+6. **Audit Trail**: Logs all processed documents for compliance
+
+### Customization Guide
+
+**Adding Custom Document Types:**
+Extend the routing logic for specific document types:
+```javascript
+// In "Route by Document Type" node:
+const documentTypes = {
+  'invoice': /invoice|bill|payment/i,
+  'contract': /contract|agreement|terms/i,
+  'report': /report|analysis|summary/i,
+  'compliance': /audit|compliance|regulatory/i
+};
+```
+
+**Customizing Insight Extraction:**
+Modify the AI prompt for domain-specific analysis:
+```javascript
+// Financial documents:
+"Extract: 1) Revenue figures 2) YoY growth 3) Risk factors 4) Guidance changes"
+
+// Compliance documents:
+"Extract: 1) Policy changes 2) Deadlines 3) Required actions 4) Penalties"
+
+// Research papers:
+"Extract: 1) Key findings 2) Methodology 3) Implications 4) Future work"
+```
+
+**Advanced Alert Formatting:**
+Create rich Slack messages with interactive elements:
+```javascript
+// Add buttons for quick actions:
+{
+  "type": "actions",
+  "elements": [
+    {
+      "type": "button",
+      "text": { "type": "plain_text", "text": "View Full Report" },
+      "url": documentUrl
+    },
+    {
+      "type": "button", 
+      "text": { "type": "plain_text", "text": "Mark as Read" },
+      "action_id": "mark_read"
+    }
+  ]
+}
+```
+
+**Implementing Alert Conditions:**
+Add sophisticated filtering based on content:
+```javascript
+// Alert only if certain conditions are met:
+if (insights.metrics.revenue_change < -10) {
+  priority = 'urgent';
+  alertChannel = '#executive-alerts';
+}
+
+if (insights.findings.includes('compliance violation')) {
+  additionalRecipients.push('legal@company.com');
+}
+```
+
+**Adding Document Comparison:**
+Track changes between document versions:
+```javascript
+// Compare with previous version:
+const previousDoc = await getLastVersion(documentType);
+const changes = compareDocuments(previousDoc, currentDoc);
+if (changes.significant) {
+  alertMessage += `\n⚠️ Significant changes detected: ${changes.summary}`;
+}
+```
 
 ### Alert Features:
-- Monitor multiple document sources
-- Extract key metrics and findings
-- Send formatted notifications
+- Monitor multiple document sources (FTP, cloud storage, email)
+- Extract key metrics and findings with AI
+- Send rich, formatted notifications
 - Track document processing history
-- Conditional alerts based on content
+- Conditional alerts based on content analysis
+- Multi-channel alert routing
 
 ### Use Cases:
 - Financial report monitoring
 - Compliance document tracking
 - Research publication alerts
 - Customer report distribution
+- Board material summarization
+- Regulatory filing notifications
+
+### Advanced Configuration
+
+**Performance Optimization:**
+- Implement caching to avoid reprocessing
+- Use batch processing for multiple documents
+- Set up parallel processing for different sources
+
+**Security Considerations:**
+- Encrypt sensitive document storage
+- Implement access controls for different alert channels
+- Audit log all document access
+
+### Template Image
+![Document Alert System Workflow](template-image-placeholder-9.png)
 
 **Template Code:**
 ```json
@@ -2043,19 +2433,110 @@ Monitor folders or URLs for new PDF reports and automatically parse, summarize, 
 
 ## 10. Academic Knowledge Base Builder
 
-**Name:** Research Knowledge Graph Generator
+**Name:** Build Academic Knowledge Graph from Research Papers with GPT-4 and Neo4j
 
 **Description:**
-## Build a Searchable Academic Knowledge Base
+## Transform Research Papers into a Searchable Knowledge Graph
 
-Automatically build and maintain a comprehensive knowledge base from academic papers. Create connections between concepts, track research evolution, and enable semantic search.
+This workflow automatically builds and maintains a comprehensive knowledge graph from academic papers, enabling researchers to discover connections between concepts, track research evolution, and perform semantic searches across their field of study. By combining PDF Vector's paper parsing capabilities with GPT-4's entity extraction and Neo4j's graph database, this template creates a powerful research discovery tool.
+
+### Target Audience & Problem Solved
+This template is designed for:
+- **Research institutions** building internal knowledge repositories
+- **Academic departments** tracking research trends and collaborations
+- **R&D teams** mapping technology landscapes
+- **Libraries and archives** creating searchable research collections
+
+It solves the problem of information silos in academic research by automatically extracting and connecting key concepts, methods, authors, and findings across thousands of papers.
+
+### Prerequisites
+- n8n instance with PDF Vector node installed
+- OpenAI API key for GPT-4 access
+- Neo4j database instance (local or cloud)
+- Basic understanding of graph databases
+- At least 100 API credits for PDF Vector (processes ~50 papers)
+
+### Step-by-Step Setup Instructions
+
+1. **Configure PDF Vector Credentials**
+   - Navigate to Credentials in n8n
+   - Add new PDF Vector credentials with your API key
+   - Test the connection to ensure it's working
+
+2. **Set Up Neo4j Database**
+   - Install Neo4j locally or create a cloud instance at [Neo4j Aura](https://neo4j.com/cloud/aura/)
+   - Note your connection URI, username, and password
+   - Create database constraints for better performance:
+     ```cypher
+     CREATE CONSTRAINT paper_id IF NOT EXISTS ON (p:Paper) ASSERT p.id IS UNIQUE;
+     CREATE CONSTRAINT author_name IF NOT EXISTS ON (a:Author) ASSERT a.name IS UNIQUE;
+     CREATE CONSTRAINT concept_name IF NOT EXISTS ON (c:Concept) ASSERT c.name IS UNIQUE;
+     ```
+
+3. **Configure OpenAI Integration**
+   - Add OpenAI credentials in n8n
+   - Ensure you have GPT-4 access (GPT-3.5 can be used with reduced accuracy)
+   - Set appropriate rate limits to avoid API throttling
+
+4. **Import and Configure the Workflow**
+   - Import the template JSON into n8n
+   - Update the search query in the "PDF Vector - Fetch Papers" node to your research domain
+   - Adjust the schedule trigger frequency based on your needs
+   - Configure the PostgreSQL connection for logging (optional)
+
+5. **Test with Sample Papers**
+   - Manually trigger the workflow
+   - Monitor the execution for any errors
+   - Check Neo4j browser to verify nodes and relationships are created
+   - Adjust entity extraction prompts if needed for your domain
+
+### Implementation Details
+
+The workflow operates in several stages:
+
+1. **Paper Discovery**: Uses PDF Vector's academic search to find relevant papers
+2. **Content Parsing**: Leverages LLM-enhanced parsing for accurate text extraction
+3. **Entity Extraction**: GPT-4 identifies concepts, methods, datasets, and relationships
+4. **Graph Construction**: Creates nodes and relationships in Neo4j
+5. **Statistics Tracking**: Logs processing metrics for monitoring
+
+### Customization Guide
+
+**Adjusting Entity Types:**
+Edit the GPT-4 prompt in the "Extract Entities" node to include domain-specific entities:
+```javascript
+// Add custom entity types like:
+// - Algorithms
+// - Datasets
+// - Institutions
+// - Funding sources
+```
+
+**Modifying Relationship Types:**
+Extend the "Build Graph Structure" node to create custom relationships:
+```javascript
+// Examples:
+// COLLABORATES_WITH (between authors)
+// EXTENDS (between papers)
+// FUNDED_BY (paper to funding source)
+```
+
+**Changing Search Scope:**
+- Modify providers array to include/exclude databases
+- Adjust year range for historical or recent focus
+- Add keyword filters for specific subfields
+
+**Scaling Considerations:**
+- For large-scale processing (>1000 papers/day), implement batching
+- Use Redis for deduplication across runs
+- Consider implementing incremental updates to avoid reprocessing
 
 ### Knowledge Base Features:
-- Automatic concept extraction
+- Automatic concept extraction with GPT-4
 - Research timeline tracking
 - Author collaboration networks
 - Topic evolution visualization
-- Semantic search interface
+- Semantic search interface via Neo4j
 
 ### Components:
 1. **Paper Ingestion**: Continuous monitoring and parsing
@@ -2064,6 +2545,9 @@ Automatically build and maintain a comprehensive knowledge base from academic pa
 4. **Knowledge Graph**: Store in graph database
 5. **Search Interface**: Query by concept, author, or topic
 6. **Visualization**: Interactive knowledge exploration
+
+### Template Image
+![Knowledge Graph Builder Workflow](template-image-placeholder-10.png)
 
 **Template Code:**
 ```json
