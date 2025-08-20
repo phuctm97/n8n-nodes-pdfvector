@@ -53,6 +53,23 @@ Extract content from PDF/Word documents and convert to clean Markdown format.
 
 **Credit Usage**: 1-2 credits per page depending on LLM usage
 
+#### Ask Document
+
+Ask questions about PDF/Word documents using AI analysis to get intelligent answers.
+
+**Parameters:**
+
+- **Document URL**: Direct URL to the PDF or Word document
+- **Prompt**: Your question about the document (1-2000 characters)
+
+**Example Questions:**
+- "What are the key findings in this research paper?"
+- "Summarize the methodology section"
+- "What conclusions does the author draw?"
+- "Extract all statistical results mentioned"
+
+**Credit Usage**: 3 credits per page
+
 ### Academic Resource
 
 #### Search Publications
@@ -110,6 +127,33 @@ To use this node, you'll need a PDF Vector API key. Here's how to get one:
 - **Node.js version:** 20.15 or later
 
 ## Usage
+
+### Example: Ask Questions About a Document
+
+This workflow shows how to use the Ask operation to get AI-powered answers about a document:
+
+```json
+{
+  "nodes": [
+    {
+      "name": "Ask Document",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "position": [250, 300],
+      "parameters": {
+        "resource": "document",
+        "operation": "ask",
+        "url": "https://example.com/research-paper.pdf",
+        "prompt": "What are the main findings and conclusions of this research?"
+      }
+    }
+  ]
+}
+```
+
+The response will include:
+- `markdown`: AI-generated answer to your question
+- `pageCount`: Number of pages processed
+- `creditCount`: Credits consumed
 
 ### Example: Parse a PDF and Search Related Papers
 
