@@ -92,6 +92,12 @@ export class PdfVector implements INodeType {
 						description: 'Parse a PDF or Word document',
 						action: 'Parse a document',
 					},
+					{
+						name: 'Ask',
+						value: 'ask',
+						description: 'Ask questions about a PDF or Word document',
+						action: 'Ask questions about a document',
+					},
 				],
 				default: 'parse',
 			},
@@ -414,6 +420,38 @@ export class PdfVector implements INodeType {
 				default: 'auto',
 				description: 'Determines LLM parsing approach',
 			},
+			// Document Ask Parameters
+			{
+				displayName: 'Document URL',
+				name: 'url',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['document'],
+						operation: ['ask'],
+					},
+				},
+				default: '',
+				description: 'URL of the document to ask questions about',
+			},
+			{
+				displayName: 'Prompt',
+				name: 'prompt',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['document'],
+						operation: ['ask'],
+					},
+				},
+				default: '',
+				description: 'Question about the document (1-2000 characters)',
+				typeOptions: {
+					rows: 4,
+				},
+			},
 		],
 	};
 
@@ -512,6 +550,25 @@ export class PdfVector implements INodeType {
 								{
 									method: 'POST' as IHttpRequestMethods,
 									url: `${baseURL}/parse`,
+									body,
+									json: true,
+								},
+							)) as IDataObject;
+						} else if (operation === 'ask') {
+							const url = this.getNodeParameter('url', i) as string;
+							const prompt = this.getNodeParameter('prompt', i) as string;
+
+							const body: IDataObject = {
+								url,
+								prompt,
+							};
+
+							responseData = (await this.helpers.httpRequestWithAuthentication.call(
+								this,
+								'pdfVectorApi',
+								{
+									method: 'POST' as IHttpRequestMethods,
+									url: `${baseURL}/ask`,
 									body,
 									json: true,
 								},
