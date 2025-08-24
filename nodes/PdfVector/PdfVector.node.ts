@@ -7,7 +7,7 @@ import type {
 	INodeTypeDescription,
 } from 'n8n-workflow';
 
-import { NodeConnectionType } from 'n8n-workflow';
+import { NodeConnectionType, NodeOperationError } from 'n8n-workflow';
 
 export class PdfVector implements INodeType {
 	description: INodeTypeDescription = {
@@ -377,6 +377,31 @@ export class PdfVector implements INodeType {
 			},
 			// Document Parse Parameters
 			{
+				displayName: 'Input Type',
+				name: 'inputType',
+				type: 'options',
+				displayOptions: {
+					show: {
+						resource: ['document'],
+						operation: ['parse'],
+					},
+				},
+				options: [
+					{
+						name: 'URL',
+						value: 'url',
+						description: 'Provide a URL to the document',
+					},
+					{
+						name: 'File',
+						value: 'file',
+						description: 'Upload a file from the workflow',
+					},
+				],
+				default: 'url',
+				description: 'Choose how to provide the document',
+			},
+			{
 				displayName: 'Document URL',
 				name: 'url',
 				type: 'string',
@@ -385,10 +410,27 @@ export class PdfVector implements INodeType {
 					show: {
 						resource: ['document'],
 						operation: ['parse'],
+						inputType: ['url'],
 					},
 				},
 				default: '',
 				description: 'URL of the document to parse',
+			},
+			{
+				displayName: 'Binary Property',
+				name: 'binaryPropertyName',
+				type: 'string',
+				default: 'data',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['document'],
+						operation: ['parse'],
+						inputType: ['file'],
+					},
+				},
+				description: 'Name of the binary property containing the file',
+				hint: 'The name of the property that holds the binary data from the previous node',
 			},
 			{
 				displayName: 'Use LLM',
@@ -422,6 +464,31 @@ export class PdfVector implements INodeType {
 			},
 			// Document Ask Parameters
 			{
+				displayName: 'Input Type',
+				name: 'inputType',
+				type: 'options',
+				displayOptions: {
+					show: {
+						resource: ['document'],
+						operation: ['ask'],
+					},
+				},
+				options: [
+					{
+						name: 'URL',
+						value: 'url',
+						description: 'Provide a URL to the document',
+					},
+					{
+						name: 'File',
+						value: 'file',
+						description: 'Upload a file from the workflow',
+					},
+				],
+				default: 'url',
+				description: 'Choose how to provide the document',
+			},
+			{
 				displayName: 'Document URL',
 				name: 'url',
 				type: 'string',
@@ -430,10 +497,27 @@ export class PdfVector implements INodeType {
 					show: {
 						resource: ['document'],
 						operation: ['ask'],
+						inputType: ['url'],
 					},
 				},
 				default: '',
 				description: 'URL of the document to ask questions about',
+			},
+			{
+				displayName: 'Binary Property',
+				name: 'binaryPropertyName',
+				type: 'string',
+				default: 'data',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['document'],
+						operation: ['ask'],
+						inputType: ['file'],
+					},
+				},
+				description: 'Name of the binary property containing the file',
+				hint: 'The name of the property that holds the binary data from the previous node',
 			},
 			{
 				displayName: 'Prompt',
@@ -536,13 +620,63 @@ export class PdfVector implements INodeType {
 					}
 					case 'document': {
 						if (operation === 'parse') {
-							const url = this.getNodeParameter('url', i) as string;
+							const inputType = this.getNodeParameter('inputType', i) as string;
 							const useLLM = this.getNodeParameter('useLLM', i) as string;
+							// Create a clean body object with only the required fields
+							const body: IDataObject = {};
 
-							const body: IDataObject = {
-								url,
-								useLLM,
-							};
+							// Always include useLLM
+							body.useLLM = useLLM;
+
+							if (inputType === 'file') {
+								// Handle binary file upload - send as base64
+								const binaryPropertyName = this.getNodeParameter('binaryPropertyName', i) as string;
+
+								// Check if binary data exists
+								if (!items[i].binary?.[binaryPropertyName]) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`No binary data found in property "${binaryPropertyName}"`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Get the binary data reference
+								const binaryData = items[i].binary![binaryPropertyName];
+
+								// Get the buffer using n8n helper method
+								const buffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
+
+								// Check if buffer is empty
+								if (!buffer || buffer.length === 0) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`Binary data in property "${binaryPropertyName}" is empty or invalid`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Convert buffer to base64
+								const base64File = buffer.toString('base64');
+
+								// Send file as base64 in the request body
+								body.file = base64File;
+
+								// Optional: Add filename if available
+								if (binaryData.fileName) {
+									body.fileName = binaryData.fileName;
+								}
+							} else if (inputType === 'url') {
+								// Use URL directly
+								const documentUrl = this.getNodeParameter('url', i) as string;
+								body.url = documentUrl;
+							} else {
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid input type: ${inputType}. Must be either 'file' or 'url'`,
+									{ itemIndex: i },
+								);
+							}
 
 							responseData = (await this.helpers.httpRequestWithAuthentication.call(
 								this,
@@ -555,13 +689,64 @@ export class PdfVector implements INodeType {
 								},
 							)) as IDataObject;
 						} else if (operation === 'ask') {
-							const url = this.getNodeParameter('url', i) as string;
+							const inputType = this.getNodeParameter('inputType', i) as string;
 							const prompt = this.getNodeParameter('prompt', i) as string;
 
-							const body: IDataObject = {
-								url,
-								prompt,
-							};
+							// Create a clean body object with only the required fields
+							const body: IDataObject = {};
+
+							// Always include prompt
+							body.prompt = prompt;
+
+							if (inputType === 'file') {
+								// Handle binary file upload - send as base64
+								const binaryPropertyName = this.getNodeParameter('binaryPropertyName', i) as string;
+
+								// Check if binary data exists
+								if (!items[i].binary?.[binaryPropertyName]) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`No binary data found in property "${binaryPropertyName}"`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Get the binary data reference
+								const binaryData = items[i].binary![binaryPropertyName];
+
+								// Get the buffer using n8n helper method
+								const buffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
+
+								// Check if buffer is empty
+								if (!buffer || buffer.length === 0) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`Binary data in property "${binaryPropertyName}" is empty or invalid`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Convert buffer to base64
+								const base64File = buffer.toString('base64');
+
+								// Send file as base64 in the request body
+								body.file = base64File;
+
+								// Optional: Add filename if available
+								if (binaryData.fileName) {
+									body.fileName = binaryData.fileName;
+								}
+							} else if (inputType === 'url') {
+								// Use URL directly
+								const documentUrl = this.getNodeParameter('url', i) as string;
+								body.url = documentUrl;
+							} else {
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid input type: ${inputType}. Must be either 'file' or 'url'`,
+									{ itemIndex: i },
+								);
+							}
 
 							responseData = (await this.helpers.httpRequestWithAuthentication.call(
 								this,
