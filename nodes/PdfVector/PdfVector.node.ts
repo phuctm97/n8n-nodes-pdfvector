@@ -536,6 +536,50 @@ export class PdfVector implements INodeType {
 					rows: 4,
 				},
 			},
+			{
+				displayName: 'Output Mode',
+				name: 'mode',
+				type: 'options',
+				displayOptions: {
+					show: {
+						resource: ['document'],
+						operation: ['ask'],
+					},
+				},
+				options: [
+					{
+						name: 'Markdown (Default)',
+						value: 'markdown',
+						description: 'Returns natural language response in markdown format',
+					},
+					{
+						name: 'JSON (Structured)',
+						value: 'json',
+						description: 'Returns structured data according to a JSON schema',
+					},
+				],
+				default: 'markdown',
+				description: 'Choose the output format for the response',
+			},
+			{
+				displayName: 'JSON Schema',
+				name: 'jsonSchema',
+				type: 'json',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['document'],
+						operation: ['ask'],
+						mode: ['json'],
+					},
+				},
+				default: '{\n  "type": "object",\n  "properties": {\n    "title": { "type": "string" },\n    "summary": { "type": "string" },\n    "keyPoints": {\n      "type": "array",\n      "items": { "type": "string" }\n    }\n  },\n  "required": ["title", "summary"],\n  "additionalProperties": false\n}',
+				description: 'JSON schema that defines the structure of the expected output',
+				typeOptions: {
+					rows: 10,
+				},
+				hint: 'Define the structure of data you want to extract. Schema must be of type "object" and include "additionalProperties" field',
+			},
 		],
 	};
 
@@ -691,12 +735,49 @@ export class PdfVector implements INodeType {
 						} else if (operation === 'ask') {
 							const inputType = this.getNodeParameter('inputType', i) as string;
 							const prompt = this.getNodeParameter('prompt', i) as string;
+							const mode = this.getNodeParameter('mode', i) as string;
 
 							// Create a clean body object with only the required fields
 							const body: IDataObject = {};
 
 							// Always include prompt
 							body.prompt = prompt;
+
+							// Add mode if it's JSON
+							if (mode === 'json') {
+								body.mode = mode;
+
+								// Get and parse the JSON schema
+								const jsonSchemaString = this.getNodeParameter('jsonSchema', i) as string;
+								try {
+									const schema = JSON.parse(jsonSchemaString);
+
+									// Validate that the schema is an object type with additionalProperties: false
+									if (schema.type !== 'object') {
+										throw new NodeOperationError(
+											this.getNode(),
+											'Schema must have type "object"',
+											{ itemIndex: i },
+										);
+									}
+
+									if (schema.additionalProperties !== false) {
+										throw new NodeOperationError(
+											this.getNode(),
+											'Schema must include "additionalProperties": false',
+											{ itemIndex: i },
+										);
+									}
+
+									body.schema = schema;
+								} catch (error) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`Invalid JSON schema: ${(error as Error).message}`,
+										{ itemIndex: i },
+									);
+								}
+							}
 
 							if (inputType === 'file') {
 								// Handle binary file upload - send as base64
