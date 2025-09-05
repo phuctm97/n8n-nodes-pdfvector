@@ -98,6 +98,12 @@ export class PdfVector implements INodeType {
 						description: 'Ask questions about a PDF or Word document',
 						action: 'Ask questions about a document',
 					},
+					{
+						name: 'Extract',
+						value: 'extract',
+						description: 'Extract structured data from a PDF or Word document',
+						action: 'Extract structured data from a document',
+					},
 				],
 				default: 'parse',
 			},
@@ -536,49 +542,98 @@ export class PdfVector implements INodeType {
 					rows: 4,
 				},
 			},
+			// Document Extract Parameters
 			{
-				displayName: 'Output Mode',
-				name: 'mode',
+				displayName: 'Input Type',
+				name: 'inputType',
 				type: 'options',
 				displayOptions: {
 					show: {
 						resource: ['document'],
-						operation: ['ask'],
+						operation: ['extract'],
 					},
 				},
 				options: [
 					{
-						name: 'Markdown (Default)',
-						value: 'markdown',
-						description: 'Returns natural language response in markdown format',
+						name: 'URL',
+						value: 'url',
+						description: 'Provide a URL to the document',
 					},
 					{
-						name: 'JSON (Structured)',
-						value: 'json',
-						description: 'Returns structured data according to a JSON schema',
+						name: 'File',
+						value: 'file',
+						description: 'Upload a file from the workflow',
 					},
 				],
-				default: 'markdown',
-				description: 'Choose the output format for the response',
+				default: 'url',
+				description: 'Choose how to provide the document',
+			},
+			{
+				displayName: 'Document URL',
+				name: 'url',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['document'],
+						operation: ['extract'],
+						inputType: ['url'],
+					},
+				},
+				default: '',
+				description: 'URL of the document to extract data from',
+			},
+			{
+				displayName: 'Binary Property',
+				name: 'binaryPropertyName',
+				type: 'string',
+				default: 'data',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['document'],
+						operation: ['extract'],
+						inputType: ['file'],
+					},
+				},
+				description: 'Name of the binary property containing the file',
+				hint: 'The name of the property that holds the binary data from the previous node',
+			},
+			{
+				displayName: 'Prompt',
+				name: 'prompt',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['document'],
+						operation: ['extract'],
+					},
+				},
+				default: '',
+				description: 'Instructions for data extraction (1-2000 characters)',
+				typeOptions: {
+					rows: 4,
+				},
+				placeholder: 'Extract all invoice details including line items, totals, and dates',
 			},
 			{
 				displayName: 'JSON Schema',
-				name: 'jsonSchema',
+				name: 'schema',
 				type: 'json',
 				required: true,
 				displayOptions: {
 					show: {
 						resource: ['document'],
-						operation: ['ask'],
-						mode: ['json'],
+						operation: ['extract'],
 					},
 				},
-				default: '{\n  "type": "object",\n  "properties": {\n    "title": { "type": "string" },\n    "summary": { "type": "string" },\n    "keyPoints": {\n      "type": "array",\n      "items": { "type": "string" }\n    }\n  },\n  "required": ["title", "summary"],\n  "additionalProperties": false\n}',
-				description: 'JSON schema that defines the structure of the expected output',
+				default: '{\n  "type": "object",\n  "properties": {\n    "invoiceNumber": { "type": "string" },\n    "date": { "type": "string" },\n    "total": { "type": "number" },\n    "items": {\n      "type": "array",\n      "items": {\n        "type": "object",\n        "properties": {\n          "description": { "type": "string" },\n          "quantity": { "type": "number" },\n          "price": { "type": "number" }\n        }\n      }\n    }\n  },\n  "required": ["invoiceNumber"],\n  "additionalProperties": false\n}',
+				description: 'JSON schema that defines the structure of data to extract',
 				typeOptions: {
 					rows: 10,
 				},
-				hint: 'Define the structure of data you want to extract. Schema must be of type "object" and include "additionalProperties" field',
+				hint: 'Define the structure of data you want to extract. Schema must be of type "object" and include "additionalProperties": false',
 			},
 		],
 	};
@@ -735,49 +790,12 @@ export class PdfVector implements INodeType {
 						} else if (operation === 'ask') {
 							const inputType = this.getNodeParameter('inputType', i) as string;
 							const prompt = this.getNodeParameter('prompt', i) as string;
-							const mode = this.getNodeParameter('mode', i) as string;
 
 							// Create a clean body object with only the required fields
 							const body: IDataObject = {};
 
 							// Always include prompt
 							body.prompt = prompt;
-
-							// Add mode if it's JSON
-							if (mode === 'json') {
-								body.mode = mode;
-
-								// Get and parse the JSON schema
-								const jsonSchemaString = this.getNodeParameter('jsonSchema', i) as string;
-								try {
-									const schema = JSON.parse(jsonSchemaString);
-
-									// Validate that the schema is an object type with additionalProperties: false
-									if (schema.type !== 'object') {
-										throw new NodeOperationError(
-											this.getNode(),
-											'Schema must have type "object"',
-											{ itemIndex: i },
-										);
-									}
-
-									if (schema.additionalProperties !== false) {
-										throw new NodeOperationError(
-											this.getNode(),
-											'Schema must include "additionalProperties": false',
-											{ itemIndex: i },
-										);
-									}
-
-									body.schema = schema;
-								} catch (error) {
-									throw new NodeOperationError(
-										this.getNode(),
-										`Invalid JSON schema: ${(error as Error).message}`,
-										{ itemIndex: i },
-									);
-								}
-							}
 
 							if (inputType === 'file') {
 								// Handle binary file upload - send as base64
@@ -835,6 +853,110 @@ export class PdfVector implements INodeType {
 								{
 									method: 'POST' as IHttpRequestMethods,
 									url: `${baseURL}/ask`,
+									body,
+									json: true,
+								},
+							)) as IDataObject;
+						} else if (operation === 'extract') {
+							const inputType = this.getNodeParameter('inputType', i) as string;
+							const prompt = this.getNodeParameter('prompt', i) as string;
+							const schemaString = this.getNodeParameter('schema', i) as string;
+
+							// Create a clean body object with only the required fields
+							const body: IDataObject = {};
+
+							// Always include prompt
+							body.prompt = prompt;
+
+							// Parse and validate the JSON schema
+							try {
+								const schema = JSON.parse(schemaString);
+
+								// Validate that the schema is an object type with additionalProperties: false
+								if (schema.type !== 'object') {
+									throw new NodeOperationError(
+										this.getNode(),
+										'Schema must have type "object"',
+										{ itemIndex: i },
+									);
+								}
+
+								if (schema.additionalProperties !== false) {
+									throw new NodeOperationError(
+										this.getNode(),
+										'Schema must include "additionalProperties": false',
+										{ itemIndex: i },
+									);
+								}
+
+								body.schema = schema;
+							} catch (error) {
+								if (error instanceof NodeOperationError) {
+									throw error;
+								}
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid JSON schema: ${(error as Error).message}`,
+									{ itemIndex: i },
+								);
+							}
+
+							if (inputType === 'file') {
+								// Handle binary file upload - send as base64
+								const binaryPropertyName = this.getNodeParameter('binaryPropertyName', i) as string;
+
+								// Check if binary data exists
+								if (!items[i].binary?.[binaryPropertyName]) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`No binary data found in property "${binaryPropertyName}"`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Get the binary data reference
+								const binaryData = items[i].binary![binaryPropertyName];
+
+								// Get the buffer using n8n helper method
+								const buffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
+
+								// Check if buffer is empty
+								if (!buffer || buffer.length === 0) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`Binary data in property "${binaryPropertyName}" is empty or invalid`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Convert buffer to base64
+								const base64File = buffer.toString('base64');
+
+								// Send file as base64 in the request body
+								body.file = base64File;
+
+								// Optional: Add filename if available
+								if (binaryData.fileName) {
+									body.fileName = binaryData.fileName;
+								}
+							} else if (inputType === 'url') {
+								// Use URL directly
+								const documentUrl = this.getNodeParameter('url', i) as string;
+								body.url = documentUrl;
+							} else {
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid input type: ${inputType}. Must be either 'file' or 'url'`,
+									{ itemIndex: i },
+								);
+							}
+
+							responseData = (await this.helpers.httpRequestWithAuthentication.call(
+								this,
+								'pdfVectorApi',
+								{
+									method: 'POST' as IHttpRequestMethods,
+									url: `${baseURL}/extract`,
 									body,
 									json: true,
 								},
