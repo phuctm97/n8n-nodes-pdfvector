@@ -633,7 +633,7 @@ export class PdfVector implements INodeType {
 				typeOptions: {
 					rows: 10,
 				},
-				hint: 'Define the structure of data you want to extract. Schema must be of type "object" and include "additionalProperties": false',
+				hint: 'Use our free [JSON Schema Editor](https://www.pdfvector.com/json-schema-editor) to create and validate your schema.',
 			},
 		],
 	};
