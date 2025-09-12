@@ -1059,13 +1059,44 @@ The workflow uses PDF Vector's academic features to understand research paper st
 **Name:** Automated Receipt Processing with Tax Categorization
 
 **Description:**
-Businesses and freelancers often struggle with the tedious task of manually processing receipts for expense tracking and tax purposes. This workflow automates the entire receipt processing pipeline, extracting detailed information from receipts (including scanned images, photos, PDFs, JPGs, and PNGs) and intelligently categorizing them for tax deductions. Whether you're managing personal business expenses, preparing for tax season, or maintaining compliance with accounting standards, this template provides a comprehensive solution that handles both digital and image-based receipts.
+Businesses and freelancers often struggle with the tedious task of manually processing receipts for expense tracking and tax purposes. This workflow automates the entire receipt processing pipeline, extracting detailed information from receipts (including scanned images, photos, PDFs, JPGs, and PNGs) and intelligently categorizing them for tax deductions.
 
-The workflow is designed for accountants, small business owners, freelancers, and finance teams who need to process large volumes of receipts efficiently. It handles various receipt formats including scanned images (JPG, PNG), photos of physical receipts, PDFs, and digital receipts, using advanced OCR technology to extract even handwritten information from images and scanned documents. The system automatically identifies tax-deductible expenses, categorizes them according to IRS guidelines, and validates financial calculations to ensure accuracy.
+**Target Audience:** Accountants, small business owners, freelancers, finance teams, and individual professionals who need to process large volumes of receipts efficiently for expense tracking and tax preparation.
 
-Key features include Google Drive integration for receipt retrieval, multi-currency support for international transactions, automatic detection of meal expenses with appropriate deduction percentages, mileage tracking integration, and seamless export to popular accounting software like QuickBooks and Xero. The workflow maintains an audit trail for compliance purposes and can process both individual receipts and batch uploads. Implementation requires minimal setup - simply configure your Google Drive and accounting software credentials, then customize tax categories to match your business needs. The template includes built-in validation to catch common errors like mismatched totals or invalid tax calculations, reducing the risk of accounting errors.
+**Problem Solved:** Manual receipt processing is time-consuming and error-prone, especially during tax season. People struggle to organize receipts, extract accurate data from various formats, and categorize expenses properly for tax deductions. This template automates the entire process while ensuring compliance with accounting standards and tax regulations.
 
-Note: This workflow uses the PDF Vector community node which requires separate installation. Please follow the installation guide at the PDF Vector documentation page before importing this template.
+**Setup Instructions:**
+1. Configure Google Drive credentials for receipt storage access
+2. Install the PDF Vector community node from the n8n marketplace
+3. Configure PDF Vector API credentials
+4. Set up tax category definitions based on your jurisdiction
+5. Configure accounting software integration (QuickBooks, Xero, etc.)
+6. Set up validation rules for expense categories
+7. Configure reporting and export formats
+
+**Key Features:**
+- Automatic retrieval of receipts from Google Drive folders
+- OCR support for photos and scanned receipts
+- Intelligent tax category assignment based on merchant and expense type
+- Multi-currency support for international transactions
+- Automatic detection of meal expenses with deduction percentages
+- Financial validation to catch calculation errors
+- Audit trail maintenance for compliance
+- Integration with popular accounting software
+
+**Customization Options:**
+- Define custom tax categories specific to your business type
+- Set up automated rules for recurring merchants
+- Configure expense approval workflows for team members
+- Add mileage tracking integration for travel expenses
+- Set up automated notifications for high-value expenses
+- Customize export formats for different accounting systems
+- Add multi-language support for international receipts
+
+**Implementation Details:**
+The workflow uses advanced OCR technology to extract information from various receipt formats, including handwritten receipts and low-quality scans. It applies intelligent categorization rules based on merchant type, expense amount, and business context. The system includes built-in validation to ensure data accuracy and tax compliance.
+
+**Note:** This workflow uses the PDF Vector community node. Make sure to install it from the n8n community nodes collection before using this template.
 
 **Template Code:**
 ```json
@@ -1218,16 +1249,48 @@ Note: This workflow uses the PDF Vector community node which requires separate i
 
 ## 7. Extract Medical Data with HIPAA Compliance
 
-**Name:** HIPAA-Compliant Medical Document Processor
+**Name:** Extract Medical Data with HIPAA Compliance
 
 **Description:**
-Healthcare organizations face significant challenges in digitizing and processing medical records while maintaining strict HIPAA compliance. This workflow provides a secure, automated solution for extracting clinical data from various medical documents including discharge summaries, lab reports, clinical notes, prescription records, and scanned medical images (JPG, PNG). The system uses OCR technology to process handwritten notes, old scanned records, and photographed documents. It is designed to handle Protected Health Information (PHI) with the highest security standards while improving operational efficiency in healthcare settings.
+Healthcare organizations face significant challenges in digitizing and processing medical records while maintaining strict HIPAA compliance. This workflow provides a secure, automated solution for extracting clinical data from various medical documents including discharge summaries, lab reports, clinical notes, prescription records, and scanned medical images (JPG, PNG).
 
-Targeted at healthcare providers, medical billing companies, clinical research organizations, and health information exchanges, this template addresses the critical need for accurate data extraction without compromising patient privacy. The workflow automatically identifies and masks sensitive patient information, extracts diagnoses with ICD-10 codes, processes medication lists with dosage information, and normalizes lab results with reference ranges. It maintains a complete audit trail for regulatory compliance and integrates with existing Electronic Health Record (EHR) systems.
+**Target Audience:** Healthcare providers, medical billing companies, clinical research organizations, health information exchanges, and medical practice administrators who need to digitize and extract data from medical records while maintaining HIPAA compliance.
 
-Setup involves configuring Google Drive credentials for secure document access, defining PHI handling rules, and customizing extraction parameters for specific document types. The template includes advanced features such as automatic detection of critical lab values, medication interaction warnings, and diagnosis code validation. All processing occurs in a secure environment with encryption at rest and in transit. The workflow can handle multiple document formats including scanned PDFs, faxed documents, medical images (JPG, PNG), photographed medical records, and structured clinical documents retrieved from Google Drive. OCR processing ensures accurate extraction from handwritten prescriptions and older scanned records. Customization options include defining institution-specific medical terminology, setting up automated alerts for abnormal results, and configuring integration with specific EHR systems.
+**Problem Solved:** Manual medical record processing is time-consuming, error-prone, and creates compliance risks. Healthcare organizations struggle to extract structured data from handwritten notes, scanned documents, and various medical forms while protecting PHI. This template automates the extraction process while maintaining the highest security standards for Protected Health Information.
 
-Note: This workflow uses the PDF Vector community node which requires separate installation. Please follow the installation guide at the PDF Vector documentation page before importing this template.
+**Setup Instructions:**
+1. Configure Google Drive credentials with proper medical record access controls
+2. Install the PDF Vector community node from the n8n marketplace
+3. Configure PDF Vector API credentials with HIPAA-compliant settings
+4. Set up secure database storage with encryption at rest
+5. Define PHI handling rules and extraction parameters
+6. Configure audit logging for regulatory compliance
+7. Set up integration with your Electronic Health Record (EHR) system
+
+**Key Features:**
+- Secure retrieval of medical documents from Google Drive
+- HIPAA-compliant processing with automatic PHI masking
+- OCR support for handwritten notes and scanned medical images
+- Automatic extraction of diagnoses with ICD-10 code validation
+- Medication list processing with dosage and frequency information
+- Lab results extraction with reference ranges and flagging
+- Vital signs capture and normalization
+- Complete audit trail for regulatory compliance
+- Integration-ready format for EHR systems
+
+**Customization Options:**
+- Define institution-specific medical terminology and abbreviations
+- Configure automated alerts for critical lab values or abnormal results
+- Set up custom extraction fields for specialized medical forms
+- Implement medication interaction warnings and contraindication checks
+- Add support for multiple languages and international medical coding systems
+- Configure integration with specific EHR platforms (Epic, Cerner, etc.)
+- Set up automated quality assurance checks and validation rules
+
+**Implementation Details:**
+The workflow uses advanced AI with medical domain knowledge to understand clinical terminology and extract relevant information while automatically identifying and protecting PHI. It processes various document formats including handwritten prescriptions, lab reports, discharge summaries, and clinical notes. The system maintains strict security protocols with encryption at rest and in transit, ensuring full HIPAA compliance throughout the processing pipeline.
+
+**Note:** This workflow uses the PDF Vector community node. Make sure to install it from the n8n community nodes collection before using this template.
 
 **Template Code:**
 ```json
@@ -1387,16 +1450,47 @@ Note: This workflow uses the PDF Vector community node which requires separate i
 
 ## 8. Generate Literature Reviews with Citation Management
 
-**Name:** Automated Literature Review with Citation Management
+**Name:** Generate Literature Reviews with Citation Management
 
 **Description:**
-Conducting comprehensive literature reviews is one of the most time-consuming aspects of academic research. This workflow revolutionizes the process by automating literature search, paper analysis, and review generation across multiple academic databases. It handles both digital papers and scanned documents (PDFs, JPGs, PNGs), using OCR technology for older publications or image-based content. Researchers, graduate students, and academic institutions can dramatically reduce the time spent on literature reviews while improving the thoroughness and quality of their research synthesis from any document format.
+Conducting comprehensive literature reviews is one of the most time-consuming aspects of academic research. This workflow revolutionizes the process by automating literature search, paper analysis, and review generation across multiple academic databases. It handles both digital papers and scanned documents (PDFs, JPGs, PNGs), using OCR technology for older publications or image-based content.
 
-The system searches simultaneously across PubMed, arXiv, Semantic Scholar, and other academic databases, using intelligent ranking algorithms to identify the most relevant papers based on citation count, recency, and keyword relevance. It then analyzes each paper's content, extracting key methodologies, findings, and limitations. The workflow automatically organizes papers by themes, identifies research gaps, and generates a structured literature review document complete with proper citations in APA, MLA, or Chicago format.
+**Target Audience:** Researchers, graduate students, academic institutions, literature review teams, and academic writers who need to conduct comprehensive literature reviews efficiently while maintaining high quality and thoroughness.
 
-Implementation requires configuring search parameters including date ranges, inclusion criteria, and maximum paper count. The template includes sophisticated features such as citation network analysis to identify seminal works, automatic detection of review papers for broader context, and quality scoring based on journal impact factors. Users can customize the output format, choose between different citation styles, and set parameters for the depth of analysis. The workflow handles full-text PDF processing when available, processes scanned documents and images using OCR, and falls back to abstract analysis for papers without accessible full text. Advanced options include setting up automated searches for ongoing literature monitoring, integration with reference management software like Zotero or Mendeley, and collaborative review features for research teams.
+**Problem Solved:** Manual literature reviews are extremely time-consuming and often miss relevant papers across different databases. Researchers struggle to synthesize large volumes of academic papers, track citations properly, and identify research gaps systematically. This template automates the entire process from search to synthesis, ensuring comprehensive coverage and proper citation management.
 
-Note: This workflow uses the PDF Vector community node which requires separate installation. Please follow the installation guide at the PDF Vector documentation page before importing this template.
+**Setup Instructions:**
+1. Configure PDF Vector API credentials with academic search access
+2. Set up search parameters including databases and date ranges
+3. Define inclusion and exclusion criteria for paper selection
+4. Choose citation style (APA, MLA, Chicago, etc.)
+5. Configure output format preferences
+6. Set up reference management software integration if needed
+7. Define research topic and keywords for search
+
+**Key Features:**
+- Simultaneous search across PubMed, arXiv, Semantic Scholar, and other databases
+- Intelligent paper ranking based on citation count, recency, and relevance
+- OCR support for scanned documents and older publications
+- Automatic extraction of methodologies, findings, and limitations
+- Citation network analysis to identify seminal works
+- Automatic theme organization and research gap identification
+- Multiple citation format support (APA, MLA, Chicago)
+- Quality scoring based on journal impact factors
+
+**Customization Options:**
+- Configure search parameters for specific research domains
+- Set up automated searches for ongoing literature monitoring
+- Integrate with reference management software (Zotero, Mendeley)
+- Customize output format and structure
+- Add collaborative review features for research teams
+- Set up quality filters based on journal rankings
+- Configure notification systems for new relevant papers
+
+**Implementation Details:**
+The workflow uses advanced algorithms to search multiple academic databases simultaneously, ranking papers by relevance and impact. It processes full-text PDFs when available and uses OCR for scanned documents. The system automatically extracts key information, organizes findings by themes, and generates structured literature reviews with proper citations and reference management.
+
+**Note:** This workflow uses the PDF Vector community node. Make sure to install it from the n8n community nodes collection before using this template.
 
 **Template Code:**
 ```json
@@ -1677,13 +1771,44 @@ Note: This workflow uses the PDF Vector community node which requires separate i
 **Name:** Comprehensive Legal Research Assistant
 
 **Description:**
-Legal professionals spend countless hours manually checking citations and building citation indexes for briefs, memoranda, and legal opinions. This workflow automates the extraction, validation, and analysis of legal citations from any legal document, including scanned court documents, photographed case files, and image-based legal materials (PDFs, JPGs, PNGs). Using advanced OCR technology, it processes handwritten annotations, old case law scans, and photographed documents. The system handles complex legal citation formats across multiple jurisdictions and provides detailed validation to ensure citation accuracy.
+Legal professionals spend countless hours manually checking citations and building citation indexes for briefs, memoranda, and legal opinions. This workflow automates the extraction, validation, and analysis of legal citations from any legal document, including scanned court documents, photographed case files, and image-based legal materials (PDFs, JPGs, PNGs).
 
-Designed for attorneys, paralegals, legal researchers, and judicial clerks, this template processes legal documents to identify all types of citations including case law, statutes, regulations, and academic references. It validates citation formats against Bluebook standards, checks for citation accuracy, and can retrieve the full text of cited academic articles. The workflow builds a complete citation network showing how cases and statutes relate to each other, helping identify the most authoritative sources and revealing citation patterns.
+**Target Audience:** Attorneys, paralegals, legal researchers, judicial clerks, law students, and legal writing professionals who need to extract, validate, and manage legal citations efficiently across multiple jurisdictions.
 
-Setup involves configuring Google Drive credentials for document access and connections to legal databases and academic repositories. The template includes advanced features such as automated Shepardizing to check if cases are still good law, detection of pinpoint citations, and extraction of parenthetical information. It handles federal and state citations, administrative decisions, and international law references from documents stored in Google Drive, including scanned briefs, photographed case files, and image-based legal documents. OCR processing ensures accurate extraction from handwritten case notes and historical legal documents. Customization options include setting jurisdiction-specific rules, configuring citation format preferences, and defining automated alerts for superseded statutes or overruled cases. The workflow generates comprehensive citation reports that can be exported in various formats for inclusion in legal documents or for citation checking purposes. Integration with legal research platforms like Westlaw or LexisNexis can be configured for enhanced citation validation.
+**Problem Solved:** Manual citation checking is extremely time-consuming and error-prone. Legal professionals struggle to ensure citation accuracy, verify case law is still good law, and build comprehensive citation indexes. This template automates the entire citation management process while ensuring compliance with citation standards like Bluebook format.
 
-Note: This workflow uses the PDF Vector community node which requires separate installation. Please follow the installation guide at the PDF Vector documentation page before importing this template.
+**Setup Instructions:**
+1. Configure Google Drive credentials for secure legal document access
+2. Install the PDF Vector community node from the n8n marketplace
+3. Configure PDF Vector API credentials
+4. Set up connections to legal databases (Westlaw, LexisNexis if available)
+5. Configure jurisdiction-specific citation rules
+6. Set up validation preferences and citation format standards
+7. Configure citation reporting and export formats
+
+**Key Features:**
+- Automatic retrieval of legal documents from Google Drive
+- OCR support for handwritten annotations and scanned legal documents
+- Comprehensive extraction of case law, statutes, regulations, and academic citations
+- Bluebook citation format validation and standardization
+- Automated Shepardizing to verify cases are still good law
+- Pinpoint citation detection and parenthetical extraction
+- Citation network analysis showing case relationships
+- Support for federal, state, and international law references
+
+**Customization Options:**
+- Set jurisdiction-specific citation rules and formats
+- Configure automated alerts for superseded statutes or overruled cases
+- Customize citation validation criteria and standards
+- Set up integration with legal research platforms (Westlaw, LexisNexis)
+- Configure export formats for different legal document types
+- Add support for specialty legal domains (tax law, patent law, etc.)
+- Set up collaborative citation checking for legal teams
+
+**Implementation Details:**
+The workflow uses advanced legal domain knowledge to identify and extract citations in various formats across multiple jurisdictions. It processes both digital and scanned documents, validates citations against legal standards, and builds comprehensive citation networks. The system automatically checks citation accuracy and provides detailed reports for legal document preparation.
+
+**Note:** This workflow uses the PDF Vector community node. Make sure to install it from the n8n community nodes collection before using this template.
 
 **Template Code:**
 ```json
@@ -1893,13 +2018,44 @@ Note: This workflow uses the PDF Vector community node which requires separate i
 **Name:** Enterprise Document Processing Pipeline
 
 **Description:**
-Organizations dealing with high-volume document processing face challenges in efficiently handling diverse document types while maintaining quality and tracking performance metrics. This enterprise-grade workflow provides a scalable solution for batch processing documents including PDFs, scanned documents, and images (JPG, PNG) with comprehensive analytics, error handling, and quality assurance. Using OCR technology for image-based content, it's designed for large organizations, document processing centers, and digital transformation initiatives that need to process thousands of documents reliably from any format.
+Organizations dealing with high-volume document processing face challenges in efficiently handling diverse document types while maintaining quality and tracking performance metrics. This enterprise-grade workflow provides a scalable solution for batch processing documents including PDFs, scanned documents, and images (JPG, PNG) with comprehensive analytics, error handling, and quality assurance.
 
-The workflow supports mixed document formats including PDFs, Word documents, scanned images, photographs, and various image formats (JPG, PNG), processing them in parallel batches to maximize throughput. OCR processing handles handwritten documents, poor quality scans, and photographed documents. It includes sophisticated error handling with automatic retry logic, ensuring that temporary failures don't halt the entire process. The system generates detailed analytics showing processing success rates, average processing times, credit usage patterns, and quality scores. This data helps organizations optimize their document processing operations and identify bottlenecks or problematic document types.
+**Target Audience:** Large organizations, document processing centers, digital transformation teams, enterprise IT departments, and businesses that need to process thousands of documents reliably with detailed performance tracking and analytics.
 
-Implementation involves setting up batch size parameters, configuring quality thresholds, and defining error handling rules. The template includes advanced features such as automatic document prioritization based on size and complexity, intelligent credit usage optimization to minimize costs, and real-time processing monitoring. Quality assurance checks validate extracted content for completeness and accuracy, flagging documents that may require manual review. Customization options include setting up custom document categories, defining specific extraction rules for different document types, and configuring automated workflows for documents that fail quality checks. The comprehensive analytics dashboard provides insights into processing trends, helping organizations make data-driven decisions about their document processing strategies.
+**Problem Solved:** High-volume document processing without proper monitoring leads to bottlenecks, quality issues, and inefficient resource usage. Organizations struggle to track processing success rates, identify problematic document types, and optimize their workflows. This template provides enterprise-grade batch processing with comprehensive analytics and automated quality assurance.
 
-Note: This workflow uses the PDF Vector community node which requires separate installation. Please follow the installation guide at the PDF Vector documentation page before importing this template.
+**Setup Instructions:**
+1. Configure Google Drive credentials for document folder access
+2. Install the PDF Vector community node from the n8n marketplace
+3. Configure PDF Vector API credentials with appropriate rate limits
+4. Set up batch processing parameters (batch size, retry logic)
+5. Configure quality thresholds and validation rules
+6. Set up analytics dashboard and reporting preferences
+7. Configure error handling and notification systems
+
+**Key Features:**
+- Parallel batch processing for maximum throughput
+- Support for mixed document formats (PDFs, Word docs, images)
+- OCR processing for handwritten and scanned documents
+- Comprehensive analytics dashboard with success rates and performance metrics
+- Automatic document prioritization based on size and complexity
+- Intelligent error handling with automatic retry logic
+- Quality assurance checks and validation
+- Real-time processing monitoring and alerts
+
+**Customization Options:**
+- Configure custom document categories and processing rules
+- Set up specific extraction templates for different document types
+- Implement automated workflows for documents that fail quality checks
+- Configure credit usage optimization to minimize costs
+- Set up custom analytics and reporting dashboards
+- Add integration with existing document management systems
+- Configure automated notifications for processing completion or errors
+
+**Implementation Details:**
+The workflow uses intelligent batching to process documents efficiently while monitoring performance metrics in real-time. It automatically handles different document formats, applies OCR when needed, and provides detailed analytics to help organizations optimize their document processing operations. The system includes sophisticated error recovery and quality assurance mechanisms.
+
+**Note:** This workflow uses the PDF Vector community node. Make sure to install it from the n8n community nodes collection before using this template.
 
 **Template Code:**
 ```json
