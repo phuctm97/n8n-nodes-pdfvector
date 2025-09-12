@@ -17,7 +17,7 @@ export class PdfVector implements INodeType {
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Turn complex PDF or Word documents into clean Markdown texts and search across millions of academic papers using PDF Vector.',
+		description: 'Turn complex PDFs, Word documents, or images into clean Markdown texts and search across millions of academic papers using PDF Vector with OCR support.',
 		defaults: {
 			name: 'PDF Vector',
 		},
@@ -89,19 +89,19 @@ export class PdfVector implements INodeType {
 					{
 						name: 'Parse',
 						value: 'parse',
-						description: 'Parse a PDF or Word document',
+						description: 'Parse a PDF, Word document, or image',
 						action: 'Parse a document',
 					},
 					{
 						name: 'Ask',
 						value: 'ask',
-						description: 'Ask questions about a PDF or Word document',
+						description: 'Ask questions about a PDF, Word document, or image',
 						action: 'Ask questions about a document',
 					},
 					{
 						name: 'Extract',
 						value: 'extract',
-						description: 'Extract structured data from a PDF or Word document',
+						description: 'Extract structured data from a PDF, Word document, or image',
 						action: 'Extract structured data from a document',
 					},
 				],
@@ -401,7 +401,7 @@ export class PdfVector implements INodeType {
 					{
 						name: 'File',
 						value: 'file',
-						description: 'Upload a file from the workflow',
+						description: 'Upload a PDF, Word doc, or image file from the workflow',
 					},
 				],
 				default: 'url',
@@ -420,7 +420,7 @@ export class PdfVector implements INodeType {
 					},
 				},
 				default: '',
-				description: 'URL of the document to parse',
+				description: 'URL of the document or image to parse (PDF, Word, JPG, PNG)',
 			},
 			{
 				displayName: 'Binary Property',
@@ -488,7 +488,7 @@ export class PdfVector implements INodeType {
 					{
 						name: 'File',
 						value: 'file',
-						description: 'Upload a file from the workflow',
+						description: 'Upload a PDF, Word doc, or image file from the workflow',
 					},
 				],
 				default: 'url',
@@ -507,7 +507,7 @@ export class PdfVector implements INodeType {
 					},
 				},
 				default: '',
-				description: 'URL of the document to ask questions about',
+				description: 'URL of the document or image to ask questions about (PDF, Word, JPG, PNG)',
 			},
 			{
 				displayName: 'Binary Property',
@@ -562,7 +562,7 @@ export class PdfVector implements INodeType {
 					{
 						name: 'File',
 						value: 'file',
-						description: 'Upload a file from the workflow',
+						description: 'Upload a PDF, Word doc, or image file from the workflow',
 					},
 				],
 				default: 'url',

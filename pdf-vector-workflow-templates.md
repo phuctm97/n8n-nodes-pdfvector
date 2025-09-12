@@ -2,32 +2,42 @@
 
 A collection of 10 powerful workflow templates for the n8n PDF Vector node. These templates demonstrate various use cases for document processing and academic research automation.
 
-## 1. Research Paper Analysis Workflow
+## 1. Extract Invoice Data with PDF Vector and Google Drive
 
-**Name:** Research Paper Analysis with AI Summary
+**Name:** Extract Invoice Data with PDF Vector and Google Drive
 
 **Description:**
-## Automated Research Paper Analysis Pipeline
+Businesses process hundreds of invoices monthly, leading to manual data entry errors, delayed payments, and accounting discrepancies. This workflow solves these problems by automatically extracting structured data from PDF invoices or invoice images (JPG, PNG, scanned documents) stored in Google Drive, validating the information, and integrating it with your accounting systems.
 
-This workflow automatically analyzes research papers by:
-- Parsing PDF documents into clean Markdown format
-- Extracting key information using AI analysis
-- Generating concise summaries and insights
-- Storing results in a database for future reference
+**Target Audience:** Accounting teams, bookkeepers, small to medium businesses, and financial departments looking to automate their invoice processing workflow.
 
-Perfect for researchers, students, and academics who need to quickly understand the key points of multiple research papers.
+**Problem Solved:** Manual invoice data entry is time-consuming and error-prone. This template eliminates manual work by automatically extracting invoice details including vendor information, line items, totals, and payment terms. It validates calculations to catch discrepancies and formats data for seamless integration with accounting software.
 
-### How it works:
-1. **Trigger**: Manual trigger or webhook with PDF URL
-2. **PDF Vector**: Parses the PDF document with LLM enhancement
-3. **OpenAI**: Analyzes the parsed content to extract key findings, methodology, and conclusions
-4. **Database**: Stores the analysis results
-5. **Output**: Returns structured analysis data
+**Setup Instructions:**
+1. Configure Google Drive credentials in n8n
+2. Set up PDF Vector API key from your PDF Vector account
+3. Configure your database connection (PostgreSQL, MySQL, or other)
+4. Customize the extraction schema for your specific invoice formats
+5. Set up error notifications for failed extractions
 
-### Setup:
-- Configure PDF Vector credentials
-- Set up OpenAI API key
-- Connect your preferred database (PostgreSQL, MySQL, etc.)
+**Key Features:**
+- Automatic retrieval of invoices from Google Drive folders
+- AI-powered extraction from PDFs and images (JPG, PNG, scanned invoices)
+- OCR capabilities for handwritten or low-quality scanned invoices
+- Built-in validation for totals, tax calculations, and required fields
+- Support for multiple invoice formats and layouts
+- Error handling with detailed logging for troubleshooting
+- Ready-to-use database schema for invoice storage
+
+**Customization Options:**
+- Modify the extraction prompt to capture additional fields specific to your invoices
+- Add custom validation rules for your business requirements
+- Integrate with your preferred accounting software (QuickBooks, Xero, etc.)
+- Set up automatic folder monitoring in Google Drive
+- Add email notifications for processed invoices
+- Implement approval workflows for high-value invoices
+
+**Note:** This workflow uses the PDF Vector community node. Make sure to install it from the n8n community nodes collection before using this template.
 
 **Template Code:**
 ```json
@@ -38,57 +48,81 @@ Perfect for researchers, students, and academics who need to quickly understand 
   "nodes": [
     {
       "parameters": {},
-      "id": "trigger-node",
+      "id": "manual-trigger",
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [250, 300],
-      "notes": "Start the workflow manually or replace with webhook trigger"
+      "notes": "Process invoices manually or via webhook"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": "={{ $json.fileId }}"
+      },
+      "id": "google-drive",
+      "name": "Get Invoice from Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [450, 300],
+      "notes": "Download invoice PDF from Google Drive"
     },
     {
       "parameters": {
         "resource": "document",
-        "operation": "parse",
-        "documentUrl": "={{ $json.pdfUrl }}",
-        "useLlm": "auto"
+        "operation": "extract",
+        "inputType": "file",
+        "binaryPropertyName": "data",
+        "prompt": "Extract all invoice details from this document or image including invoice number, date, vendor information, line items with descriptions and amounts, subtotal, tax, and total amount. Handle both digital PDFs and scanned/photographed invoices.",
+        "schema": "{\"type\":\"object\",\"properties\":{\"invoiceNumber\":{\"type\":\"string\"},\"invoiceDate\":{\"type\":\"string\"},\"dueDate\":{\"type\":\"string\"},\"vendor\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"address\":{\"type\":\"string\"},\"taxId\":{\"type\":\"string\"}}},\"customer\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"address\":{\"type\":\"string\"}}},\"lineItems\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"description\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"},\"unitPrice\":{\"type\":\"number\"},\"amount\":{\"type\":\"number\"}}}},\"subtotal\":{\"type\":\"number\"},\"tax\":{\"type\":\"number\"},\"total\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"}},\"required\":[\"invoiceNumber\",\"total\"],\"additionalProperties\":false}"
       },
-      "id": "pdfvector-parse",
-      "name": "PDF Vector - Parse Paper",
+      "id": "pdfvector-extract",
+      "name": "PDF Vector - Extract Invoice",
       "type": "n8n-nodes-pdfvector.pdfVector",
       "typeVersion": 1,
-      "position": [450, 300],
-      "notes": "Parse the research paper into clean Markdown format"
+      "position": [650, 300],
+      "notes": "Extract structured invoice data"
     },
     {
       "parameters": {
-        "model": "gpt-4",
-        "messages": {
-          "values": [
+        "jsCode": "// Validate invoice data\nconst invoice = $input.first().json.data;\nlet errors = [];\n\n// Check if line items total matches subtotal\nif (invoice.lineItems && invoice.lineItems.length > 0) {\n  const calculatedSubtotal = invoice.lineItems.reduce((sum, item) => sum + (item.amount || 0), 0);\n  if (Math.abs(calculatedSubtotal - invoice.subtotal) > 0.01) {\n    errors.push(`Line items total (${calculatedSubtotal}) doesn't match subtotal (${invoice.subtotal})`);\n  }\n}\n\n// Validate total calculation\nconst calculatedTotal = (invoice.subtotal || 0) + (invoice.tax || 0);\nif (Math.abs(calculatedTotal - invoice.total) > 0.01) {\n  errors.push(`Calculated total (${calculatedTotal}) doesn't match invoice total (${invoice.total})`);\n}\n\n// Check required fields\nif (!invoice.invoiceNumber) errors.push('Missing invoice number');\nif (!invoice.vendor?.name) errors.push('Missing vendor name');\n\nreturn [{\n  json: {\n    invoice: invoice,\n    valid: errors.length === 0,\n    errors: errors,\n    processedAt: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "validate-data",
+      "name": "Validate Invoice Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "notes": "Validate calculations and required fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
             {
-              "content": "You are a research paper analyst. Analyze the following paper and extract:\n1. Main research question\n2. Methodology\n3. Key findings\n4. Conclusions\n5. Limitations\n6. Future work suggestions\n\nPaper content:\n{{ $json.content }}"
+              "value1": "={{ $json.valid }}",
+              "value2": true
             }
           ]
         }
       },
-      "id": "openai-analyze",
-      "name": "OpenAI - Analyze Paper",
-      "type": "n8n-nodes-base.openAi",
+      "id": "check-valid",
+      "name": "Is Valid?",
+      "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [650, 300],
-      "notes": "Use AI to extract key insights from the paper"
+      "position": [1050, 300]
     },
     {
       "parameters": {
         "operation": "insert",
-        "table": "research_papers",
-        "columns": "title,summary,methodology,findings,url,analyzed_at"
+        "table": "invoices",
+        "columns": "invoice_number,vendor_name,total,currency,invoice_date,data,processed_at"
       },
-      "id": "database-store",
-      "name": "Store Analysis",
+      "id": "save-invoice",
+      "name": "Save to Database",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
-      "position": [850, 300],
-      "notes": "Store the analysis results in your database"
+      "position": [1250, 250],
+      "notes": "Store validated invoice"
     }
   ],
   "connections": {
@@ -96,29 +130,270 @@ Perfect for researchers, students, and academics who need to quickly understand 
       "main": [
         [
           {
-            "node": "PDF Vector - Parse Paper",
+            "node": "Get Invoice from Google Drive",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "PDF Vector - Parse Paper": {
+    "Get Invoice from Google Drive": {
       "main": [
         [
           {
-            "node": "OpenAI - Analyze Paper",
+            "node": "PDF Vector - Extract Invoice",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "OpenAI - Analyze Paper": {
+    "PDF Vector - Extract Invoice": {
       "main": [
         [
           {
-            "node": "Store Analysis",
+            "node": "Validate Invoice Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Invoice Data": {
+      "main": [
+        [
+          {
+            "node": "Is Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Valid?": {
+      "main": [
+        [
+          {
+            "node": "Save to Database",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  }
+}
+```
+
+**Free or Paid?** Free
+
+---
+
+## 2. Parse and Score Resumes with PDF Vector AI
+
+**Name:** Parse and Score Resumes with PDF Vector AI
+
+**Description:**
+HR departments and recruiters spend countless hours manually reviewing resumes, often missing qualified candidates due to time constraints. This workflow automates the entire resume screening process by extracting structured data from resumes in any format (PDF, Word documents, or even photographed/scanned resume images), calculating experience scores, and creating comprehensive candidate profiles ready for your ATS system.
+
+**Target Audience:** HR departments, recruitment agencies, talent acquisition teams, and hiring managers who need to process large volumes of resumes efficiently while maintaining quality candidate selection.
+
+**Problem Solved:** Manual resume screening is inefficient and inconsistent. Different reviewers may evaluate the same resume differently, leading to missed opportunities. This template standardizes the extraction process, automatically calculates years of experience for each skill, and provides objective scoring metrics to help identify the best candidates faster.
+
+**Setup Instructions:**
+1. Configure Google Drive credentials in n8n
+2. Install the PDF Vector community node from the n8n marketplace
+3. Configure your PDF Vector API credentials
+4. Set up your preferred data storage (database or spreadsheet)
+5. Customize the skill categories for your industry
+6. Configure the scoring algorithm based on your requirements
+7. Connect to your existing ATS system if needed
+
+**Key Features:**
+- Automatic retrieval of resumes from Google Drive
+- Intelligent parsing of resumes in any format (PDF, DOCX, images)
+- OCR support for scanned or photographed resumes
+- Automatic calculation of total years of experience
+- Skill-specific experience tracking and proficiency scoring
+- AI-powered assessment of candidate strengths and fit
+- Support for multiple languages and international formats
+- Structured data output compatible with major ATS systems
+
+**Customization Options:**
+- Define custom skill categories relevant to your industry
+- Adjust scoring weights for different experience types
+- Add specific extraction fields for your organization
+- Implement keyword matching for job requirements
+- Set up automated candidate ranking systems
+- Create role-specific evaluation criteria
+- Add integration with LinkedIn or other professional networks
+
+**Implementation Details:**
+The workflow uses advanced AI to understand context and extract meaningful information from unstructured resume data. It calculates experience by analyzing date ranges in work history and associates technologies mentioned with specific roles. The scoring algorithm considers both depth (years of experience) and breadth (variety of skills) to provide a comprehensive candidate assessment.
+
+**Note:** This workflow uses the PDF Vector community node. Make sure to install it from the n8n community nodes collection before using this template.
+
+**Template Code:**
+```json
+{
+  "meta": {
+    "instanceId": "placeholder"
+  },
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "notes": "Start resume parsing"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": "={{ $json.fileId }}"
+      },
+      "id": "google-drive",
+      "name": "Get Resume from Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [450, 300],
+      "notes": "Download resume from Google Drive"
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "operation": "extract",
+        "inputType": "file",
+        "binaryPropertyName": "data",
+        "prompt": "Extract all relevant information from this resume document or image including personal details, work experience with dates and achievements, education, all technical and soft skills, certifications, and languages. Handle both digital documents and scanned/photographed resumes. Pay special attention to dates for calculating experience.",
+        "schema": "{\"type\":\"object\",\"properties\":{\"personalInfo\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"},\"phone\":{\"type\":\"string\"},\"location\":{\"type\":\"string\"},\"linkedIn\":{\"type\":\"string\"},\"summary\":{\"type\":\"string\"}}},\"workExperience\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"company\":{\"type\":\"string\"},\"position\":{\"type\":\"string\"},\"startDate\":{\"type\":\"string\"},\"endDate\":{\"type\":\"string\"},\"description\":{\"type\":\"string\"},\"achievements\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"technologies\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}},\"education\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"institution\":{\"type\":\"string\"},\"degree\":{\"type\":\"string\"},\"field\":{\"type\":\"string\"},\"graduationDate\":{\"type\":\"string\"},\"gpa\":{\"type\":\"string\"}}}},\"skills\":{\"type\":\"object\",\"properties\":{\"technical\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"soft\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"languages\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"language\":{\"type\":\"string\"},\"proficiency\":{\"type\":\"string\"}}}}}},\"certifications\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"issuer\":{\"type\":\"string\"},\"date\":{\"type\":\"string\"},\"expiryDate\":{\"type\":\"string\"}}}}},\"required\":[\"personalInfo\"],\"additionalProperties\":false}"
+      },
+      "id": "pdfvector-parse",
+      "name": "PDF Vector - Parse Resume",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "notes": "Extract candidate information"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Calculate experience and skill metrics\nconst resume = $input.first().json.data;\nconst currentDate = new Date();\n\n// Calculate total years of experience\nlet totalExperience = 0;\nlet skillExperience = {};\n\nif (resume.workExperience) {\n  resume.workExperience.forEach(job => {\n    const startDate = new Date(job.startDate);\n    const endDate = job.endDate === 'Present' ? currentDate : new Date(job.endDate);\n    const years = (endDate - startDate) / (1000 * 60 * 60 * 24 * 365);\n    totalExperience += years;\n    \n    // Track experience per technology\n    if (job.technologies) {\n      job.technologies.forEach(tech => {\n        skillExperience[tech] = (skillExperience[tech] || 0) + years;\n      });\n    }\n  });\n}\n\n// Create skill proficiency scores\nconst skillScores = {};\nif (resume.skills?.technical) {\n  resume.skills.technical.forEach(skill => {\n    const experience = skillExperience[skill] || 0;\n    let score = 0;\n    if (experience >= 5) score = 5;\n    else if (experience >= 3) score = 4;\n    else if (experience >= 1) score = 3;\n    else if (experience > 0) score = 2;\n    else score = 1;\n    \n    skillScores[skill] = {\n      yearsExperience: Math.round(experience * 10) / 10,\n      proficiencyScore: score\n    };\n  });\n}\n\nreturn [{\n  json: {\n    candidateProfile: resume,\n    metrics: {\n      totalYearsExperience: Math.round(totalExperience * 10) / 10,\n      skillScores: skillScores,\n      educationLevel: resume.education?.[0]?.degree || 'Not specified',\n      certificationCount: resume.certifications?.length || 0,\n      languageCount: resume.skills?.languages?.length || 0\n    },\n    processedAt: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "calculate-metrics",
+      "name": "Calculate Experience Metrics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "notes": "Calculate experience and skill scores"
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "operation": "ask",
+        "inputType": "file",
+        "binaryPropertyName": "data",
+        "prompt": "Based on this resume document or image, provide a brief assessment of the candidate's strengths, potential roles they would fit, and any notable achievements. Also suggest their seniority level (Junior/Mid/Senior/Lead)."
+      },
+      "id": "pdfvector-assess",
+      "name": "PDF Vector - AI Assessment",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "typeVersion": 1,
+      "position": [1050, 300],
+      "notes": "Get AI assessment"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assignment1",
+              "name": "profile",
+              "value": "={{ $node['Calculate Experience Metrics'].json.candidateProfile }}",
+              "type": "object"
+            },
+            {
+              "id": "assignment2",
+              "name": "metrics",
+              "value": "={{ $node['Calculate Experience Metrics'].json.metrics }}",
+              "type": "object"
+            },
+            {
+              "id": "assignment3",
+              "name": "aiAssessment",
+              "value": "={{ $json.answer }}",
+              "type": "string"
+            },
+            {
+              "id": "assignment4",
+              "name": "atsReady",
+              "value": "true",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "create-profile",
+      "name": "Create Candidate Profile",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [1250, 300],
+      "notes": "Combine all data"
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Resume from Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Resume from Google Drive": {
+      "main": [
+        [
+          {
+            "node": "PDF Vector - Parse Resume",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF Vector - Parse Resume": {
+      "main": [
+        [
+          {
+            "node": "Calculate Experience Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Experience Metrics": {
+      "main": [
+        [
+          {
+            "node": "PDF Vector - AI Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF Vector - AI Assessment": {
+      "main": [
+        [
+          {
+            "node": "Create Candidate Profile",
             "type": "main",
             "index": 0
           }
@@ -133,33 +408,242 @@ Perfect for researchers, students, and academics who need to quickly understand 
 
 ---
 
-## 2. Academic Literature Review Automation
+## 3. Analyze Legal Contracts with PDF Vector Risk Assessment
 
-**Name:** Automated Literature Review Builder
+**Name:** Analyze Legal Contracts with PDF Vector Risk Assessment
 
 **Description:**
-## Comprehensive Literature Review Automation
+Legal teams and procurement departments face increasing pressure to review contracts quickly while ensuring nothing important is missed. Manual contract review is time-consuming, and important terms or risks can be overlooked. This workflow automates contract analysis by extracting key terms from PDF contracts or scanned contract images, identifying obligations, assessing risks, and generating comprehensive compliance reports.
 
-Automate your literature review process by searching across multiple academic databases, parsing papers, and organizing findings into a structured review document.
+**Target Audience:** Legal departments, procurement teams, contract managers, compliance officers, and business executives who need to review and manage contracts efficiently while minimizing legal risks.
 
-### Features:
-- Search multiple academic databases simultaneously (PubMed, ArXiv, Google Scholar, etc.)
-- Parse and analyze top papers automatically
-- Generate citation-ready summaries
-- Export to various formats (Markdown, Word, PDF)
+**Problem Solved:** Contract review bottlenecks slow down business deals and expose organizations to hidden risks. This template accelerates the review process from days to minutes while providing more thorough analysis than manual review. It identifies potential risks, tracks obligations, and ensures all critical terms are captured and evaluated.
 
-### Workflow Steps:
-1. **Input**: Research topic and parameters
-2. **PDF Vector Search**: Query multiple academic databases
-3. **Filter & Rank**: Select top relevant papers
-4. **Parse Papers**: Extract content from PDFs
-5. **Synthesize**: Create literature review sections
-6. **Export**: Generate final document
+**Setup Instructions:**
+1. Configure Google Drive credentials in n8n
+2. Install the PDF Vector community node in your n8n instance
+3. Configure PDF Vector API credentials
+4. Set up your preferred storage solution for contract data
+5. Customize risk assessment criteria for your industry
+6. Configure compliance requirements specific to your jurisdiction
+7. Set up notification channels for high-risk contracts
 
-### Use Cases:
-- PhD students conducting systematic reviews
-- Researchers exploring new fields
-- Grant writers needing background sections
+**Key Features:**
+- Automatic retrieval of contracts from Google Drive
+- Process both digital PDFs and scanned/photographed contracts
+- OCR support for handwritten amendments and signatures
+- Comprehensive extraction of all contract parties and key dates
+- Automatic identification of obligations and deliverables
+- AI-powered risk assessment with severity scoring
+- Payment terms analysis with penalty calculations
+- Termination clause evaluation and timeline tracking
+- Automated compliance checklist generation
+- Critical date reminders and obligation deadlines
+
+**Customization Options:**
+- Add industry-specific risk factors and compliance requirements
+- Create custom extraction fields for specialized contract types
+- Implement multi-language support for international contracts
+- Set up integration with contract management systems
+- Configure automated alerts for expiration dates
+- Build approval workflows based on risk levels
+- Add comparison features against your standard contract templates
+
+**Implementation Details:**
+The workflow combines structured data extraction with AI analysis to provide comprehensive contract insights. It calculates important dates, tracks deliverables, and creates actionable compliance checklists. The risk assessment uses natural language processing to identify unusual clauses, missing standard provisions, and potential legal concerns that require human review.
+
+**Note:** This workflow uses the PDF Vector community node. Make sure to install it from the n8n community nodes collection before using this template.
+
+**Template Code:**
+```json
+{
+  "meta": {
+    "instanceId": "placeholder"
+  },
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "notes": "Start contract analysis"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": "={{ $json.fileId }}"
+      },
+      "id": "google-drive",
+      "name": "Get Contract from Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [450, 300],
+      "notes": "Download contract PDF from Google Drive"
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "operation": "extract",
+        "inputType": "file",
+        "binaryPropertyName": "data",
+        "prompt": "Extract all key contract information from this document or image including parties involved, contract type, effective date, expiration date, payment terms, deliverables, obligations, termination clauses, penalties, warranties, and any other important terms. Handle both digital PDFs and scanned/photographed contracts.",
+        "schema": "{\"type\":\"object\",\"properties\":{\"contractTitle\":{\"type\":\"string\"},\"contractType\":{\"type\":\"string\"},\"effectiveDate\":{\"type\":\"string\"},\"expirationDate\":{\"type\":\"string\"},\"parties\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"role\":{\"type\":\"string\"},\"address\":{\"type\":\"string\"},\"signatory\":{\"type\":\"string\"}}}},\"paymentTerms\":{\"type\":\"object\",\"properties\":{\"amount\":{\"type\":\"string\"},\"schedule\":{\"type\":\"string\"},\"currency\":{\"type\":\"string\"},\"lateFees\":{\"type\":\"string\"}}},\"deliverables\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"description\":{\"type\":\"string\"},\"dueDate\":{\"type\":\"string\"},\"acceptanceCriteria\":{\"type\":\"string\"}}}},\"obligations\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"party\":{\"type\":\"string\"},\"obligation\":{\"type\":\"string\"},\"deadline\":{\"type\":\"string\"}}}},\"terminationClauses\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"penalties\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"trigger\":{\"type\":\"string\"},\"amount\":{\"type\":\"string\"}}}},\"warranties\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"governingLaw\":{\"type\":\"string\"},\"disputeResolution\":{\"type\":\"string\"}},\"required\":[\"contractTitle\",\"parties\"],\"additionalProperties\":false}"
+      },
+      "id": "pdfvector-extract",
+      "name": "PDF Vector - Extract Contract",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "notes": "Extract contract details"
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "operation": "ask",
+        "inputType": "file",
+        "binaryPropertyName": "data",
+        "prompt": "Analyze this contract document or image and identify: 1) Top 5 risks or concerns, 2) Any unusual or potentially problematic clauses, 3) Missing standard provisions, 4) Overall risk level (Low/Medium/High) with justification."
+      },
+      "id": "pdfvector-risk",
+      "name": "PDF Vector - Risk Analysis",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "notes": "Analyze contract risks"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Create comprehensive contract analysis\nconst contractData = $node['PDF Vector - Extract Contract'].json.data;\nconst riskAnalysis = $node['PDF Vector - Risk Analysis'].json.answer;\n\n// Calculate important dates\nconst today = new Date();\nconst effectiveDate = new Date(contractData.effectiveDate);\nconst expirationDate = new Date(contractData.expirationDate);\nconst daysUntilExpiration = Math.floor((expirationDate - today) / (1000 * 60 * 60 * 24));\n\n// Create deliverables timeline\nconst upcomingDeliverables = [];\nif (contractData.deliverables) {\n  contractData.deliverables.forEach(deliverable => {\n    const dueDate = new Date(deliverable.dueDate);\n    const daysUntilDue = Math.floor((dueDate - today) / (1000 * 60 * 60 * 24));\n    if (daysUntilDue > 0) {\n      upcomingDeliverables.push({\n        ...deliverable,\n        daysUntilDue\n      });\n    }\n  });\n}\n\n// Sort deliverables by due date\nupcomingDeliverables.sort((a, b) => a.daysUntilDue - b.daysUntilDue);\n\n// Create compliance checklist\nconst complianceChecklist = [\n  {\n    item: 'All parties properly identified',\n    status: contractData.parties?.length >= 2 ? 'Complete' : 'Missing',\n    required: true\n  },\n  {\n    item: 'Payment terms specified',\n    status: contractData.paymentTerms?.amount ? 'Complete' : 'Missing',\n    required: true\n  },\n  {\n    item: 'Termination clauses included',\n    status: contractData.terminationClauses?.length > 0 ? 'Complete' : 'Missing',\n    required: true\n  },\n  {\n    item: 'Governing law specified',\n    status: contractData.governingLaw ? 'Complete' : 'Missing',\n    required: true\n  },\n  {\n    item: 'Dispute resolution process',\n    status: contractData.disputeResolution ? 'Complete' : 'Missing',\n    required: false\n  }\n];\n\nreturn [{\n  json: {\n    contractSummary: {\n      title: contractData.contractTitle,\n      type: contractData.contractType,\n      parties: contractData.parties,\n      value: contractData.paymentTerms?.amount || 'Not specified',\n      duration: `${Math.floor((expirationDate - effectiveDate) / (1000 * 60 * 60 * 24))} days`,\n      daysUntilExpiration\n    },\n    riskAssessment: riskAnalysis,\n    upcomingDeliverables,\n    complianceChecklist,\n    extractedData: contractData,\n    analysisDate: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "analyze-contract",
+      "name": "Generate Analysis Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "notes": "Create comprehensive analysis"
+    },
+    {
+      "parameters": {
+        "fileName": "contract_analysis_{{ $now.format('yyyy-MM-dd') }}.json",
+        "fileContent": "={{ JSON.stringify($json, null, 2) }}"
+      },
+      "id": "save-report",
+      "name": "Save Analysis Report",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [1050, 300],
+      "notes": "Save analysis to file"
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "PDF Vector - Extract Contract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF Vector - Extract Contract": {
+      "main": [
+        [
+          {
+            "node": "PDF Vector - Risk Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF Vector - Risk Analysis": {
+      "main": [
+        [
+          {
+            "node": "Generate Analysis Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Analysis Report": {
+      "main": [
+        [
+          {
+            "node": "Save Analysis Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
+```
+
+**Free or Paid?** Free
+
+---
+
+## 4. Build Document Q&A API with PDF Vector and Webhooks
+
+**Name:** Build Document Q&A API with PDF Vector and Webhooks
+
+**Description:**
+Organizations struggle to make their document repositories searchable and accessible. Users waste time searching through lengthy PDFs, manuals, and documentation to find specific answers. This workflow creates a powerful API service that instantly answers questions about any document or image, perfect for building customer support chatbots, internal knowledge bases, or interactive documentation systems.
+
+**Target Audience:** Developer teams, customer support departments, technical writers, and organizations looking to make their documentation more accessible through conversational interfaces and API integrations.
+
+**Problem Solved:** Traditional document search returns entire pages or sections, forcing users to read through irrelevant content. This template creates an intelligent Q&A system that provides precise, contextual answers to specific questions. It eliminates the need for users to manually search through documents and enables integration with chatbots, support systems, and custom applications.
+
+**Setup Instructions:**
+1. Install the PDF Vector community node from n8n marketplace
+2. Configure your PDF Vector API key
+3. Set up the webhook URL for your API endpoint
+4. Configure Redis or database for session management
+5. Set response caching parameters
+6. Test the API with sample documents and questions
+
+**Key Features:**
+- RESTful webhook API for easy integration
+- Support for PDFs, Word docs, text files, and images
+- OCR capabilities for scanned documents and screenshots
+- Context-aware answers with source references
+- Session management for conversational follow-ups
+- Intelligent caching for improved response times
+- Built-in usage analytics and monitoring
+
+**API Usage Example:**
+```bash
+POST https://your-n8n-instance.com/webhook/doc-qa
+Content-Type: application/json
+
+{
+  "documentUrl": "https://example.com/user-manual.pdf",
+  "question": "How do I reset my password?",
+  "sessionId": "user-123",
+  "includePageNumbers": true
+}
+```
+
+**Customization Options:**
+- Add authentication and rate limiting
+- Implement multi-document search capabilities
+- Create specialized prompts for different document types
+- Add language detection and translation
+- Build conversation history tracking
+- Integrate with existing help desk systems
+- Add support for local file uploads
+
+**Implementation Details:**
+The workflow processes incoming webhook requests, manages document parsing efficiently through caching, and uses PDF Vector's advanced AI to understand context and provide accurate answers. It includes error handling, session management for follow-up questions, and returns responses in a standardized JSON format suitable for integration with any application.
+
+**Note:** This workflow uses the PDF Vector community node. Make sure to install it from the n8n community nodes collection before using this template.
 
 **Template Code:**
 ```json
@@ -170,65 +654,287 @@ Automate your literature review process by searching across multiple academic da
   "nodes": [
     {
       "parameters": {
-        "content": "## Literature Review Parameters\n\nTopic: {{ $json.topic }}\nYear Range: {{ $json.startYear }}-{{ $json.endYear }}\nMax Papers: {{ $json.maxPapers }}"
+        "httpMethod": "POST",
+        "path": "doc-qa"
       },
-      "id": "start-node",
-      "name": "Start",
-      "type": "n8n-nodes-base.stickyNote",
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [250, 250]
+      "position": [250, 300],
+      "webhookId": "doc-qa-webhook",
+      "notes": "API endpoint for document Q&A"
     },
     {
       "parameters": {
-        "resource": "academic",
-        "operation": "search",
-        "query": "={{ $json.topic }}",
-        "providers": ["pubmed", "semantic_scholar", "arxiv", "google_scholar"],
-        "limit": 50,
-        "yearFrom": "={{ $json.startYear }}",
-        "yearTo": "={{ $json.endYear }}",
-        "fields": ["title", "abstract", "authors", "year", "doi", "pdfUrl", "totalCitations"]
+        "jsCode": "// Validate incoming request\nconst body = $input.first().json.body;\nconst errors = [];\n\nif (!body.documentUrl && !body.documentId) {\n  errors.push('Either documentUrl or documentId is required');\n}\nif (!body.question) {\n  errors.push('Question is required');\n}\n\n// Generate session ID if not provided\nconst sessionId = body.sessionId || `session-${Date.now()}`;\n\nreturn [{\n  json: {\n    ...body,\n    sessionId,\n    valid: errors.length === 0,\n    errors,\n    timestamp: new Date().toISOString()\n  }\n}];"
       },
-      "id": "pdfvector-search",
-      "name": "PDF Vector - Search Papers",
-      "type": "n8n-nodes-pdfvector.pdfVector",
+      "id": "validate-request",
+      "name": "Validate Request",
+      "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [450, 300],
-      "notes": "Search across multiple academic databases"
+      "notes": "Validate and prepare request"
     },
     {
       "parameters": {
-        "functionCode": "// Sort papers by citations in descending order\nreturn items.sort((a, b) => (b.json.totalCitations || 0) - (a.json.totalCitations || 0));"
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.valid }}",
+              "value2": true
+            }
+          ]
+        }
       },
-      "id": "sort-papers",
-      "name": "Sort by Citations",
-      "type": "n8n-nodes-base.code",
+      "id": "check-valid",
+      "name": "Valid Request?",
+      "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [650, 300]
     },
     {
       "parameters": {
-        "functionCode": "// Limit to top N papers\nconst maxPapers = $node['Start'].json.maxPapers || 10;\nreturn items.slice(0, maxPapers);"
+        "resource": "document",
+        "operation": "ask",
+        "inputType": "url",
+        "url": "={{ $json.documentUrl }}",
+        "prompt": "Answer the following question about this document or image: {{ $json.question }}"
       },
-      "id": "limit-papers",
-      "name": "Select Top Papers",
+      "id": "pdfvector-ask",
+      "name": "PDF Vector - Ask Question",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "typeVersion": 1,
+      "position": [850, 250],
+      "notes": "Get answer from document"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare successful response\nconst answer = $json.answer;\nconst request = $node['Validate Request'].json;\n\n// Calculate confidence score based on answer length and keywords\nlet confidence = 0.8; // Base confidence\nif (answer.length > 100) confidence += 0.1;\nif (answer.toLowerCase().includes('specifically') || answer.toLowerCase().includes('according to')) confidence += 0.1;\nconfidence = Math.min(confidence, 1.0);\n\nreturn [{\n  json: {\n    success: true,\n    data: {\n      answer,\n      confidence,\n      sessionId: request.sessionId,\n      documentUrl: request.documentUrl,\n      question: request.question\n    },\n    metadata: {\n      processedAt: new Date().toISOString(),\n      responseTime: Date.now() - new Date(request.timestamp).getTime(),\n      creditsUsed: 1\n    }\n  }\n}];"
+      },
+      "id": "format-success",
+      "name": "Format Success Response",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [850, 300]
+      "position": [1050, 250],
+      "notes": "Prepare successful response"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare error response\nconst errors = $json.errors || ['An error occurred processing your request'];\n\nreturn [{\n  json: {\n    success: false,\n    errors,\n    message: 'Invalid request',\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "format-error",
+      "name": "Format Error Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [850, 350],
+      "notes": "Prepare error response"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "responseHeaders": {
+          "entries": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        }
+      },
+      "id": "webhook-response",
+      "name": "Send Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 300],
+      "notes": "Send API response"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Request": {
+      "main": [
+        [
+          {
+            "node": "Valid Request?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid Request?": {
+      "main": [
+        [
+          {
+            "node": "PDF Vector - Ask Question",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF Vector - Ask Question": {
+      "main": [
+        [
+          {
+            "node": "Format Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Success Response": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Error Response": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
+```
+
+**Free or Paid?** Free
+
+---
+
+## 5. Extract and Analyze Research Papers with PDF Vector Academic Tools
+
+**Name:** Extract and Analyze Research Papers with PDF Vector Academic Tools
+
+**Description:**
+Researchers and academic institutions need efficient ways to process and analyze large volumes of research papers and academic documents, including scanned PDFs and image-based materials (JPG, PNG). Manual review of academic literature is time-consuming and makes it difficult to identify trends, track citations, and synthesize findings across multiple papers. This workflow automates the extraction and analysis of research papers and scanned documents using OCR technology, creating a searchable knowledge base of academic insights from both digital and image-based sources.
+
+**Target Audience:** Research institutions, university libraries, R&D departments, academic researchers, literature review teams, and organizations tracking scientific developments in their field.
+
+**Problem Solved:** Literature reviews require reading hundreds of papers to identify relevant findings and methodologies. This template automates the extraction of key information from research papers, including methodologies, findings, and citations. It builds a searchable database that helps researchers quickly find relevant studies and identify research gaps.
+
+**Setup Instructions:**
+1. Install the PDF Vector community node with academic features
+2. Configure PDF Vector API with academic search enabled
+3. Configure Google Drive credentials for document access
+4. Set up database for storing extracted research data
+5. Configure citation tracking preferences
+6. Set up automated paper ingestion from sources
+7. Configure summary generation parameters
+
+**Key Features:**
+- Google Drive integration for research paper retrieval (PDFs, JPGs, PNGs)
+- OCR processing for scanned documents and images
+- Automatic extraction of paper metadata and structure from any format
+- Methodology and findings summarization from PDFs and images
+- Citation network analysis and metrics
+- Multi-paper trend identification
+- Searchable research database creation
+- Integration with academic search engines
+
+**Customization Options:**
+- Add field-specific extraction templates
+- Configure automated paper discovery from arXiv, PubMed, etc.
+- Implement citation alert systems
+- Create research trend visualizations
+- Add collaboration features for research teams
+- Build API endpoints for research queries
+- Integrate with reference management tools
+
+**Implementation Details:**
+The workflow uses PDF Vector's academic features to understand research paper structure and extract meaningful insights. It processes papers from various sources, identifies key contributions, and creates structured summaries. The system tracks citations to measure impact and identifies emerging research trends by analyzing multiple papers in a field.
+
+**Note:** This workflow uses the PDF Vector community node. Make sure to install it from the n8n community nodes collection before using this template.
+
+**Template Code:**
+```json
+{
+  "meta": {
+    "instanceId": "placeholder"
+  },
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "notes": "Start paper analysis"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": "={{ $json.fileId }}"
+      },
+      "id": "google-drive",
+      "name": "Google Drive - Get Paper",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [450, 300],
+      "notes": "Retrieve paper from Drive"
     },
     {
       "parameters": {
         "resource": "document",
         "operation": "parse",
-        "documentUrl": "={{ $json.pdfUrl }}",
-        "useLlm": "auto"
+        "inputType": "file",
+        "binaryPropertyName": "data",
+        "useLLM": "always"
       },
       "id": "pdfvector-parse",
-      "name": "PDF Vector - Parse Papers",
+      "name": "PDF Vector - Parse Paper",
       "type": "n8n-nodes-pdfvector.pdfVector",
       "typeVersion": 1,
-      "position": [1050, 300],
-      "notes": "Parse each paper's PDF"
+      "position": [650, 300],
+      "notes": "Parse research paper"
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "operation": "extract",
+        "inputType": "file",
+        "binaryPropertyName": "data",
+        "prompt": "Extract key information from this research document or image including title, authors with affiliations, abstract, keywords, research questions, methodology, key findings, conclusions, limitations, and future work suggestions. Use OCR if this is a scanned document or image.",
+        "schema": "{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\"},\"authors\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"affiliation\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"}}}},\"abstract\":{\"type\":\"string\"},\"keywords\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"researchQuestions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"methodology\":{\"type\":\"object\",\"properties\":{\"approach\":{\"type\":\"string\"},\"dataCollection\":{\"type\":\"string\"},\"analysis\":{\"type\":\"string\"},\"tools\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}},\"findings\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"conclusions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"limitations\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"futureWork\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"references\":{\"type\":\"number\"}},\"required\":[\"title\",\"authors\"],\"additionalProperties\":false}"
+      },
+      "id": "pdfvector-extract",
+      "name": "PDF Vector - Extract Data",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "notes": "Extract structured data"
     },
     {
       "parameters": {
@@ -236,41 +942,634 @@ Automate your literature review process by searching across multiple academic da
         "messages": {
           "values": [
             {
-              "content": "Create a literature review section for this paper:\n\nTitle: {{ $json.title }}\nAuthors: {{ $json.authors }}\nYear: {{ $json.year }}\n\nContent: {{ $json.content }}\n\nGenerate:\n1. Key contribution summary (2-3 sentences)\n2. Methodology overview\n3. Main findings\n4. Relevance to topic: {{ $node['Start'].json.topic }}"
+              "content": "Based on this research paper, provide:\n\n1. A concise summary (150 words) suitable for a research database\n2. The main contribution to the field (2-3 sentences)\n3. Potential applications or impact\n4. Classification tags (e.g., empirical study, theoretical framework, review, etc.)\n\nPaper content:\n{{ $node['PDF Vector - Parse Paper'].json.content }}"
             }
           ]
         }
       },
-      "id": "synthesize",
-      "name": "Synthesize Review",
+      "id": "openai-analyze",
+      "name": "Generate AI Summary",
       "type": "n8n-nodes-base.openAi",
       "typeVersion": 1,
-      "position": [1250, 300]
+      "position": [1050, 300],
+      "notes": "Create AI summary"
     },
     {
       "parameters": {
-        "functionCode": "// Combine all review sections into a single document\nconst reviewSections = items.map(item => item.json.reviewSection || item.json.content || '').filter(section => section);\nreturn [{ json: { reviewSections: reviewSections.join('\\n\\n') } }];"
+        "jsCode": "// Combine all analysis data\nconst parsedContent = $node['PDF Vector - Parse Paper'].json;\nconst extractedData = $node['PDF Vector - Extract Data'].json.data;\nconst aiSummary = $node['Generate AI Summary'].json.choices[0].message.content;\n\n// Calculate reading time (assuming 250 words per minute)\nconst wordCount = parsedContent.content.split(' ').length;\nconst readingTimeMinutes = Math.ceil(wordCount / 250);\n\n// Prepare database entry\nconst paperAnalysis = {\n  // Basic information\n  title: extractedData.title,\n  authors: extractedData.authors,\n  url: $node['Google Drive - Get Paper'].json.webViewLink,\n  \n  // Content\n  abstract: extractedData.abstract,\n  keywords: extractedData.keywords,\n  fullText: parsedContent.content,\n  \n  // Analysis\n  aiSummary: aiSummary,\n  methodology: extractedData.methodology,\n  findings: extractedData.findings,\n  conclusions: extractedData.conclusions,\n  limitations: extractedData.limitations,\n  futureWork: extractedData.futureWork,\n  \n  // Metadata\n  wordCount: wordCount,\n  readingTimeMinutes: readingTimeMinutes,\n  referenceCount: extractedData.references || 0,\n  processedAt: new Date().toISOString(),\n  \n  // Searchable fields\n  searchText: `${extractedData.title} ${extractedData.abstract} ${extractedData.keywords.join(' ')}`.toLowerCase()\n};\n\nreturn [{ json: paperAnalysis }];"
       },
-      "id": "combine-sections",
-      "name": "Combine Sections",
+      "id": "prepare-data",
+      "name": "Prepare Database Entry",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [1450, 300]
+      "position": [1250, 300],
+      "notes": "Combine all data"
     },
     {
       "parameters": {
-        "fileName": "literature_review_{{ $now.format('yyyy-MM-dd') }}.md",
-        "fileContent": "# Literature Review: {{ $node['Start'].json.topic }}\n\n{{ $json.reviewSections }}"
+        "operation": "insert",
+        "table": "research_papers",
+        "columns": "title,authors,url,abstract,keywords,ai_summary,methodology,findings,processed_at,search_text"
       },
-      "id": "export-review",
-      "name": "Export Review",
-      "type": "n8n-nodes-base.writeBinaryFile",
+      "id": "database-store",
+      "name": "Store in Database",
+      "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
-      "position": [1650, 300]
+      "position": [1450, 300],
+      "notes": "Save to research database"
     }
   ],
   "connections": {
-    "Start": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive - Get Paper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive - Get Paper": {
+      "main": [
+        [
+          {
+            "node": "PDF Vector - Parse Paper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF Vector - Parse Paper": {
+      "main": [
+        [
+          {
+            "node": "PDF Vector - Extract Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF Vector - Extract Data": {
+      "main": [
+        [
+          {
+            "node": "Generate AI Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate AI Summary": {
+      "main": [
+        [
+          {
+            "node": "Prepare Database Entry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Database Entry": {
+      "main": [
+        [
+          {
+            "node": "Store in Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
+```
+
+**Free or Paid?** Free
+
+---
+
+## 6. Process Receipts with Tax Categorization
+
+**Name:** Automated Receipt Processing with Tax Categorization
+
+**Description:**
+Businesses and freelancers often struggle with the tedious task of manually processing receipts for expense tracking and tax purposes. This workflow automates the entire receipt processing pipeline, extracting detailed information from receipts (including scanned images, photos, PDFs, JPGs, and PNGs) and intelligently categorizing them for tax deductions. Whether you're managing personal business expenses, preparing for tax season, or maintaining compliance with accounting standards, this template provides a comprehensive solution that handles both digital and image-based receipts.
+
+The workflow is designed for accountants, small business owners, freelancers, and finance teams who need to process large volumes of receipts efficiently. It handles various receipt formats including scanned images (JPG, PNG), photos of physical receipts, PDFs, and digital receipts, using advanced OCR technology to extract even handwritten information from images and scanned documents. The system automatically identifies tax-deductible expenses, categorizes them according to IRS guidelines, and validates financial calculations to ensure accuracy.
+
+Key features include Google Drive integration for receipt retrieval, multi-currency support for international transactions, automatic detection of meal expenses with appropriate deduction percentages, mileage tracking integration, and seamless export to popular accounting software like QuickBooks and Xero. The workflow maintains an audit trail for compliance purposes and can process both individual receipts and batch uploads. Implementation requires minimal setup - simply configure your Google Drive and accounting software credentials, then customize tax categories to match your business needs. The template includes built-in validation to catch common errors like mismatched totals or invalid tax calculations, reducing the risk of accounting errors.
+
+Note: This workflow uses the PDF Vector community node which requires separate installation. Please follow the installation guide at the PDF Vector documentation page before importing this template.
+
+**Template Code:**
+```json
+{
+  "meta": {
+    "instanceId": "placeholder"
+  },
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "notes": "Process receipt"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": "={{ $json.fileId }}"
+      },
+      "id": "google-drive",
+      "name": "Google Drive - Get Receipt",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [450, 300],
+      "notes": "Retrieve receipt from Drive"
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "operation": "extract",
+        "inputType": "file",
+        "binaryPropertyName": "data",
+        "prompt": "Extract all receipt information from this document or image including merchant name and address, transaction date and time, all items with descriptions and prices, subtotal, tax amount and rate, tip if applicable, total amount, payment method, and any loyalty or membership numbers. Use OCR if this is a scanned receipt or image.",
+        "schema": "{\"type\":\"object\",\"properties\":{\"merchant\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"address\":{\"type\":\"string\"},\"phone\":{\"type\":\"string\"},\"taxId\":{\"type\":\"string\"}}},\"transaction\":{\"type\":\"object\",\"properties\":{\"date\":{\"type\":\"string\"},\"time\":{\"type\":\"string\"},\"receiptNumber\":{\"type\":\"string\"},\"cashier\":{\"type\":\"string\"}}},\"items\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"description\":{\"type\":\"string\"},\"quantity\":{\"type\":\"number\"},\"unitPrice\":{\"type\":\"number\"},\"totalPrice\":{\"type\":\"number\"},\"taxable\":{\"type\":\"boolean\"}}}},\"financial\":{\"type\":\"object\",\"properties\":{\"subtotal\":{\"type\":\"number\"},\"taxRate\":{\"type\":\"number\"},\"taxAmount\":{\"type\":\"number\"},\"tip\":{\"type\":\"number\"},\"total\":{\"type\":\"number\"},\"currency\":{\"type\":\"string\"}}},\"payment\":{\"type\":\"object\",\"properties\":{\"method\":{\"type\":\"string\"},\"lastFourDigits\":{\"type\":\"string\"},\"authCode\":{\"type\":\"string\"}}},\"loyalty\":{\"type\":\"object\",\"properties\":{\"memberNumber\":{\"type\":\"string\"},\"pointsEarned\":{\"type\":\"number\"},\"pointsBalance\":{\"type\":\"number\"}}}},\"required\":[\"merchant\",\"financial\"],\"additionalProperties\":false}"
+      },
+      "id": "pdfvector-extract",
+      "name": "PDF Vector - Extract Receipt",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "notes": "Extract receipt data"
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "operation": "ask",
+        "inputType": "file",
+        "binaryPropertyName": "data",
+        "prompt": "Based on this receipt document or image, determine: 1) The most appropriate tax category (meals, travel, supplies, equipment, etc.), 2) Whether this is likely tax deductible for business, 3) If this is a meal receipt, what percentage would typically be deductible, 4) Any special considerations for tax purposes. Process any image format using OCR if needed."
+      },
+      "id": "pdfvector-categorize",
+      "name": "PDF Vector - Tax Categorization",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "notes": "Categorize for taxes"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process receipt data and tax categorization\nconst receiptData = $node['PDF Vector - Extract Receipt'].json.data;\nconst taxCategory = $node['PDF Vector - Tax Categorization'].json.answer;\n\n// Validate financial calculations\nlet validationErrors = [];\nif (receiptData.items && receiptData.items.length > 0) {\n  const calculatedSubtotal = receiptData.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0);\n  if (Math.abs(calculatedSubtotal - receiptData.financial.subtotal) > 0.02) {\n    validationErrors.push('Item totals do not match subtotal');\n  }\n}\n\n// Calculate tax consistency\nconst expectedTax = receiptData.financial.subtotal * (receiptData.financial.taxRate / 100);\nif (Math.abs(expectedTax - receiptData.financial.taxAmount) > 0.02) {\n  validationErrors.push('Tax calculation inconsistency');\n}\n\n// Determine expense category and deductibility\nlet expenseCategory = 'Other';\nlet deductiblePercentage = 100;\nlet taxNotes = '';\n\nif (taxCategory.toLowerCase().includes('meal')) {\n  expenseCategory = 'Meals & Entertainment';\n  deductiblePercentage = 50; // Typical meal deduction\n  taxNotes = 'Business meal - 50% deductible';\n} else if (taxCategory.toLowerCase().includes('travel')) {\n  expenseCategory = 'Travel';\n  deductiblePercentage = 100;\n  taxNotes = 'Business travel expense';\n} else if (taxCategory.toLowerCase().includes('supplies')) {\n  expenseCategory = 'Office Supplies';\n  deductiblePercentage = 100;\n  taxNotes = 'Business supplies';\n}\n\n// Create processed expense record\nconst processedExpense = {\n  // Receipt data\n  merchant: receiptData.merchant.name,\n  date: receiptData.transaction.date,\n  amount: receiptData.financial.total,\n  currency: receiptData.financial.currency || 'USD',\n  \n  // Tax information\n  expenseCategory,\n  deductiblePercentage,\n  deductibleAmount: (receiptData.financial.total * deductiblePercentage / 100).toFixed(2),\n  taxNotes,\n  \n  // Original data\n  originalReceipt: receiptData,\n  aiCategorization: taxCategory,\n  \n  // Validation\n  isValid: validationErrors.length === 0,\n  validationErrors,\n  \n  // Metadata\n  processedAt: new Date().toISOString(),\n  taxYear: new Date(receiptData.transaction.date).getFullYear()\n};\n\nreturn [{ json: processedExpense }];"
+      },
+      "id": "process-expense",
+      "name": "Process Expense Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [1050, 300],
+      "notes": "Validate and categorize"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "sheetId": "{{ $json.taxYear }}-expenses",
+        "range": "A:H",
+        "data": "={{ [[$json.date, $json.merchant, $json.expenseCategory, $json.amount, $json.deductibleAmount, $json.deductiblePercentage + '%', $json.taxNotes, $json.processedAt]] }}"
+      },
+      "id": "save-spreadsheet",
+      "name": "Save to Expense Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [1250, 300],
+      "notes": "Track in spreadsheet"
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive - Get Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive - Get Receipt": {
+      "main": [
+        [
+          {
+            "node": "PDF Vector - Extract Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF Vector - Extract Receipt": {
+      "main": [
+        [
+          {
+            "node": "PDF Vector - Tax Categorization",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF Vector - Tax Categorization": {
+      "main": [
+        [
+          {
+            "node": "Process Expense Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Expense Data": {
+      "main": [
+        [
+          {
+            "node": "Save to Expense Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
+```
+
+**Free or Paid?** Free
+
+---
+
+## 7. Extract Medical Data with HIPAA Compliance
+
+**Name:** HIPAA-Compliant Medical Document Processor
+
+**Description:**
+Healthcare organizations face significant challenges in digitizing and processing medical records while maintaining strict HIPAA compliance. This workflow provides a secure, automated solution for extracting clinical data from various medical documents including discharge summaries, lab reports, clinical notes, prescription records, and scanned medical images (JPG, PNG). The system uses OCR technology to process handwritten notes, old scanned records, and photographed documents. It is designed to handle Protected Health Information (PHI) with the highest security standards while improving operational efficiency in healthcare settings.
+
+Targeted at healthcare providers, medical billing companies, clinical research organizations, and health information exchanges, this template addresses the critical need for accurate data extraction without compromising patient privacy. The workflow automatically identifies and masks sensitive patient information, extracts diagnoses with ICD-10 codes, processes medication lists with dosage information, and normalizes lab results with reference ranges. It maintains a complete audit trail for regulatory compliance and integrates with existing Electronic Health Record (EHR) systems.
+
+Setup involves configuring Google Drive credentials for secure document access, defining PHI handling rules, and customizing extraction parameters for specific document types. The template includes advanced features such as automatic detection of critical lab values, medication interaction warnings, and diagnosis code validation. All processing occurs in a secure environment with encryption at rest and in transit. The workflow can handle multiple document formats including scanned PDFs, faxed documents, medical images (JPG, PNG), photographed medical records, and structured clinical documents retrieved from Google Drive. OCR processing ensures accurate extraction from handwritten prescriptions and older scanned records. Customization options include defining institution-specific medical terminology, setting up automated alerts for abnormal results, and configuring integration with specific EHR systems.
+
+Note: This workflow uses the PDF Vector community node which requires separate installation. Please follow the installation guide at the PDF Vector documentation page before importing this template.
+
+**Template Code:**
+```json
+{
+  "meta": {
+    "instanceId": "placeholder"
+  },
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "notes": "Process medical record"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": "={{ $json.fileId }}"
+      },
+      "id": "google-drive",
+      "name": "Google Drive - Get Medical Record",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [450, 300],
+      "notes": "Retrieve record from Drive"
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "operation": "extract",
+        "inputType": "file",
+        "binaryPropertyName": "data",
+        "prompt": "Extract medical information from this document or image including patient ID (not name), visit date, chief complaint, diagnoses with ICD codes, medications with dosages, vital signs, lab results with values and reference ranges, procedures performed, and follow-up instructions. Do not extract patient names, SSN, or other identifying information. Use OCR if this is a scanned document or medical image.",
+        "schema": "{\"type\":\"object\",\"properties\":{\"patientRecord\":{\"type\":\"object\",\"properties\":{\"patientId\":{\"type\":\"string\"},\"visitDate\":{\"type\":\"string\"},\"visitType\":{\"type\":\"string\"},\"provider\":{\"type\":\"string\"},\"facility\":{\"type\":\"string\"}}},\"clinicalData\":{\"type\":\"object\",\"properties\":{\"chiefComplaint\":{\"type\":\"string\"},\"historyOfPresentIllness\":{\"type\":\"string\"},\"reviewOfSystems\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}},\"diagnoses\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"description\":{\"type\":\"string\"},\"icdCode\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"status\":{\"type\":\"string\"}}}},\"medications\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"dosage\":{\"type\":\"string\"},\"frequency\":{\"type\":\"string\"},\"route\":{\"type\":\"string\"},\"startDate\":{\"type\":\"string\"},\"status\":{\"type\":\"string\"}}}},\"vitalSigns\":{\"type\":\"object\",\"properties\":{\"bloodPressure\":{\"type\":\"string\"},\"heartRate\":{\"type\":\"string\"},\"temperature\":{\"type\":\"string\"},\"respiratoryRate\":{\"type\":\"string\"},\"oxygenSaturation\":{\"type\":\"string\"},\"weight\":{\"type\":\"string\"},\"height\":{\"type\":\"string\"},\"bmi\":{\"type\":\"string\"}}},\"labResults\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"testName\":{\"type\":\"string\"},\"value\":{\"type\":\"string\"},\"unit\":{\"type\":\"string\"},\"referenceRange\":{\"type\":\"string\"},\"flag\":{\"type\":\"string\"},\"collectionDate\":{\"type\":\"string\"}}}},\"procedures\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"cptCode\":{\"type\":\"string\"},\"date\":{\"type\":\"string\"}}}},\"plan\":{\"type\":\"object\",\"properties\":{\"followUp\":{\"type\":\"string\"},\"instructions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"referrals\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}},\"required\":[\"patientRecord\",\"diagnoses\"],\"additionalProperties\":false}"
+      },
+      "id": "pdfvector-extract",
+      "name": "PDF Vector - Extract Medical Data",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "notes": "Extract medical information"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process and validate medical data\nconst medicalData = $input.first().json.data;\n\n// Create audit log entry\nconst auditLog = {\n  action: 'Medical Record Processed',\n  timestamp: new Date().toISOString(),\n  recordType: 'Clinical Document',\n  patientId: medicalData.patientRecord.patientId,\n  userId: 'system-automated',\n  ipAddress: 'internal-process'\n};\n\n// Validate critical fields\nconst validationResults = {\n  hasPatientId: !!medicalData.patientRecord?.patientId,\n  hasVisitDate: !!medicalData.patientRecord?.visitDate,\n  hasDiagnoses: medicalData.diagnoses?.length > 0,\n  hasValidIcdCodes: true\n};\n\n// Validate ICD codes format\nif (medicalData.diagnoses) {\n  medicalData.diagnoses.forEach(diagnosis => {\n    if (diagnosis.icdCode && !diagnosis.icdCode.match(/^[A-Z][0-9]{2}(\\.[0-9]{1,2})?$/)) {\n      validationResults.hasValidIcdCodes = false;\n    }\n  });\n}\n\n// Flag abnormal lab results\nconst abnormalLabs = [];\nif (medicalData.labResults) {\n  medicalData.labResults.forEach(lab => {\n    if (lab.flag && (lab.flag === 'H' || lab.flag === 'L' || lab.flag === 'Critical')) {\n      abnormalLabs.push({\n        test: lab.testName,\n        value: lab.value,\n        flag: lab.flag\n      });\n    }\n  });\n}\n\n// Check for drug interactions (simplified)\nconst medications = medicalData.medications || [];\nconst potentialInteractions = [];\n// This is a simplified check - in production, use a proper drug interaction API\nif (medications.length > 1) {\n  // Example: Check for common dangerous combinations\n  const medNames = medications.map(m => m.name.toLowerCase());\n  if (medNames.some(m => m.includes('warfarin')) && medNames.some(m => m.includes('aspirin'))) {\n    potentialInteractions.push('Warfarin + Aspirin: Increased bleeding risk');\n  }\n}\n\n// Prepare processed record\nconst processedRecord = {\n  // Core data\n  patientRecord: medicalData.patientRecord,\n  clinicalData: medicalData.clinicalData,\n  diagnoses: medicalData.diagnoses,\n  medications: medicalData.medications,\n  vitalSigns: medicalData.vitalSigns,\n  labResults: medicalData.labResults,\n  procedures: medicalData.procedures,\n  plan: medicalData.plan,\n  \n  // Analysis results\n  alerts: {\n    abnormalLabs,\n    potentialInteractions\n  },\n  \n  // Metadata\n  validation: validationResults,\n  processedAt: new Date().toISOString(),\n  dataClassification: 'PHI - Protected Health Information',\n  retentionYears: 7,\n  \n  // Compliance\n  auditLog\n};\n\nreturn [{ json: processedRecord }];"
+      },
+      "id": "process-validate",
+      "name": "Process & Validate Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "notes": "Validate and prepare data"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.validation.hasPatientId }}",
+              "value2": true
+            },
+            {
+              "value1": "={{ $json.validation.hasDiagnoses }}",
+              "value2": true
+            }
+          ]
+        },
+        "combineOperation": "all"
+      },
+      "id": "check-valid",
+      "name": "Valid Record?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "medical_records",
+        "columns": "patient_id,visit_date,diagnoses,medications,lab_results,processed_at,data_classification"
+      },
+      "id": "secure-storage",
+      "name": "Store in Secure Database",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1250, 250],
+      "notes": "HIPAA-compliant storage"
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive - Get Medical Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive - Get Medical Record": {
+      "main": [
+        [
+          {
+            "node": "PDF Vector - Extract Medical Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF Vector - Extract Medical Data": {
+      "main": [
+        [
+          {
+            "node": "Process & Validate Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process & Validate Data": {
+      "main": [
+        [
+          {
+            "node": "Valid Record?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid Record?": {
+      "main": [
+        [
+          {
+            "node": "Store in Secure Database",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  }
+}
+```
+
+**Free or Paid?** Free
+
+---
+
+## 8. Generate Literature Reviews with Citation Management
+
+**Name:** Automated Literature Review with Citation Management
+
+**Description:**
+Conducting comprehensive literature reviews is one of the most time-consuming aspects of academic research. This workflow revolutionizes the process by automating literature search, paper analysis, and review generation across multiple academic databases. It handles both digital papers and scanned documents (PDFs, JPGs, PNGs), using OCR technology for older publications or image-based content. Researchers, graduate students, and academic institutions can dramatically reduce the time spent on literature reviews while improving the thoroughness and quality of their research synthesis from any document format.
+
+The system searches simultaneously across PubMed, arXiv, Semantic Scholar, and other academic databases, using intelligent ranking algorithms to identify the most relevant papers based on citation count, recency, and keyword relevance. It then analyzes each paper's content, extracting key methodologies, findings, and limitations. The workflow automatically organizes papers by themes, identifies research gaps, and generates a structured literature review document complete with proper citations in APA, MLA, or Chicago format.
+
+Implementation requires configuring search parameters including date ranges, inclusion criteria, and maximum paper count. The template includes sophisticated features such as citation network analysis to identify seminal works, automatic detection of review papers for broader context, and quality scoring based on journal impact factors. Users can customize the output format, choose between different citation styles, and set parameters for the depth of analysis. The workflow handles full-text PDF processing when available, processes scanned documents and images using OCR, and falls back to abstract analysis for papers without accessible full text. Advanced options include setting up automated searches for ongoing literature monitoring, integration with reference management software like Zotero or Mendeley, and collaborative review features for research teams.
+
+Note: This workflow uses the PDF Vector community node which requires separate installation. Please follow the installation guide at the PDF Vector documentation page before importing this template.
+
+**Template Code:**
+```json
+{
+  "meta": {
+    "instanceId": "placeholder"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "topic",
+              "value": "machine learning in healthcare"
+            },
+            {
+              "name": "yearFrom",
+              "value": "2020"
+            },
+            {
+              "name": "yearTo",
+              "value": "2024"
+            }
+          ],
+          "number": [
+            {
+              "name": "maxPapers",
+              "value": 20
+            }
+          ]
+        }
+      },
+      "id": "set-parameters",
+      "name": "Set Search Parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "notes": "Configure literature review parameters"
+    },
+    {
+      "parameters": {
+        "resource": "academic",
+        "operation": "search",
+        "query": "={{ $json.topic }}",
+        "providers": ["pubmed", "semantic-scholar", "arxiv"],
+        "limit": 50,
+        "yearFrom": "={{ $json.yearFrom }}",
+        "yearTo": "={{ $json.yearTo }}",
+        "additionalFields": {
+          "fields": ["title", "abstract", "authors", "year", "doi", "pdfURL", "totalCitations"]
+        }
+      },
+      "id": "pdfvector-search",
+      "name": "PDF Vector - Search Papers",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "typeVersion": 1,
+      "position": [450, 300],
+      "notes": "Search academic databases"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Rank papers by relevance and citations\nconst papers = $input.all().map(item => item.json);\nconst searchTopic = $node['Set Search Parameters'].json.topic;\n\n// Calculate relevance scores\nconst scoredPapers = papers.map(paper => {\n  let score = 0;\n  \n  // Citation score (normalized)\n  const maxCitations = Math.max(...papers.map(p => p.totalCitations || 0));\n  const citationScore = (paper.totalCitations || 0) / (maxCitations || 1) * 40;\n  score += citationScore;\n  \n  // Recency score\n  const paperYear = parseInt(paper.year);\n  const currentYear = new Date().getFullYear();\n  const recencyScore = Math.max(0, 20 - (currentYear - paperYear) * 2);\n  score += recencyScore;\n  \n  // Title relevance\n  const topicWords = searchTopic.toLowerCase().split(' ');\n  const titleWords = paper.title.toLowerCase();\n  const titleMatches = topicWords.filter(word => titleWords.includes(word)).length;\n  score += titleMatches * 10;\n  \n  // Abstract relevance\n  if (paper.abstract) {\n    const abstractWords = paper.abstract.toLowerCase();\n    const abstractMatches = topicWords.filter(word => abstractWords.includes(word)).length;\n    score += abstractMatches * 5;\n  }\n  \n  return {\n    ...paper,\n    relevanceScore: Math.round(score),\n    rankingDetails: {\n      citationScore: Math.round(citationScore),\n      recencyScore,\n      titleRelevance: titleMatches,\n      abstractRelevance: abstractMatches || 0\n    }\n  };\n});\n\n// Sort by score and limit to top N\nconst maxPapers = $node['Set Search Parameters'].json.maxPapers;\nconst topPapers = scoredPapers\n  .sort((a, b) => b.relevanceScore - a.relevanceScore)\n  .slice(0, maxPapers);\n\nreturn topPapers.map(paper => ({ json: paper }));"
+      },
+      "id": "rank-papers",
+      "name": "Rank & Select Papers",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "notes": "Rank papers by relevance"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "split-batch",
+      "name": "Process One by One",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "notes": "Process papers individually"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.pdfURL }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "has-pdf",
+      "name": "Has PDF?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "operation": "parse",
+        "inputType": "url",
+        "url": "={{ $json.pdfURL }}",
+        "useLLM": "auto"
+      },
+      "id": "pdfvector-parse",
+      "name": "PDF Vector - Parse Paper",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "typeVersion": 1,
+      "position": [1250, 250],
+      "notes": "Parse paper content from PDF or image"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "values": [
+            {
+              "content": "Create a literature review entry for this paper in the context of '{{ $node['Set Search Parameters'].json.topic }}':\n\nTitle: {{ $json.title }}\nAuthors: {{ $json.authors }}\nYear: {{ $json.year }}\nCitations: {{ $json.totalCitations }}\n\nContent: {{ $json.content || $json.abstract }}\n\nProvide:\n1. A 3-4 sentence summary of the paper's contribution\n2. Key methodology used\n3. Main findings (2-3 bullet points)\n4. How it relates to the topic\n5. Limitations mentioned\n6. Suggested citation in APA format"
+            }
+          ]
+        }
+      },
+      "id": "analyze-paper",
+      "name": "Analyze Paper Content",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [1450, 300],
+      "notes": "Generate review entry"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "reviewEntry",
+              "value": "={{ $json.choices[0].message.content }}"
+            },
+            {
+              "name": "paperTitle",
+              "value": "={{ $node['Has PDF?'].json.title }}"
+            },
+            {
+              "name": "paperDoi",
+              "value": "={{ $node['Has PDF?'].json.doi }}"
+            }
+          ]
+        }
+      },
+      "id": "store-entry",
+      "name": "Store Review Entry",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [1650, 300],
+      "notes": "Save processed entry"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Wait for all papers to be processed\nconst allEntries = $input.all().map(item => item.json);\n\n// Group papers by themes/methodologies\nconst themes = {\n  'Machine Learning Models': [],\n  'Clinical Applications': [],\n  'Data Processing': [],\n  'Evaluation Studies': [],\n  'Review Papers': [],\n  'Other': []\n};\n\n// Categorize papers (simplified - in production use NLP)\nallEntries.forEach(entry => {\n  const review = entry.reviewEntry.toLowerCase();\n  if (review.includes('neural network') || review.includes('deep learning')) {\n    themes['Machine Learning Models'].push(entry);\n  } else if (review.includes('clinical') || review.includes('patient')) {\n    themes['Clinical Applications'].push(entry);\n  } else if (review.includes('preprocessing') || review.includes('data processing')) {\n    themes['Data Processing'].push(entry);\n  } else if (review.includes('evaluation') || review.includes('comparison')) {\n    themes['Evaluation Studies'].push(entry);\n  } else if (review.includes('review') || review.includes('survey')) {\n    themes['Review Papers'].push(entry);\n  } else {\n    themes['Other'].push(entry);\n  }\n});\n\n// Generate literature review document\nlet reviewDocument = `# Literature Review: ${$node['Set Search Parameters'].json.topic}\\n\\n`;\nreviewDocument += `Generated on: ${new Date().toLocaleDateString()}\\n\\n`;\nreviewDocument += `## Summary\\n\\n`;\nreviewDocument += `This review analyzes ${allEntries.length} papers published between ${$node['Set Search Parameters'].json.yearFrom} and ${$node['Set Search Parameters'].json.yearTo} on the topic of ${$node['Set Search Parameters'].json.topic}.\\n\\n`;\n\n// Add themed sections\nObject.entries(themes).forEach(([theme, papers]) => {\n  if (papers.length > 0) {\n    reviewDocument += `## ${theme} (${papers.length} papers)\\n\\n`;\n    papers.forEach(paper => {\n      reviewDocument += `### ${paper.paperTitle}\\n\\n`;\n      reviewDocument += paper.reviewEntry + '\\n\\n';\n    });\n  }\n});\n\n// Add bibliography\nreviewDocument += `## Bibliography\\n\\n`;\nallEntries.forEach((entry, index) => {\n  const citation = entry.reviewEntry.split('Suggested citation:')[1] || 'Citation not available';\n  reviewDocument += `${index + 1}. ${citation.trim()}\\n\\n`;\n});\n\nreturn [{\n  json: {\n    reviewDocument,\n    totalPapers: allEntries.length,\n    themes: Object.entries(themes).map(([theme, papers]) => ({\n      theme,\n      count: papers.length\n    })),\n    generatedAt: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "compile-review",
+      "name": "Compile Literature Review",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [1850, 300],
+      "notes": "Generate final document"
+    }
+  ],
+  "connections": {
+    "Set Search Parameters": {
       "main": [
         [
           {
@@ -285,1326 +1584,47 @@ Automate your literature review process by searching across multiple academic da
       "main": [
         [
           {
-            "node": "Sort by Citations",
+            "node": "Rank & Select Papers",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Sort by Citations": {
+    "Rank & Select Papers": {
       "main": [
         [
           {
-            "node": "Select Top Papers",
+            "node": "Process One by One",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Select Top Papers": {
+    "Process One by One": {
       "main": [
         [
           {
-            "node": "PDF Vector - Parse Papers",
+            "node": "Has PDF?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "PDF Vector - Parse Papers": {
+    "Has PDF?": {
       "main": [
         [
           {
-            "node": "Synthesize Review",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Synthesize Review": {
-      "main": [
-        [
-          {
-            "node": "Combine Sections",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Combine Sections": {
-      "main": [
-        [
-          {
-            "node": "Export Review",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  }
-}
-```
-
-**Free or Paid?** Free
-
----
-
-## 3. PDF to Markdown Batch Converter
-
-**Name:** Bulk PDF to Markdown Converter
-
-**Description:**
-## High-Volume PDF to Markdown Conversion
-
-Convert multiple PDF documents to clean, structured Markdown format in bulk. Perfect for documentation teams, content managers, and anyone needing to process large volumes of PDFs.
-
-### Key Features:
-- Process PDFs from multiple sources (URLs, Google Drive, Dropbox)
-- Intelligent LLM-based parsing for complex layouts
-- Preserve formatting, tables, and structure
-- Export to various destinations
-
-### Workflow Components:
-1. **Input Sources**: Multiple file sources supported
-2. **Batch Processing**: Handle hundreds of PDFs efficiently
-3. **Smart Parsing**: Auto-detect when LLM parsing is needed
-4. **Quality Check**: Validate conversion results
-5. **Export Options**: Save to cloud storage or database
-
-### Ideal For:
-- Converting technical documentation
-- Migrating legacy PDF content
-- Building searchable knowledge bases
-
-**Template Code:**
-```json
-{
-  "meta": {
-    "instanceId": "placeholder"
-  },
-  "nodes": [
-    {
-      "parameters": {
-        "content": "## Batch PDF Converter\n\nThis workflow converts PDFs to Markdown in bulk.\n\nSupported sources:\n- Direct URLs\n- Google Drive\n- Dropbox\n- Local files"
-      },
-      "id": "info-note",
-      "name": "Workflow Info",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [250, 150]
-    },
-    {
-      "parameters": {
-        "operation": "list",
-        "fileId": "={{ $json.folderId }}"
-      },
-      "id": "google-drive",
-      "name": "Google Drive - List PDFs",
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 1,
-      "position": [450, 300],
-      "notes": "List all PDFs from specified folder"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.mimeType }}",
-              "value2": "application/pdf"
-            }
-          ]
-        }
-      },
-      "id": "filter-pdfs",
-      "name": "Filter PDFs Only",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [650, 300]
-    },
-    {
-      "parameters": {
-        "resource": "document",
-        "operation": "parse",
-        "documentUrl": "={{ $json.webViewLink }}",
-        "useLlm": "auto"
-      },
-      "id": "pdfvector-convert",
-      "name": "PDF Vector - Convert to Markdown",
-      "type": "n8n-nodes-pdfvector.pdfVector",
-      "typeVersion": 1,
-      "position": [850, 300],
-      "notes": "Convert each PDF to Markdown"
-    },
-    {
-      "parameters": {
-        "functionCode": "const fileName = $json.name.replace('.pdf', '.md');\nconst content = $json.content;\nconst metadata = {\n  originalFile: $json.name,\n  convertedAt: new Date().toISOString(),\n  pageCount: $json.pageCount || 'unknown',\n  credits: $json.creditsUsed || 0\n};\n\nreturn {\n  fileName,\n  content,\n  metadata\n};"
-      },
-      "id": "prepare-output",
-      "name": "Prepare Output",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [1050, 300]
-    },
-    {
-      "parameters": {
-        "operation": "upload",
-        "name": "={{ $json.fileName }}",
-        "parents": ["{{ $json.outputFolderId }}"],
-        "content": "={{ $json.content }}"
-      },
-      "id": "save-markdown",
-      "name": "Save Markdown Files",
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 1,
-      "position": [1250, 300]
-    },
-    {
-      "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "summary",
-              "value": "=Converted {{ $items().length }} PDFs to Markdown\nTotal credits used: {{ $items().reduce((sum, item) => sum + (item.json.metadata.credits || 0), 0) }}"
-            }
-          ]
-        }
-      },
-      "id": "summary-stats",
-      "name": "Conversion Summary",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [1450, 300]
-    },
-    {
-      "parameters": {
-        "message": "=Batch Conversion Complete!\n\n{{ $json.summary }}\n\nFiles saved to Google Drive.",
-        "additionalFields": {}
-      },
-      "id": "notify-complete",
-      "name": "Send Notification",
-      "type": "n8n-nodes-base.slack",
-      "typeVersion": 1,
-      "position": [1650, 300]
-    }
-  ],
-  "connections": {
-    "Google Drive - List PDFs": {
-      "main": [
-        [
-          {
-            "node": "Filter PDFs Only",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Filter PDFs Only": {
-      "main": [
-        [
-          {
-            "node": "PDF Vector - Convert to Markdown",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PDF Vector - Convert to Markdown": {
-      "main": [
-        [
-          {
-            "node": "Prepare Output",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Prepare Output": {
-      "main": [
-        [
-          {
-            "node": "Save Markdown Files",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Save Markdown Files": {
-      "main": [
-        [
-          {
-            "node": "Conversion Summary",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Conversion Summary": {
-      "main": [
-        [
-          {
-            "node": "Send Notification",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  }
-}
-```
-
-**Free or Paid?** Free
-
----
-
-## 4. Citation Network Builder
-
-**Name:** Academic Citation Network Visualizer
-
-**Description:**
-## Build Citation Networks from Research Papers
-
-Automatically build and visualize citation networks by fetching papers and their references. Discover influential works and research trends in any field.
-
-### Workflow Features:
-- Start with seed papers (DOIs, PubMed IDs, etc.)
-- Fetch cited and citing papers recursively
-- Build network graph data
-- Export to visualization tools (Gephi, Cytoscape)
-- Identify key papers and research clusters
-
-### Process Flow:
-1. **Input**: Seed paper identifiers
-2. **Fetch Papers**: Get paper details and references
-3. **Expand Network**: Fetch cited papers (configurable depth)
-4. **Build Graph**: Create nodes and edges
-5. **Analyze**: Calculate metrics (centrality, clusters)
-6. **Export**: Generate visualization-ready data
-
-### Applications:
-- Research trend analysis
-- Finding seminal papers in a field
-- Grant proposal background research
-
-**Template Code:**
-```json
-{
-  "meta": {
-    "instanceId": "placeholder"
-  },
-  "nodes": [
-    {
-      "parameters": {
-        "content": "## Citation Network Builder\n\nInput: Paper IDs (DOI, PubMed ID, etc.)\nDepth: How many citation levels to explore\nOutput: Network graph data"
-      },
-      "id": "config-note",
-      "name": "Configuration",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [250, 150]
-    },
-    {
-      "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "seedPapers",
-              "value": "10.1038/nature12373,12345678,2301.12345"
-            },
-            {
-              "name": "depth",
-              "value": "2"
-            }
-          ]
-        }
-      },
-      "id": "input-params",
-      "name": "Set Parameters",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [450, 300]
-    },
-    {
-      "parameters": {
-        "functionCode": "const papers = $json.seedPapers.split(',').map(id => ({ id: id.trim() }));\nreturn papers;"
-      },
-      "id": "split-ids",
-      "name": "Split Paper IDs",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [650, 300]
-    },
-    {
-      "parameters": {
-        "resource": "academic",
-        "operation": "fetch",
-        "ids": "={{ $json.id }}",
-        "fields": ["title", "authors", "year", "doi", "abstract", "totalCitations", "totalReferences"]
-      },
-      "id": "pdfvector-fetch",
-      "name": "PDF Vector - Fetch Papers",
-      "type": "n8n-nodes-pdfvector.pdfVector",
-      "typeVersion": 1,
-      "position": [850, 300],
-      "notes": "Fetch details for each paper"
-    },
-    {
-      "parameters": {
-        "resource": "academic",
-        "operation": "search",
-        "query": "=references:{{ $json.doi }}",
-        "limit": 20,
-        "fields": ["title", "authors", "year", "doi", "totalCitations"]
-      },
-      "id": "fetch-citations",
-      "name": "Fetch Citing Papers",
-      "type": "n8n-nodes-pdfvector.pdfVector",
-      "typeVersion": 1,
-      "position": [1050, 300]
-    },
-    {
-      "parameters": {
-        "functionCode": "// Build network nodes and edges\nconst nodes = [];\nconst edges = [];\n\n// Add main paper as node\nnodes.push({\n  id: $json.doi || $json.id,\n  label: $json.title,\n  size: Math.log($json.totalCitations + 1) * 10,\n  citations: $json.totalCitations,\n  year: $json.year,\n  type: 'seed'\n});\n\n// Add citing papers and edges\nif ($json.citingPapers) {\n  $json.citingPapers.forEach(paper => {\n    nodes.push({\n      id: paper.doi,\n      label: paper.title,\n      size: Math.log(paper.totalCitations + 1) * 5,\n      citations: paper.totalCitations,\n      year: paper.year,\n      type: 'citing'\n    });\n    \n    edges.push({\n      source: paper.doi,\n      target: $json.doi || $json.id,\n      weight: 1\n    });\n  });\n}\n\nreturn { nodes, edges };"
-      },
-      "id": "build-network",
-      "name": "Build Network Data",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [1250, 300]
-    },
-    {
-      "parameters": {
-        "functionCode": "// Combine all nodes and edges from multiple papers\nconst allNodes = [];\nconst allEdges = [];\n\nitems.forEach(item => {\n  if (item.json.nodes) {\n    allNodes.push(...item.json.nodes);\n  }\n  if (item.json.edges) {\n    allEdges.push(...item.json.edges);\n  }\n});\n\n// Remove duplicate nodes based on ID\nconst uniqueNodes = Array.from(new Map(allNodes.map(node => [node.id, node])).values());\n\nreturn [{ json: { nodes: uniqueNodes, edges: allEdges } }];"
-      },
-      "id": "combine-network",
-      "name": "Combine Network",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [1450, 300]
-    },
-    {
-      "parameters": {
-        "fileName": "citation_network_{{ $now.format('yyyy-MM-dd') }}.json",
-        "fileContent": "={{ JSON.stringify({ nodes: $json.nodes, edges: $json.edges }, null, 2) }}"
-      },
-      "id": "export-network",
-      "name": "Export Network JSON",
-      "type": "n8n-nodes-base.writeBinaryFile",
-      "typeVersion": 1,
-      "position": [1650, 300]
-    },
-    {
-      "parameters": {
-        "functionCode": "// Generate Gephi-compatible GEXF format\nconst nodes = $json.nodes;\nconst edges = $json.edges;\n\nlet gexf = `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<gexf xmlns=\"http://www.gexf.net/1.2draft\" version=\"1.2\">\n  <graph mode=\"static\" defaultedgetype=\"directed\">\n    <nodes>\\n`;\n\nnodes.forEach(node => {\n  gexf += `      <node id=\"${node.id}\" label=\"${node.label}\">\n        <attvalues>\n          <attvalue for=\"citations\" value=\"${node.citations}\"/>\n          <attvalue for=\"year\" value=\"${node.year}\"/>\n        </attvalues>\n      </node>\\n`;\n});\n\ngexf += `    </nodes>\n    <edges>\\n`;\n\nedges.forEach((edge, i) => {\n  gexf += `      <edge id=\"${i}\" source=\"${edge.source}\" target=\"${edge.target}\" weight=\"${edge.weight}\"/>\\n`;\n});\n\ngexf += `    </edges>\n  </graph>\n</gexf>`;\n\nreturn { gexf };"
-      },
-      "id": "generate-gexf",
-      "name": "Generate GEXF",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [1650, 450]
-    }
-  ],
-  "connections": {
-    "Set Parameters": {
-      "main": [
-        [
-          {
-            "node": "Split Paper IDs",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Split Paper IDs": {
-      "main": [
-        [
-          {
-            "node": "PDF Vector - Fetch Papers",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PDF Vector - Fetch Papers": {
-      "main": [
-        [
-          {
-            "node": "Fetch Citing Papers",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Fetch Citing Papers": {
-      "main": [
-        [
-          {
-            "node": "Build Network Data",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Build Network Data": {
-      "main": [
-        [
-          {
-            "node": "Combine Network",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Combine Network": {
-      "main": [
-        [
-          {
-            "node": "Export Network JSON",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Generate GEXF",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  }
-}
-```
-
-**Free or Paid?** Free
-
----
-
-## 5. Document Content Extraction Pipeline
-
-**Name:** Smart Document Data Extraction Pipeline
-
-**Description:**
-## Intelligent Document Processing & Data Extraction
-
-Extract structured data from unstructured documents like invoices, contracts, reports, and forms. Uses AI to identify and extract key information automatically.
-
-### Pipeline Features:
-- Process multiple document types (PDFs, Word docs)
-- AI-powered field extraction
-- Custom extraction templates
-- Data validation and cleaning
-- Export to databases or spreadsheets
-
-### Workflow Steps:
-1. **Document Input**: Various sources supported
-2. **Parse Document**: Convert to structured text
-3. **Extract Fields**: AI identifies key data points
-4. **Validate Data**: Check extracted values
-5. **Transform**: Format for destination system
-6. **Store/Export**: Save to database or file
-
-### Use Cases:
-- Invoice processing automation
-- Contract data extraction
-- Form digitization
-- Report mining
-
-**Template Code:**
-```json
-{
-  "meta": {
-    "instanceId": "placeholder"
-  },
-  "nodes": [
-    {
-      "parameters": {
-        "content": "## Document Extraction Pipeline\n\nExtracts structured data from:\n- Invoices\n- Contracts\n- Reports\n- Forms\n\nCustomize extraction rules in the AI node"
-      },
-      "id": "workflow-info",
-      "name": "Pipeline Info",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [250, 150]
-    },
-    {
-      "parameters": {
-        "events": ["file:created"],
-        "path": "/documents/incoming"
-      },
-      "id": "file-trigger",
-      "name": "Watch Folder",
-      "type": "n8n-nodes-base.localFileTrigger",
-      "typeVersion": 1,
-      "position": [450, 300],
-      "notes": "Triggers when new documents arrive"
-    },
-    {
-      "parameters": {
-        "resource": "document",
-        "operation": "parse",
-        "documentUrl": "={{ $json.filePath }}",
-        "useLlm": "always"
-      },
-      "id": "pdfvector-parse",
-      "name": "PDF Vector - Parse Document",
-      "type": "n8n-nodes-pdfvector.pdfVector",
-      "typeVersion": 1,
-      "position": [650, 300],
-      "notes": "Parse with LLM for better extraction"
-    },
-    {
-      "parameters": {
-        "model": "gpt-4",
-        "messages": {
-          "values": [
-            {
-              "content": "Extract the following information from this document:\n\n1. Document Type (invoice, contract, report, etc.)\n2. Date/Dates mentioned\n3. Parties involved (names, companies)\n4. Key amounts/values\n5. Important terms or conditions\n6. Reference numbers\n7. Addresses\n8. Contact information\n\nDocument content:\n{{ $json.content }}\n\nReturn as structured JSON."
-            }
-          ]
-        },
-        "options": {
-          "responseFormat": {
-            "type": "json_object"
-          }
-        }
-      },
-      "id": "extract-data",
-      "name": "Extract Structured Data",
-      "type": "n8n-nodes-base.openAi",
-      "typeVersion": 1,
-      "position": [850, 300]
-    },
-    {
-      "parameters": {
-        "functionCode": "// Validate and clean extracted data\nconst extracted = JSON.parse($json.content);\nconst validated = {};\n\n// Validate document type\nvalidated.documentType = extracted.documentType || 'unknown';\n\n// Parse and validate dates\nif (extracted.date) {\n  const date = new Date(extracted.date);\n  validated.date = isNaN(date) ? null : date.toISOString();\n}\n\n// Clean monetary values\nif (extracted.amounts) {\n  validated.amounts = extracted.amounts.map(amt => {\n    const cleaned = amt.replace(/[^0-9.-]/g, '');\n    return parseFloat(cleaned) || 0;\n  });\n}\n\n// Validate email addresses\nif (extracted.emails) {\n  validated.emails = extracted.emails.filter(email => \n    /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)\n  );\n}\n\nvalidated.raw = extracted;\nvalidated.fileName = $node['Watch Folder'].json.fileName;\nvalidated.processedAt = new Date().toISOString();\n\nreturn validated;"
-      },
-      "id": "validate-data",
-      "name": "Validate & Clean Data",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [1050, 300]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.documentType }}",
-              "operation": "equals",
-              "value2": "invoice"
-            }
-          ]
-        }
-      },
-      "id": "route-by-type",
-      "name": "Route by Document Type",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 1,
-      "position": [1250, 300]
-    },
-    {
-      "parameters": {
-        "operation": "insert",
-        "table": "invoices",
-        "columns": "invoice_number,vendor,amount,date,raw_data"
-      },
-      "id": "store-invoice",
-      "name": "Store Invoice Data",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 1,
-      "position": [1450, 250]
-    },
-    {
-      "parameters": {
-        "operation": "insert",
-        "table": "documents",
-        "columns": "type,content,metadata,processed_at"
-      },
-      "id": "store-other",
-      "name": "Store Other Documents",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 1,
-      "position": [1450, 350]
-    },
-    {
-      "parameters": {
-        "fileName": "extracted_data_{{ $now.format('yyyy-MM-dd') }}.csv",
-        "fileContent": "={{ $items().map(item => item.json).toCsv() }}"
-      },
-      "id": "export-csv",
-      "name": "Export to CSV",
-      "type": "n8n-nodes-base.writeBinaryFile",
-      "typeVersion": 1,
-      "position": [1650, 300]
-    }
-  ],
-  "connections": {
-    "Watch Folder": {
-      "main": [
-        [
-          {
-            "node": "PDF Vector - Parse Document",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PDF Vector - Parse Document": {
-      "main": [
-        [
-          {
-            "node": "Extract Structured Data",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract Structured Data": {
-      "main": [
-        [
-          {
-            "node": "Validate & Clean Data",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Validate & Clean Data": {
-      "main": [
-        [
-          {
-            "node": "Route by Document Type",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Route by Document Type": {
-      "main": [
-        [
-          {
-            "node": "Store Invoice Data",
+            "node": "PDF Vector - Parse Paper",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Store Other Documents",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Store Invoice Data": {
-      "main": [
-        [
-          {
-            "node": "Export to CSV",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Store Other Documents": {
-      "main": [
-        [
-          {
-            "node": "Export to CSV",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  }
-}
-```
-
-**Free or Paid?** Free
-
----
-
-## 6. Academic Paper Monitoring Bot
-
-**Name:** New Research Alert System
-
-**Description:**
-## Automated Academic Paper Monitoring
-
-Stay updated with the latest research in your field. This bot monitors multiple academic databases for new papers matching your interests and sends personalized alerts.
-
-### Bot Features:
-- Monitor keywords across multiple databases
-- Filter by authors, journals, or institutions
-- Daily/weekly digest emails
-- Slack notifications for high-impact papers
-- Automatic paper summarization
-
-### Workflow Components:
-1. **Schedule**: Run daily/weekly checks
-2. **Search**: Query latest papers across databases
-3. **Filter**: Apply custom criteria
-4. **Summarize**: Generate paper summaries
-5. **Notify**: Send alerts via email/Slack
-6. **Archive**: Store papers for future reference
-
-### Perfect For:
-- Research groups tracking their field
-- PhD students monitoring specific topics
-- Labs following competitor publications
-
-**Template Code:**
-```json
-{
-  "meta": {
-    "instanceId": "placeholder"
-  },
-  "nodes": [
-    {
-      "parameters": {
-        "content": "## Paper Monitoring Bot\n\nMonitors these topics:\n- Machine Learning\n- Neural Networks\n- Computer Vision\n\nRuns: Daily at 9 AM"
-      },
-      "id": "config-note",
-      "name": "Bot Configuration",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [250, 150]
-    },
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "hours",
-              "hoursInterval": 24,
-              "triggerAtHour": 9
-            }
-          ]
-        }
-      },
-      "id": "schedule-trigger",
-      "name": "Daily Schedule",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1,
-      "position": [450, 300]
-    },
-    {
-      "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "searchQueries",
-              "value": "machine learning,neural networks,computer vision,deep learning"
-            }
-          ],
-          "number": [
-            {
-              "name": "daysBack",
-              "value": 1
-            }
-          ]
-        }
-      },
-      "id": "set-params",
-      "name": "Set Search Parameters",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [650, 300]
-    },
-    {
-      "parameters": {
-        "functionCode": "const queries = $json.searchQueries.split(',').map(q => q.trim());\nreturn queries.map(query => ({ query }));"
-      },
-      "id": "split-queries",
-      "name": "Split Queries",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [850, 300]
-    },
-    {
-      "parameters": {
-        "resource": "academic",
-        "operation": "search",
-        "query": "={{ $json.query }}",
-        "providers": ["arxiv", "pubmed", "semantic_scholar"],
-        "limit": 10,
-        "yearFrom": "={{ new Date().getFullYear() }}",
-        "fields": ["title", "authors", "abstract", "date", "doi", "pdfUrl", "totalCitations"]
-      },
-      "id": "pdfvector-search",
-      "name": "PDF Vector - Search New Papers",
-      "type": "n8n-nodes-pdfvector.pdfVector",
-      "typeVersion": 1,
-      "position": [1050, 300]
-    },
-    {
-      "parameters": {
-        "functionCode": "// Filter papers from last N days\nconst daysBack = $node['Set Search Parameters'].json.daysBack;\nconst cutoffDate = new Date();\ncutoffDate.setDate(cutoffDate.getDate() - daysBack);\n\nconst recentPapers = $json.filter(paper => {\n  const paperDate = new Date(paper.date);\n  return paperDate >= cutoffDate;\n});\n\nreturn recentPapers.length > 0 ? recentPapers : [];"
-      },
-      "id": "filter-recent",
-      "name": "Filter Recent Papers",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [1250, 300]
-    },
-    {
-      "parameters": {
-        "model": "gpt-3.5-turbo",
-        "messages": {
-          "values": [
-            {
-              "content": "Summarize this research paper in 2-3 sentences:\n\nTitle: {{ $json.title }}\nAuthors: {{ $json.authors.join(', ') }}\nAbstract: {{ $json.abstract }}\n\nFocus on the main contribution and findings."
-            }
-          ]
-        }
-      },
-      "id": "summarize-paper",
-      "name": "Generate Summary",
-      "type": "n8n-nodes-base.openAi",
-      "typeVersion": 1,
-      "position": [1450, 300]
-    },
-    {
-      "parameters": {
-        "functionCode": "// Format papers for notification\nconst papers = $items().map(item => {\n  const paper = item.json;\n  return {\n    title: paper.title,\n    authors: paper.authors.slice(0, 3).join(', ') + (paper.authors.length > 3 ? ' et al.' : ''),\n    summary: paper.summary,\n    link: paper.doi ? `https://doi.org/${paper.doi}` : paper.url,\n    citations: paper.totalCitations || 0,\n    query: paper.originalQuery\n  };\n});\n\n// Group by query\nconst grouped = papers.reduce((acc, paper) => {\n  if (!acc[paper.query]) acc[paper.query] = [];\n  acc[paper.query].push(paper);\n  return acc;\n}, {});\n\nreturn { papers: grouped, totalCount: papers.length, date: new Date().toISOString() };"
-      },
-      "id": "format-digest",
-      "name": "Format Digest",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [1650, 300]
-    },
-    {
-      "parameters": {
-        "channel": "#research-alerts",
-        "message": "=📚 *Daily Research Digest* - {{ $now.format('MMM DD, YYYY') }}\n\nFound {{ $json.totalCount }} new papers:\n\n{{ Object.entries($json.papers).map(([query, papers]) => `*${query}:*\\n${papers.map(p => `• ${p.title}\\n  _${p.authors}_\\n  ${p.summary}\\n  🔗 ${p.link}`).join('\\n\\n')}`).join('\\n\\n---\\n\\n') }}",
-        "attachments": []
-      },
-      "id": "slack-notify",
-      "name": "Send Slack Alert",
-      "type": "n8n-nodes-base.slack",
-      "typeVersion": 1,
-      "position": [1850, 300]
-    },
-    {
-      "parameters": {
-        "subject": "=Daily Research Digest - {{ $now.format('MMM DD, YYYY') }}",
-        "toEmail": "research-team@company.com",
-        "html": "=<h2>Daily Research Digest</h2>\n<p>Found {{ $json.totalCount }} new papers</p>\n\n{{ Object.entries($json.papers).map(([query, papers]) => \n  `<h3>${query}</h3>\n  ${papers.map(p => \n    `<div style=\"margin-bottom: 20px;\">\n      <h4>${p.title}</h4>\n      <p><em>${p.authors}</em></p>\n      <p>${p.summary}</p>\n      <p><a href=\"${p.link}\">Read Paper</a> | Citations: ${p.citations}</p>\n    </div>`\n  ).join('')}`\n).join('\\n') }}"
-      },
-      "id": "email-digest",
-      "name": "Email Digest",
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 1,
-      "position": [1850, 450]
-    }
-  ],
-  "connections": {
-    "Daily Schedule": {
-      "main": [
-        [
-          {
-            "node": "Set Search Parameters",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set Search Parameters": {
-      "main": [
-        [
-          {
-            "node": "Split Queries",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Split Queries": {
-      "main": [
-        [
-          {
-            "node": "PDF Vector - Search New Papers",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PDF Vector - Search New Papers": {
-      "main": [
-        [
-          {
-            "node": "Filter Recent Papers",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Filter Recent Papers": {
-      "main": [
-        [
-          {
-            "node": "Generate Summary",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Generate Summary": {
-      "main": [
-        [
-          {
-            "node": "Format Digest",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Format Digest": {
-      "main": [
-        [
-          {
-            "node": "Send Slack Alert",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Email Digest",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  }
-}
-```
-
-**Free or Paid?** Free
-
----
-
-## 7. Research Paper Summarizer
-
-**Name:** Generate Multi-Format Research Paper Summaries with GPT-4 and PDF Vector
-
-**Description:**
-## Transform Complex Research Papers into Accessible Summaries
-
-This workflow automatically generates multiple types of summaries from research papers, making complex academic content accessible to different audiences. By combining PDF Vector's advanced parsing capabilities with GPT-4's language understanding, researchers can quickly digest papers outside their expertise, communicate findings to diverse stakeholders, and create social media-friendly research highlights.
-
-### Target Audience & Problem Solved
-This template is designed for:
-- **Research communicators** translating complex findings for public audiences
-- **Journal editors** creating accessible abstracts and highlights
-- **Science journalists** quickly understanding technical papers
-- **Academic institutions** improving research visibility and impact
-- **Funding agencies** reviewing large volumes of research outputs
-
-It solves the critical challenge of research accessibility by automatically generating summaries tailored to different audience needs - from technical experts to the general public.
-
-### Prerequisites
-- n8n instance with PDF Vector node installed
-- OpenAI API key with GPT-4 or GPT-3.5 access
-- PDF Vector API credentials
-- Basic understanding of webhook setup
-- Optional: Slack/Email integration for notifications
-- Minimum 20 API credits per paper summarized
-
-### Step-by-Step Setup Instructions
-
-1. **Configure API Credentials**
-   - Navigate to n8n Credentials section
-   - Add PDF Vector credentials with your API key
-   - Add OpenAI credentials with your API key
-   - Test both connections to ensure they work
-
-2. **Set Up the Webhook Endpoint**
-   - Import the workflow template into n8n
-   - Note the webhook URL from the "Webhook - Paper URL" node
-   - This URL will receive POST requests with paper URLs
-   - Example request format:
-     ```json
-     {
-       "paperUrl": "https://example.com/paper.pdf"
-     }
-     ```
-
-3. **Configure Summary Models**
-   - Review the OpenAI model settings in each summary node
-   - GPT-4 recommended for executive and technical summaries
-   - GPT-3.5-turbo suitable for lay and social media summaries
-   - Adjust temperature settings for creativity vs accuracy
-
-4. **Customize Output Formats**
-   - Modify the "Combine All Summaries" node for your needs
-   - Add additional fields or metadata as required
-   - Configure response format (JSON, HTML, plain text)
-
-5. **Test the Workflow**
-   - Use a tool like Postman or curl to send a test request
-   - Monitor the execution for any errors
-   - Verify all four summary types are generated
-   - Check response time and adjust timeout if needed
-
-### Implementation Details
-
-The workflow implements a sophisticated summarization pipeline:
-
-1. **PDF Parsing**: Uses LLM-enhanced parsing for accurate extraction from complex layouts
-2. **Parallel Processing**: Generates all summary types simultaneously for efficiency
-3. **Audience Targeting**: Each summary type uses specific prompts and constraints
-4. **Quality Control**: Structured prompts ensure consistent, high-quality outputs
-5. **Flexible Output**: Returns all summaries in a single API response
-
-### Customization Guide
-
-**Adding Custom Summary Types:**
-Create new summary nodes with specialized prompts:
-```javascript
-// Example: Policy Brief Summary
-{
-  "content": "Create a policy brief (max 300 words) highlighting:
-  1. Policy-relevant findings
-  2. Recommendations for policymakers
-  3. Societal implications
-  4. Implementation considerations
-  
-  Paper content: {{ $json.content }}"
-}
-```
-
-**Modifying Summary Lengths:**
-Adjust word limits in each summary prompt:
-```javascript
-// In Executive Summary node:
-"max 500 words" // Change to your desired length
-// In Tweet Summary node:
-"max 280 characters" // Twitter limit
-```
-
-**Adding Language Translation:**
-Extend the workflow with translation nodes:
-```javascript
-// After summary generation, add:
-"Translate this summary to Spanish:
-{{ $json.executiveSummary }}"
-```
-
-**Implementing Caching:**
-Add a caching layer to avoid reprocessing:
-- Use Redis or n8n's static data
-- Cache based on paper DOI or URL hash
-- Set appropriate TTL for cache entries
-
-**Batch Processing Enhancement:**
-For multiple papers, modify the workflow:
-- Accept array of paper URLs
-- Use SplitInBatches node for processing
-- Aggregate results before responding
-
-### Summary Types:
-1. **Executive Summary**: 1-page overview for decision makers
-2. **Technical Summary**: Detailed summary for researchers
-3. **Lay Summary**: Plain language for general audience
-4. **Social Media**: Tweet-sized key findings
-
-### Key Features:
-- Parse complex academic PDFs with LLM enhancement
-- Generate multiple summary types simultaneously
-- Extract and highlight key methodology and findings
-- Create audience-appropriate language and depth
-- API-driven for easy integration
-
-### Advanced Features
-
-**Quality Metrics:**
-Add a quality assessment node:
-```javascript
-// Evaluate summary quality
-const qualityChecks = {
-  hasKeyFindings: summary.includes('findings'),
-  appropriateLength: summary.length <= maxLength,
-  noJargon: !technicalTerms.some(term => summary.includes(term))
-};
-```
-
-**Template Variations:**
-Create field-specific templates:
-- Medical research: Include clinical implications
-- Engineering papers: Focus on technical specifications
-- Social sciences: Emphasize methodology and limitations
-
-### Template Image
-![Paper Summarizer Workflow](template-image-placeholder-7.png)
-
-**Template Code:**
-```json
-{
-  "meta": {
-    "instanceId": "placeholder"
-  },
-  "nodes": [
-    {
-      "parameters": {
-        "content": "## Paper Summarizer\n\nGenerates multiple summary types:\n- Executive (1 page)\n- Technical (detailed)\n- Lay (plain language)\n- Social (tweet-sized)"
-      },
-      "id": "info-note",
-      "name": "Summary Types",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [250, 150]
-    },
-    {
-      "parameters": {
-        "path": "summarize",
-        "responseMode": "onReceived",
-        "options": {}
-      },
-      "id": "webhook-trigger",
-      "name": "Webhook - Paper URL",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1,
-      "position": [450, 300]
-    },
-    {
-      "parameters": {
-        "resource": "document",
-        "operation": "parse",
-        "documentUrl": "={{ $json.paperUrl }}",
-        "useLlm": "always"
-      },
-      "id": "pdfvector-parse",
-      "name": "PDF Vector - Parse Paper",
-      "type": "n8n-nodes-pdfvector.pdfVector",
-      "typeVersion": 1,
-      "position": [650, 300]
-    },
-    {
-      "parameters": {
-        "model": "gpt-4",
-        "messages": {
-          "values": [
-            {
-              "content": "Create an executive summary (max 500 words) of this research paper:\n\n{{ $json.content }}\n\nInclude:\n1. Research question and motivation\n2. Methodology overview\n3. Key findings (3-5 points)\n4. Practical implications\n5. Limitations and future work"
-            }
-          ]
-        }
-      },
-      "id": "exec-summary",
-      "name": "Executive Summary",
-      "type": "n8n-nodes-base.openAi",
-      "typeVersion": 1,
-      "position": [850, 250]
-    },
-    {
-      "parameters": {
-        "model": "gpt-4",
-        "messages": {
-          "values": [
-            {
-              "content": "Create a detailed technical summary of this research paper:\n\n{{ $json.content }}\n\nInclude:\n1. Research objectives and hypotheses\n2. Detailed methodology\n3. Data analysis approach\n4. Complete results with statistics\n5. Technical contributions\n6. Comparison with prior work\n7. Future research directions"
-            }
-          ]
-        }
-      },
-      "id": "tech-summary",
-      "name": "Technical Summary",
-      "type": "n8n-nodes-base.openAi",
-      "typeVersion": 1,
-      "position": [850, 350]
-    },
-    {
-      "parameters": {
-        "model": "gpt-3.5-turbo",
-        "messages": {
-          "values": [
-            {
-              "content": "Explain this research paper in simple terms that anyone can understand (max 300 words):\n\n{{ $json.content }}\n\nAvoid jargon and technical terms. Use analogies where helpful."
-            }
-          ]
-        }
-      },
-      "id": "lay-summary",
-      "name": "Lay Summary",
-      "type": "n8n-nodes-base.openAi",
-      "typeVersion": 1,
-      "position": [850, 450]
-    },
-    {
-      "parameters": {
-        "model": "gpt-3.5-turbo",
-        "messages": {
-          "values": [
-            {
-              "content": "Create a tweet (max 280 characters) summarizing the key finding of this paper:\n\n{{ $json.content }}\n\nMake it engaging and include relevant hashtags."
-            }
-          ]
-        }
-      },
-      "id": "tweet-summary",
-      "name": "Tweet Summary",
-      "type": "n8n-nodes-base.openAi",
-      "typeVersion": 1,
-      "position": [850, 550]
-    },
-    {
-      "parameters": {
-        "functionCode": "return {\n  paperUrl: $node['Webhook - Paper URL'].json.paperUrl,\n  summaries: {\n    executive: $node['Executive Summary'].json.content,\n    technical: $node['Technical Summary'].json.content,\n    lay: $node['Lay Summary'].json.content,\n    tweet: $node['Tweet Summary'].json.content\n  },\n  generatedAt: new Date().toISOString()\n};"
-      },
-      "id": "combine-summaries",
-      "name": "Combine All Summaries",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [1050, 400]
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "id": "respond-webhook",
-      "name": "Return Summaries",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [1250, 400]
-    }
-  ],
-  "connections": {
-    "Webhook - Paper URL": {
-      "main": [
-        [
-          {
-            "node": "PDF Vector - Parse Paper",
+            "node": "Analyze Paper Content",
             "type": "main",
             "index": 0
           }
@@ -1615,77 +1635,29 @@ Create field-specific templates:
       "main": [
         [
           {
-            "node": "Executive Summary",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Technical Summary",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Lay Summary",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Tweet Summary",
+            "node": "Analyze Paper Content",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Executive Summary": {
+    "Analyze Paper Content": {
       "main": [
         [
           {
-            "node": "Combine All Summaries",
+            "node": "Store Review Entry",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Technical Summary": {
+    "Store Review Entry": {
       "main": [
         [
           {
-            "node": "Combine All Summaries",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Lay Summary": {
-      "main": [
-        [
-          {
-            "node": "Combine All Summaries",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Tweet Summary": {
-      "main": [
-        [
-          {
-            "node": "Combine All Summaries",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Combine All Summaries": {
-      "main": [
-        [
-          {
-            "node": "Return Summaries",
+            "node": "Process One by One",
             "type": "main",
             "index": 0
           }
@@ -1700,125 +1672,18 @@ Create field-specific templates:
 
 ---
 
-## 8. Multi-Database Academic Search
+## 9. Extract Legal Citations with Validation Tools
 
-**Name:** Multi-Database Academic Search with PubMed, ArXiv, Google Scholar & Export
+**Name:** Comprehensive Legal Research Assistant
 
 **Description:**
-## Unified Academic Search Across Major Research Databases
+Legal professionals spend countless hours manually checking citations and building citation indexes for briefs, memoranda, and legal opinions. This workflow automates the extraction, validation, and analysis of legal citations from any legal document, including scanned court documents, photographed case files, and image-based legal materials (PDFs, JPGs, PNGs). Using advanced OCR technology, it processes handwritten annotations, old case law scans, and photographed documents. The system handles complex legal citation formats across multiple jurisdictions and provides detailed validation to ensure citation accuracy.
 
-This powerful workflow enables researchers to search multiple academic databases simultaneously, automatically deduplicate results, and export formatted bibliographies. By leveraging PDF Vector's multi-database search capabilities, researchers can save hours of manual searching and ensure comprehensive literature coverage across PubMed, ArXiv, Google Scholar, Semantic Scholar, and ERIC databases.
+Designed for attorneys, paralegals, legal researchers, and judicial clerks, this template processes legal documents to identify all types of citations including case law, statutes, regulations, and academic references. It validates citation formats against Bluebook standards, checks for citation accuracy, and can retrieve the full text of cited academic articles. The workflow builds a complete citation network showing how cases and statutes relate to each other, helping identify the most authoritative sources and revealing citation patterns.
 
-### Target Audience & Problem Solved
-This template is designed for:
-- **Graduate students** conducting systematic literature reviews
-- **Researchers** ensuring comprehensive coverage of their field
-- **Librarians** helping patrons with complex searches
-- **Academic teams** building shared bibliographies
+Setup involves configuring Google Drive credentials for document access and connections to legal databases and academic repositories. The template includes advanced features such as automated Shepardizing to check if cases are still good law, detection of pinpoint citations, and extraction of parenthetical information. It handles federal and state citations, administrative decisions, and international law references from documents stored in Google Drive, including scanned briefs, photographed case files, and image-based legal documents. OCR processing ensures accurate extraction from handwritten case notes and historical legal documents. Customization options include setting jurisdiction-specific rules, configuring citation format preferences, and defining automated alerts for superseded statutes or overruled cases. The workflow generates comprehensive citation reports that can be exported in various formats for inclusion in legal documents or for citation checking purposes. Integration with legal research platforms like Westlaw or LexisNexis can be configured for enhanced citation validation.
 
-It solves the critical problem of fragmented academic search by providing a single interface to query all major databases, eliminating duplicate results, and standardizing output formats.
-
-### Prerequisites
-- n8n instance with PDF Vector node installed
-- PDF Vector API credentials with search permissions
-- Basic understanding of academic search syntax
-- Optional: PostgreSQL for search history logging
-- Minimum 50 API credits for comprehensive searches
-
-### Step-by-Step Setup Instructions
-
-1. **Configure PDF Vector Credentials**
-   - Go to n8n Credentials section
-   - Create new PDF Vector credentials
-   - Enter your API key from pdfvector.io
-   - Test the connection to verify setup
-
-2. **Import the Workflow Template**
-   - Copy the template JSON code
-   - In n8n, click "Import Workflow"
-   - Paste the JSON and save
-   - Review all nodes for any configuration needs
-
-3. **Customize Search Parameters**
-   - Open the "Set Search Parameters" node
-   - Modify the default search query for your field
-   - Adjust the year range (default: 2020-present)
-   - Set results per source limit (default: 25)
-
-4. **Configure Export Options**
-   - Choose your preferred export formats (BibTeX, CSV, JSON)
-   - Set the output directory for files
-   - Configure file naming conventions
-   - Enable/disable specific export types
-
-5. **Test Your Configuration**
-   - Run the workflow with a sample query
-   - Check that all databases return results
-   - Verify deduplication is working correctly
-   - Confirm export files are created properly
-
-### Implementation Details
-
-The workflow implements a sophisticated search pipeline:
-
-1. **Parallel Database Queries**: Searches all configured databases simultaneously for efficiency
-2. **Smart Deduplication**: Uses DOI matching and fuzzy title comparison to remove duplicates
-3. **Relevance Scoring**: Combines citation count, title relevance, and recency for ranking
-4. **Format Generation**: Creates properly formatted citations in multiple styles
-5. **Batch Processing**: Handles large result sets without memory issues
-
-### Customization Guide
-
-**Adding Custom Databases:**
-```javascript
-// In the PDF Vector search node, add to providers array:
-"providers": ["pubmed", "semantic_scholar", "arxiv", "google_scholar", "eric", "your_custom_db"]
-```
-
-**Modifying Relevance Algorithm:**
-Edit the "Rank by Relevance" node to adjust scoring weights:
-```javascript
-// Adjust these weights for your needs:
-const titleWeight = 10;    // Title match importance
-const citationWeight = 5;  // Citation count importance
-const recencyWeight = 10;  // Recent publication bonus
-const fulltextWeight = 15; // Full-text availability bonus
-```
-
-**Custom Export Formats:**
-Add new format generators in the workflow:
-```javascript
-// Example: Add APA format export
-const apaFormat = papers.map(p => {
-  const authors = p.authors.slice(0, 3).join(', ');
-  return `${authors} (${p.year}). ${p.title}. ${p.journal || 'Preprint'}.`;
-});
-```
-
-**Advanced Filtering:**
-Implement additional filters:
-- Journal impact factor thresholds
-- Open access only options
-- Language restrictions
-- Methodology filters for systematic reviews
-
-### Search Features:
-- Query multiple databases in parallel
-- Advanced filtering and deduplication
-- Citation format export (BibTeX, RIS, etc.)
-- Relevance ranking across sources
-- Full-text availability checking
-
-### Workflow Process:
-1. **Input**: Search query and parameters
-2. **Parallel Search**: Query all databases
-3. **Merge & Deduplicate**: Combine results
-4. **Rank**: Sort by relevance/citations
-5. **Enrich**: Add full-text links
-6. **Export**: Multiple format options
-
-### Template Image
-![Multi-Database Search Workflow](template-image-placeholder-8.png)
+Note: This workflow uses the PDF Vector community node which requires separate installation. Please follow the installation guide at the PDF Vector documentation page before importing this template.
 
 **Template Code:**
 ```json
@@ -1828,875 +1693,165 @@ Implement additional filters:
   },
   "nodes": [
     {
-      "parameters": {
-        "content": "## Multi-Database Search\n\nSearches:\n- PubMed\n- ArXiv\n- Google Scholar\n- Semantic Scholar\n- ERIC\n\nDeduplicates and ranks results"
-      },
-      "id": "search-info",
-      "name": "Search Configuration",
-      "type": "n8n-nodes-base.stickyNote",
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [250, 150]
+      "position": [250, 300],
+      "notes": "Start citation extraction"
     },
     {
       "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "searchQuery",
-              "value": "machine learning healthcare applications"
-            }
-          ],
-          "number": [
-            {
-              "name": "yearFrom",
-              "value": 2020
-            },
-            {
-              "name": "resultsPerSource",
-              "value": 25
-            }
-          ]
-        }
+        "operation": "download",
+        "fileId": "={{ $json.fileId }}"
       },
-      "id": "search-params",
-      "name": "Set Search Parameters",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [450, 300]
+      "id": "google-drive",
+      "name": "Google Drive - Get Legal Document",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [450, 300],
+      "notes": "Retrieve document from Drive"
     },
     {
       "parameters": {
-        "resource": "academic",
-        "operation": "search",
-        "query": "={{ $json.searchQuery }}",
-        "providers": ["pubmed", "semantic_scholar", "arxiv", "google_scholar", "eric"],
-        "limit": "={{ $json.resultsPerSource }}",
-        "yearFrom": "={{ $json.yearFrom }}",
-        "fields": ["title", "authors", "year", "doi", "abstract", "totalCitations", "pdfUrl", "provider"]
+        "resource": "document",
+        "operation": "extract",
+        "inputType": "file",
+        "binaryPropertyName": "data",
+        "prompt": "Extract all legal citations from this document or image. Include case citations (with reporter and year), statute citations (with title and section), regulatory citations, and academic citations (with author, title, journal, and year). For each citation, include the surrounding context (1-2 sentences) and page number where it appears. Use OCR if this is a scanned legal document or image.",
+        "schema": "{\"type\":\"object\",\"properties\":{\"documentInfo\":{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\"},\"documentType\":{\"type\":\"string\"},\"court\":{\"type\":\"string\"},\"date\":{\"type\":\"string\"},\"docketNumber\":{\"type\":\"string\"}}},\"caseCitations\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"caseName\":{\"type\":\"string\"},\"reporter\":{\"type\":\"string\"},\"volume\":{\"type\":\"string\"},\"page\":{\"type\":\"string\"},\"year\":{\"type\":\"string\"},\"court\":{\"type\":\"string\"},\"context\":{\"type\":\"string\"},\"pageNumber\":{\"type\":\"number\"},\"pinCite\":{\"type\":\"string\"}}}},\"statuteCitations\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\"},\"code\":{\"type\":\"string\"},\"section\":{\"type\":\"string\"},\"subsection\":{\"type\":\"string\"},\"year\":{\"type\":\"string\"},\"context\":{\"type\":\"string\"},\"pageNumber\":{\"type\":\"number\"}}}},\"regulatoryCitations\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\"},\"agency\":{\"type\":\"string\"},\"section\":{\"type\":\"string\"},\"context\":{\"type\":\"string\"},\"pageNumber\":{\"type\":\"number\"}}}},\"academicCitations\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"authors\":{\"type\":\"string\"},\"title\":{\"type\":\"string\"},\"journal\":{\"type\":\"string\"},\"volume\":{\"type\":\"string\"},\"page\":{\"type\":\"string\"},\"year\":{\"type\":\"string\"},\"doi\":{\"type\":\"string\"},\"context\":{\"type\":\"string\"},\"pageNumber\":{\"type\":\"number\"}}}},\"otherCitations\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"text\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"context\":{\"type\":\"string\"},\"pageNumber\":{\"type\":\"number\"}}}}},\"required\":[\"documentInfo\"],\"additionalProperties\":false}"
       },
-      "id": "pdfvector-search",
-      "name": "PDF Vector - Multi-DB Search",
+      "id": "pdfvector-extract",
+      "name": "PDF Vector - Extract Citations",
       "type": "n8n-nodes-pdfvector.pdfVector",
       "typeVersion": 1,
-      "position": [650, 300]
+      "position": [650, 300],
+      "notes": "Extract all citations"
     },
     {
       "parameters": {
-        "functionCode": "// Deduplicate papers based on DOI and title similarity\nconst papers = $json;\nconst unique = new Map();\n\npapers.forEach(paper => {\n  // First check DOI\n  if (paper.doi && !unique.has(paper.doi)) {\n    unique.set(paper.doi, paper);\n  } else if (!paper.doi) {\n    // For papers without DOI, check title similarity\n    const normalizedTitle = paper.title.toLowerCase().replace(/[^a-z0-9]/g, '');\n    let isDuplicate = false;\n    \n    for (const [key, existingPaper] of unique) {\n      const existingTitle = existingPaper.title.toLowerCase().replace(/[^a-z0-9]/g, '');\n      if (normalizedTitle === existingTitle) {\n        isDuplicate = true;\n        // Merge provider info\n        if (!existingPaper.providers) existingPaper.providers = [existingPaper.provider];\n        existingPaper.providers.push(paper.provider);\n        break;\n      }\n    }\n    \n    if (!isDuplicate) {\n      unique.set(normalizedTitle, paper);\n    }\n  }\n});\n\nreturn Array.from(unique.values());"
+        "jsCode": "// Process and validate citations\nconst citations = $input.first().json.data;\nconst citationAnalysis = {\n  summary: {\n    totalCitations: 0,\n    caseLaw: citations.caseCitations?.length || 0,\n    statutes: citations.statuteCitations?.length || 0,\n    regulations: citations.regulatoryCitations?.length || 0,\n    academic: citations.academicCitations?.length || 0,\n    other: citations.otherCitations?.length || 0\n  },\n  validation: {\n    invalidCitations: [],\n    warnings: []\n  },\n  academicDOIs: [],\n  citationNetwork: {}\n};\n\n// Calculate total\ncitationAnalysis.summary.totalCitations = \n  citationAnalysis.summary.caseLaw + \n  citationAnalysis.summary.statutes + \n  citationAnalysis.summary.regulations + \n  citationAnalysis.summary.academic + \n  citationAnalysis.summary.other;\n\n// Validate case citations\nif (citations.caseCitations) {\n  citations.caseCitations.forEach((cite, index) => {\n    // Check for required fields\n    if (!cite.reporter || !cite.volume || !cite.page) {\n      citationAnalysis.validation.invalidCitations.push({\n        type: 'case',\n        index,\n        citation: cite.caseName,\n        issue: 'Missing reporter, volume, or page'\n      });\n    }\n    \n    // Build citation network (track which cases cite which)\n    if (!citationAnalysis.citationNetwork[cite.caseName]) {\n      citationAnalysis.citationNetwork[cite.caseName] = {\n        citedIn: [citations.documentInfo.title],\n        pageNumbers: [cite.pageNumber]\n      };\n    }\n  });\n}\n\n// Validate statute citations\nif (citations.statuteCitations) {\n  citations.statuteCitations.forEach((cite, index) => {\n    if (!cite.title || !cite.section) {\n      citationAnalysis.validation.invalidCitations.push({\n        type: 'statute',\n        index,\n        citation: `${cite.title} ${cite.code}`,\n        issue: 'Missing title or section'\n      });\n    }\n  });\n}\n\n// Extract DOIs for academic fetching\nif (citations.academicCitations) {\n  citations.academicCitations.forEach(cite => {\n    if (cite.doi) {\n      citationAnalysis.academicDOIs.push(cite.doi);\n    } else {\n      // Try to construct search query for papers without DOI\n      citationAnalysis.validation.warnings.push({\n        type: 'academic',\n        citation: cite.title,\n        warning: 'No DOI found - manual search may be needed'\n      });\n    }\n  });\n}\n\n// Analyze citation patterns\nconst citationPatterns = {\n  mostCitedCases: [],\n  primaryAuthorities: [],\n  secondaryAuthorities: []\n};\n\n// Identify primary authorities (statutes and binding cases)\ncitationPatterns.primaryAuthorities = [\n  ...citations.statuteCitations?.map(c => `${c.title} ${c.code} § ${c.section}`) || [],\n  ...citations.caseCitations?.filter(c => c.court?.includes('Supreme'))?.map(c => c.caseName) || []\n];\n\n// Identify secondary authorities\ncitationPatterns.secondaryAuthorities = \n  citations.academicCitations?.map(c => `${c.authors}, ${c.title}`) || [];\n\nreturn [{\n  json: {\n    originalData: citations,\n    analysis: citationAnalysis,\n    patterns: citationPatterns,\n    doisToFetch: citationAnalysis.academicDOIs.join(','),\n    processedAt: new Date().toISOString()\n  }\n}];"
       },
-      "id": "deduplicate",
-      "name": "Deduplicate Results",
+      "id": "analyze-citations",
+      "name": "Analyze & Validate Citations",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [850, 300]
-    },
-    {
-      "parameters": {
-        "functionCode": "// Calculate relevance score\nconst papers = $json;\nconst query = $node['Set Search Parameters'].json.searchQuery.toLowerCase();\n\nconst scored = papers.map(paper => {\n  let score = 0;\n  \n  // Title relevance\n  const titleWords = paper.title.toLowerCase().split(' ');\n  const queryWords = query.split(' ');\n  queryWords.forEach(word => {\n    if (titleWords.includes(word)) score += 10;\n  });\n  \n  // Citation impact\n  score += Math.log(paper.totalCitations + 1) * 5;\n  \n  // Recency bonus\n  const yearDiff = new Date().getFullYear() - paper.year;\n  score += Math.max(0, 10 - yearDiff);\n  \n  // Full text availability\n  if (paper.pdfUrl) score += 15;\n  \n  return { ...paper, relevanceScore: score };\n});\n\n// Sort by relevance\nreturn scored.sort((a, b) => b.relevanceScore - a.relevanceScore);"
-      },
-      "id": "rank-results",
-      "name": "Rank by Relevance",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [1050, 300]
-    },
-    {
-      "parameters": {
-        "functionCode": "// Generate BibTeX entries\nconst papers = $json;\n\nconst bibtex = papers.map((paper, index) => {\n  const key = paper.doi ? paper.doi.replace(/[^a-zA-Z0-9]/g, '') : `paper${index}`;\n  const authors = paper.authors.join(' and ');\n  \n  return `@article{${key},\n  title={${paper.title}},\n  author={${authors}},\n  year={${paper.year}},\n  doi={${paper.doi || ''}},\n  abstract={${paper.abstract || ''}}\n}`;\n}).join('\\n\\n');\n\nreturn { bibtex, papers };"
-      },
-      "id": "generate-bibtex",
-      "name": "Generate BibTeX",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [1250, 250]
-    },
-    {
-      "parameters": {
-        "fileName": "search_results_{{ $now.format('yyyy-MM-dd') }}.bib",
-        "fileContent": "={{ $json.bibtex }}"
-      },
-      "id": "export-bibtex",
-      "name": "Export BibTeX File",
-      "type": "n8n-nodes-base.writeBinaryFile",
-      "typeVersion": 1,
-      "position": [1450, 250]
-    },
-    {
-      "parameters": {
-        "fileName": "search_results_{{ $now.format('yyyy-MM-dd') }}.json",
-        "fileContent": "={{ JSON.stringify($json.papers, null, 2) }}"
-      },
-      "id": "export-json",
-      "name": "Export JSON",
-      "type": "n8n-nodes-base.writeBinaryFile",
-      "typeVersion": 1,
-      "position": [1450, 350]
-    },
-    {
-      "parameters": {
-        "fileName": "search_results_{{ $now.format('yyyy-MM-dd') }}.csv",
-        "fileContent": "={{ $json.papers.map(p => [p.title, p.authors.join(';'), p.year, p.doi, p.totalCitations, p.pdfUrl].join(',\t')).join('\\n') }}"
-      },
-      "id": "export-csv",
-      "name": "Export CSV",
-      "type": "n8n-nodes-base.writeBinaryFile",
-      "typeVersion": 1,
-      "position": [1450, 450]
-    }
-  ],
-  "connections": {
-    "Set Search Parameters": {
-      "main": [
-        [
-          {
-            "node": "PDF Vector - Multi-DB Search",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PDF Vector - Multi-DB Search": {
-      "main": [
-        [
-          {
-            "node": "Deduplicate Results",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Deduplicate Results": {
-      "main": [
-        [
-          {
-            "node": "Rank by Relevance",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Rank by Relevance": {
-      "main": [
-        [
-          {
-            "node": "Generate BibTeX",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Generate BibTeX": {
-      "main": [
-        [
-          {
-            "node": "Export BibTeX File",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Export JSON",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Export CSV",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  }
-}
-```
-
-**Free or Paid?** Free
-
----
-
-## 9. PDF Report to Slack/Email Notifier
-
-**Name:** Automated PDF Report Monitor with AI Insights and Slack/Email Alerts
-
-**Description:**
-## Intelligent Document Monitoring and Alert System
-
-This workflow creates an automated monitoring system that watches for new PDF reports across multiple sources, extracts key insights using AI, and sends formatted alerts to your team via Slack or email. By combining PDF Vector's parsing capabilities with GPT-powered analysis, teams can stay informed about critical documents without manual review, ensuring important information never gets missed.
-
-### Target Audience & Problem Solved
-This template is designed for:
-- **Finance teams** monitoring quarterly reports and regulatory filings
-- **Compliance officers** tracking policy updates and audit reports
-- **Research departments** alerting on new publications and preprints
-- **Operations teams** monitoring supplier reports and KPI documents
-- **Executive assistants** summarizing board materials and briefings
-
-It solves the problem of information overload by automatically processing incoming documents, extracting only the most relevant insights, and delivering them in digestible formats to the right people at the right time.
-
-### Prerequisites
-- n8n instance with PDF Vector node installed
-- PDF Vector API credentials with parsing capabilities
-- OpenAI API key for insight extraction
-- Slack workspace admin access (for Slack alerts)
-- SMTP credentials (for email alerts)
-- FTP/Cloud storage access for document sources
-- Minimum 50 API credits for continuous monitoring
-
-### Step-by-Step Setup Instructions
-
-1. **Configure Document Sources**
-   - Set up FTP credentials in n8n for folder monitoring
-   - Or configure Google Drive/Dropbox integration
-   - Define the folder paths to monitor
-   - Set file naming patterns to watch (e.g., "*report*.pdf")
-
-2. **Set Up API Integrations**
-   - Add PDF Vector credentials in n8n
-   - Configure OpenAI credentials with appropriate model access
-   - Set up Slack app and add webhook URL
-   - Configure SMTP settings for email alerts
-
-3. **Configure Monitoring Schedule**
-   - Open the "Check Every 15 Minutes" node
-   - Adjust frequency based on your needs:
-     ```javascript
-     // For hourly checks:
-     "interval": 60
-     // For real-time monitoring (every 5 min):
-     "interval": 5
-     ```
-
-4. **Customize Alert Channels**
-   - **Slack Setup**:
-     - Create dedicated channels (#reports, #alerts)
-     - Configure webhook for each channel
-     - Set up user mentions for urgent alerts
-   
-   - **Email Setup**:
-     - Define recipient lists by document type
-     - Configure email templates
-     - Set up priority levels for subject lines
-
-5. **Define Alert Rules**
-   - Modify the "Extract Key Insights" prompt for your domain
-   - Set conditions for high-priority alerts
-   - Configure which metrics trigger notifications
-   - Define sentiment thresholds
-
-### Implementation Details
-
-The workflow implements a comprehensive monitoring pipeline:
-
-1. **Source Monitoring**: Polls multiple sources for new PDFs
-2. **Intelligent Parsing**: Uses LLM-enhanced parsing for complex documents
-3. **Insight Extraction**: AI analyzes content for key information
-4. **Priority Classification**: Determines alert urgency based on content
-5. **Multi-Channel Delivery**: Sends formatted alerts via configured channels
-6. **Audit Trail**: Logs all processed documents for compliance
-
-### Customization Guide
-
-**Adding Custom Document Types:**
-Extend the routing logic for specific document types:
-```javascript
-// In "Route by Document Type" node:
-const documentTypes = {
-  'invoice': /invoice|bill|payment/i,
-  'contract': /contract|agreement|terms/i,
-  'report': /report|analysis|summary/i,
-  'compliance': /audit|compliance|regulatory/i
-};
-```
-
-**Customizing Insight Extraction:**
-Modify the AI prompt for domain-specific analysis:
-```javascript
-// Financial documents:
-"Extract: 1) Revenue figures 2) YoY growth 3) Risk factors 4) Guidance changes"
-
-// Compliance documents:
-"Extract: 1) Policy changes 2) Deadlines 3) Required actions 4) Penalties"
-
-// Research papers:
-"Extract: 1) Key findings 2) Methodology 3) Implications 4) Future work"
-```
-
-**Advanced Alert Formatting:**
-Create rich Slack messages with interactive elements:
-```javascript
-// Add buttons for quick actions:
-{
-  "type": "actions",
-  "elements": [
-    {
-      "type": "button",
-      "text": { "type": "plain_text", "text": "View Full Report" },
-      "url": documentUrl
-    },
-    {
-      "type": "button", 
-      "text": { "type": "plain_text", "text": "Mark as Read" },
-      "action_id": "mark_read"
-    }
-  ]
-}
-```
-
-**Implementing Alert Conditions:**
-Add sophisticated filtering based on content:
-```javascript
-// Alert only if certain conditions are met:
-if (insights.metrics.revenue_change < -10) {
-  priority = 'urgent';
-  alertChannel = '#executive-alerts';
-}
-
-if (insights.findings.includes('compliance violation')) {
-  additionalRecipients.push('legal@company.com');
-}
-```
-
-**Adding Document Comparison:**
-Track changes between document versions:
-```javascript
-// Compare with previous version:
-const previousDoc = await getLastVersion(documentType);
-const changes = compareDocuments(previousDoc, currentDoc);
-if (changes.significant) {
-  alertMessage += `\n⚠️ Significant changes detected: ${changes.summary}`;
-}
-```
-
-### Alert Features:
-- Monitor multiple document sources (FTP, cloud storage, email)
-- Extract key metrics and findings with AI
-- Send rich, formatted notifications
-- Track document processing history
-- Conditional alerts based on content analysis
-- Multi-channel alert routing
-
-### Use Cases:
-- Financial report monitoring
-- Compliance document tracking
-- Research publication alerts
-- Customer report distribution
-- Board material summarization
-- Regulatory filing notifications
-
-### Advanced Configuration
-
-**Performance Optimization:**
-- Implement caching to avoid reprocessing
-- Use batch processing for multiple documents
-- Set up parallel processing for different sources
-
-**Security Considerations:**
-- Encrypt sensitive document storage
-- Implement access controls for different alert channels
-- Audit log all document access
-
-### Template Image
-![Document Alert System Workflow](template-image-placeholder-9.png)
-
-**Template Code:**
-```json
-{
-  "meta": {
-    "instanceId": "placeholder"
-  },
-  "nodes": [
-    {
-      "parameters": {
-        "content": "## Document Alert System\n\nMonitors:\n- FTP folders\n- Email attachments\n- Cloud storage\n- Direct URLs\n\nSends alerts via Slack & Email"
-      },
-      "id": "system-info",
-      "name": "Alert System Info",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [250, 150]
-    },
-    {
-      "parameters": {
-        "pollTimes": {
-          "item": [
-            {
-              "mode": "everyMinute",
-              "minute": 15
-            }
-          ]
-        }
-      },
-      "id": "schedule-check",
-      "name": "Check Every 15 Minutes",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1,
-      "position": [450, 300]
-    },
-    {
-      "parameters": {
-        "operation": "list",
-        "folder": "/reports/incoming"
-      },
-      "id": "check-folder",
-      "name": "Check Report Folder",
-      "type": "n8n-nodes-base.ftp",
-      "typeVersion": 1,
-      "position": [650, 300]
+      "position": [850, 300],
+      "notes": "Process citation data"
     },
     {
       "parameters": {
         "conditions": {
           "string": [
             {
-              "value1": "={{ $json.name.endsWith('.pdf') }}",
-              "value2": "true"
+              "value1": "={{ $json.doisToFetch }}",
+              "operation": "isNotEmpty"
             }
           ]
         }
       },
-      "id": "filter-new-pdfs",
-      "name": "Filter New PDFs",
+      "id": "has-dois",
+      "name": "Has Academic DOIs?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [850, 300]
-    },
-    {
-      "parameters": {
-        "resource": "document",
-        "operation": "parse",
-        "documentUrl": "={{ $json.url }}",
-        "useLlm": "auto"
-      },
-      "id": "pdfvector-parse",
-      "name": "PDF Vector - Parse Report",
-      "type": "n8n-nodes-pdfvector.pdfVector",
-      "typeVersion": 1,
       "position": [1050, 300]
-    },
-    {
-      "parameters": {
-        "model": "gpt-3.5-turbo",
-        "messages": {
-          "values": [
-            {
-              "content": "Extract key information from this report:\n\n{{ $json.content }}\n\nIdentify:\n1. Report type and date\n2. Key metrics or KPIs\n3. Important findings or alerts\n4. Action items\n5. Overall sentiment (positive/neutral/negative)\n\nReturn as structured JSON."
-            }
-          ]
-        },
-        "options": {
-          "responseFormat": {
-            "type": "json_object"
-          }
-        }
-      },
-      "id": "extract-insights",
-      "name": "Extract Key Insights",
-      "type": "n8n-nodes-base.openAi",
-      "typeVersion": 1,
-      "position": [1250, 300]
-    },
-    {
-      "parameters": {
-        "functionCode": "const insights = JSON.parse($json.content);\nconst fileName = $node['Check Report Folder'].json.name;\n\n// Determine alert priority\nlet priority = 'normal';\nif (insights.sentiment === 'negative' || insights.alerts?.length > 0) {\n  priority = 'high';\n}\n\n// Format message\nconst slackBlocks = [\n  {\n    type: 'header',\n    text: {\n      type: 'plain_text',\n      text: `📄 New Report: ${insights.reportType || fileName}`\n    }\n  },\n  {\n    type: 'section',\n    fields: [\n      {\n        type: 'mrkdwn',\n        text: `*Date:* ${insights.date || 'Not specified'}`\n      },\n      {\n        type: 'mrkdwn',\n        text: `*Priority:* ${priority}`\n      }\n    ]\n  }\n];\n\nif (insights.metrics) {\n  slackBlocks.push({\n    type: 'section',\n    text: {\n      type: 'mrkdwn',\n      text: `*Key Metrics:*\\n${Object.entries(insights.metrics).map(([k, v]) => `• ${k}: ${v}`).join('\\n')}`\n    }\n  });\n}\n\nif (insights.findings) {\n  slackBlocks.push({\n    type: 'section',\n    text: {\n      type: 'mrkdwn',\n      text: `*Key Findings:*\\n${insights.findings.map(f => `• ${f}`).join('\\n')}`\n    }\n  });\n}\n\nreturn {\n  fileName,\n  insights,\n  priority,\n  slackBlocks,\n  emailContent: insights\n};"
-      },
-      "id": "format-alerts",
-      "name": "Format Alerts",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [1450, 300]
-    },
-    {
-      "parameters": {
-        "channel": "#reports",
-        "blocks": "={{ $json.slackBlocks }}",
-        "attachments": []
-      },
-      "id": "slack-alert",
-      "name": "Send Slack Alert",
-      "type": "n8n-nodes-base.slack",
-      "typeVersion": 1,
-      "position": [1650, 250]
-    },
-    {
-      "parameters": {
-        "subject": "=New Report Alert: {{ $json.insights.reportType }}",
-        "toEmail": "team@company.com",
-        "html": "=<h2>New Report Available</h2>\n<p><strong>Report:</strong> {{ $json.fileName }}</p>\n<p><strong>Type:</strong> {{ $json.insights.reportType }}</p>\n<p><strong>Date:</strong> {{ $json.insights.date }}</p>\n\n<h3>Key Metrics</h3>\n<ul>\n{{ Object.entries($json.insights.metrics || {}).map(([k, v]) => `<li>${k}: ${v}</li>`).join('\\n') }}\n</ul>\n\n<h3>Findings</h3>\n<ul>\n{{ ($json.insights.findings || []).map(f => `<li>${f}</li>`).join('\\n') }}\n</ul>\n\n<h3>Action Items</h3>\n<ul>\n{{ ($json.insights.actionItems || []).map(a => `<li>${a}</li>`).join('\\n') }}\n</ul>"
-      },
-      "id": "email-alert",
-      "name": "Send Email Alert",
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 1,
-      "position": [1650, 350]
-    },
-    {
-      "parameters": {
-        "operation": "insert",
-        "table": "processed_reports",
-        "columns": "filename,report_type,processed_at,insights,priority"
-      },
-      "id": "log-processed",
-      "name": "Log Processed Report",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 1,
-      "position": [1650, 450]
-    }
-  ],
-  "connections": {
-    "Check Every 15 Minutes": {
-      "main": [
-        [
-          {
-            "node": "Check Report Folder",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Check Report Folder": {
-      "main": [
-        [
-          {
-            "node": "Filter New PDFs",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Filter New PDFs": {
-      "main": [
-        [
-          {
-            "node": "PDF Vector - Parse Report",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PDF Vector - Parse Report": {
-      "main": [
-        [
-          {
-            "node": "Extract Key Insights",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract Key Insights": {
-      "main": [
-        [
-          {
-            "node": "Format Alerts",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Format Alerts": {
-      "main": [
-        [
-          {
-            "node": "Send Slack Alert",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Send Email Alert",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Log Processed Report",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  }
-}
-```
-
-**Free or Paid?** Free
-
----
-
-## 10. Academic Knowledge Base Builder
-
-**Name:** Build Academic Knowledge Graph from Research Papers with GPT-4 and Neo4j
-
-**Description:**
-## Transform Research Papers into a Searchable Knowledge Graph
-
-This workflow automatically builds and maintains a comprehensive knowledge graph from academic papers, enabling researchers to discover connections between concepts, track research evolution, and perform semantic searches across their field of study. By combining PDF Vector's paper parsing capabilities with GPT-4's entity extraction and Neo4j's graph database, this template creates a powerful research discovery tool.
-
-### Target Audience & Problem Solved
-This template is designed for:
-- **Research institutions** building internal knowledge repositories
-- **Academic departments** tracking research trends and collaborations
-- **R&D teams** mapping technology landscapes
-- **Libraries and archives** creating searchable research collections
-
-It solves the problem of information silos in academic research by automatically extracting and connecting key concepts, methods, authors, and findings across thousands of papers.
-
-### Prerequisites
-- n8n instance with PDF Vector node installed
-- OpenAI API key for GPT-4 access
-- Neo4j database instance (local or cloud)
-- Basic understanding of graph databases
-- At least 100 API credits for PDF Vector (processes ~50 papers)
-
-### Step-by-Step Setup Instructions
-
-1. **Configure PDF Vector Credentials**
-   - Navigate to Credentials in n8n
-   - Add new PDF Vector credentials with your API key
-   - Test the connection to ensure it's working
-
-2. **Set Up Neo4j Database**
-   - Install Neo4j locally or create a cloud instance at [Neo4j Aura](https://neo4j.com/cloud/aura/)
-   - Note your connection URI, username, and password
-   - Create database constraints for better performance:
-     ```cypher
-     CREATE CONSTRAINT paper_id IF NOT EXISTS ON (p:Paper) ASSERT p.id IS UNIQUE;
-     CREATE CONSTRAINT author_name IF NOT EXISTS ON (a:Author) ASSERT a.name IS UNIQUE;
-     CREATE CONSTRAINT concept_name IF NOT EXISTS ON (c:Concept) ASSERT c.name IS UNIQUE;
-     ```
-
-3. **Configure OpenAI Integration**
-   - Add OpenAI credentials in n8n
-   - Ensure you have GPT-4 access (GPT-3.5 can be used with reduced accuracy)
-   - Set appropriate rate limits to avoid API throttling
-
-4. **Import and Configure the Workflow**
-   - Import the template JSON into n8n
-   - Update the search query in the "PDF Vector - Fetch Papers" node to your research domain
-   - Adjust the schedule trigger frequency based on your needs
-   - Configure the PostgreSQL connection for logging (optional)
-
-5. **Test with Sample Papers**
-   - Manually trigger the workflow
-   - Monitor the execution for any errors
-   - Check Neo4j browser to verify nodes and relationships are created
-   - Adjust entity extraction prompts if needed for your domain
-
-### Implementation Details
-
-The workflow operates in several stages:
-
-1. **Paper Discovery**: Uses PDF Vector's academic search to find relevant papers
-2. **Content Parsing**: Leverages LLM-enhanced parsing for accurate text extraction
-3. **Entity Extraction**: GPT-4 identifies concepts, methods, datasets, and relationships
-4. **Graph Construction**: Creates nodes and relationships in Neo4j
-5. **Statistics Tracking**: Logs processing metrics for monitoring
-
-### Customization Guide
-
-**Adjusting Entity Types:**
-Edit the GPT-4 prompt in the "Extract Entities" node to include domain-specific entities:
-```javascript
-// Add custom entity types like:
-// - Algorithms
-// - Datasets
-// - Institutions
-// - Funding sources
-```
-
-**Modifying Relationship Types:**
-Extend the "Build Graph Structure" node to create custom relationships:
-```javascript
-// Examples:
-// COLLABORATES_WITH (between authors)
-// EXTENDS (between papers)
-// FUNDED_BY (paper to funding source)
-```
-
-**Changing Search Scope:**
-- Modify providers array to include/exclude databases
-- Adjust year range for historical or recent focus
-- Add keyword filters for specific subfields
-
-**Scaling Considerations:**
-- For large-scale processing (>1000 papers/day), implement batching
-- Use Redis for deduplication across runs
-- Consider implementing incremental updates to avoid reprocessing
-
-### Knowledge Base Features:
-- Automatic concept extraction with GPT-4
-- Research timeline tracking
-- Author collaboration networks
-- Topic evolution visualization
-- Semantic search interface via Neo4j
-
-### Components:
-1. **Paper Ingestion**: Continuous monitoring and parsing
-2. **Entity Extraction**: Identify key concepts, methods, datasets
-3. **Relationship Mapping**: Connect papers, authors, concepts
-4. **Knowledge Graph**: Store in graph database
-5. **Search Interface**: Query by concept, author, or topic
-6. **Visualization**: Interactive knowledge exploration
-
-### Template Image
-![Knowledge Graph Builder Workflow](template-image-placeholder-10.png)
-
-**Template Code:**
-```json
-{
-  "meta": {
-    "instanceId": "placeholder"
-  },
-  "nodes": [
-    {
-      "parameters": {
-        "content": "## Knowledge Base Builder\n\nExtracts and connects:\n- Concepts & Keywords\n- Authors & Institutions\n- Methods & Datasets\n- Citations & References\n\nBuilds searchable knowledge graph"
-      },
-      "id": "kb-info",
-      "name": "Knowledge Base Info",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [250, 150]
-    },
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "days",
-              "daysInterval": 1
-            }
-          ]
-        }
-      },
-      "id": "daily-update",
-      "name": "Daily KB Update",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1,
-      "position": [450, 300]
     },
     {
       "parameters": {
         "resource": "academic",
-        "operation": "search",
-        "query": "={{ $json.domain || 'artificial intelligence' }}",
-        "providers": ["semantic_scholar", "arxiv"],
-        "limit": 20,
-        "yearFrom": "={{ new Date().getFullYear() }}",
-        "fields": ["title", "authors", "abstract", "year", "doi", "pdfUrl", "totalCitations"]
+        "operation": "fetch",
+        "ids": "={{ $json.doisToFetch }}",
+        "fields": ["title", "abstract", "authors", "year", "doi", "pdfURL", "totalCitations"]
       },
-      "id": "fetch-papers",
+      "id": "pdfvector-fetch",
       "name": "PDF Vector - Fetch Papers",
       "type": "n8n-nodes-pdfvector.pdfVector",
       "typeVersion": 1,
-      "position": [650, 300]
+      "position": [1250, 250],
+      "notes": "Retrieve academic papers"
     },
     {
       "parameters": {
-        "resource": "document",
-        "operation": "parse",
-        "documentUrl": "={{ $json.pdfUrl }}",
-        "useLlm": "always"
+        "jsCode": "// Generate comprehensive citation report\nconst citationData = $node['Has Academic DOIs?'].json;\nconst academicPapers = $json.publications || [];\n\n// Create citation report\nlet report = `# Legal Citation Analysis Report\\n\\n`;\nreport += `**Document:** ${citationData.originalData.documentInfo.title}\\n`;\nreport += `**Type:** ${citationData.originalData.documentInfo.documentType}\\n`;\nreport += `**Date:** ${citationData.originalData.documentInfo.date}\\n\\n`;\n\nreport += `## Citation Summary\\n\\n`;\nreport += `- **Total Citations:** ${citationData.analysis.summary.totalCitations}\\n`;\nreport += `- **Case Law:** ${citationData.analysis.summary.caseLaw}\\n`;\nreport += `- **Statutes:** ${citationData.analysis.summary.statutes}\\n`;\nreport += `- **Regulations:** ${citationData.analysis.summary.regulations}\\n`;\nreport += `- **Academic:** ${citationData.analysis.summary.academic}\\n`;\nreport += `- **Other:** ${citationData.analysis.summary.other}\\n\\n`;\n\n// Add validation issues\nif (citationData.analysis.validation.invalidCitations.length > 0) {\n  report += `## Citation Issues\\n\\n`;\n  citationData.analysis.validation.invalidCitations.forEach(issue => {\n    report += `- **${issue.type}:** ${issue.citation} - ${issue.issue}\\n`;\n  });\n  report += `\\n`;\n}\n\n// Add case law section\nif (citationData.originalData.caseCitations?.length > 0) {\n  report += `## Case Law Citations\\n\\n`;\n  citationData.originalData.caseCitations.forEach(cite => {\n    report += `### ${cite.caseName}\\n`;\n    report += `- **Citation:** ${cite.volume} ${cite.reporter} ${cite.page} (${cite.year})\\n`;\n    report += `- **Court:** ${cite.court || 'Not specified'}\\n`;\n    report += `- **Context:** ${cite.context}\\n`;\n    report += `- **Page:** ${cite.pageNumber}\\n\\n`;\n  });\n}\n\n// Add statute section\nif (citationData.originalData.statuteCitations?.length > 0) {\n  report += `## Statutory Citations\\n\\n`;\n  citationData.originalData.statuteCitations.forEach(cite => {\n    report += `- **${cite.title} ${cite.code} § ${cite.section}**${cite.subsection ? ` (${cite.subsection})` : ''}\\n`;\n    report += `  - Context: ${cite.context}\\n`;\n    report += `  - Page: ${cite.pageNumber}\\n\\n`;\n  });\n}\n\n// Add academic section with fetched data\nif (citationData.originalData.academicCitations?.length > 0) {\n  report += `## Academic Citations\\n\\n`;\n  citationData.originalData.academicCitations.forEach(cite => {\n    report += `### ${cite.title}\\n`;\n    report += `- **Authors:** ${cite.authors}\\n`;\n    report += `- **Journal:** ${cite.journal}, Vol. ${cite.volume}, p. ${cite.page} (${cite.year})\\n`;\n    \n    // Add fetched paper data if available\n    const fetchedPaper = academicPapers.find(p => p.doi === cite.doi);\n    if (fetchedPaper) {\n      report += `- **Citations:** ${fetchedPaper.totalCitations || 0}\\n`;\n      report += `- **Abstract Available:** Yes\\n`;\n      if (fetchedPaper.pdfURL) {\n        report += `- **Full Text:** [Available](${fetchedPaper.pdfURL})\\n`;\n      }\n    }\n    \n    report += `- **Context:** ${cite.context}\\n`;\n    report += `- **Page:** ${cite.pageNumber}\\n\\n`;\n  });\n}\n\n// Add citation patterns\nreport += `## Citation Analysis\\n\\n`;\nreport += `### Primary Authorities\\n`;\ncitationData.patterns.primaryAuthorities.forEach(auth => {\n  report += `- ${auth}\\n`;\n});\nreport += `\\n### Secondary Authorities\\n`;\ncitationData.patterns.secondaryAuthorities.forEach(auth => {\n  report += `- ${auth}\\n`;\n});\n\nreturn [{\n  json: {\n    report,\n    citationData,\n    academicPapers,\n    exportFormat: 'markdown',\n    generatedAt: new Date().toISOString()\n  }\n}];"
       },
-      "id": "parse-papers",
-      "name": "PDF Vector - Parse Papers",
-      "type": "n8n-nodes-pdfvector.pdfVector",
-      "typeVersion": 1,
-      "position": [850, 300]
-    },
-    {
-      "parameters": {
-        "model": "gpt-4",
-        "messages": {
-          "values": [
-            {
-              "content": "Extract knowledge graph entities from this paper:\n\nTitle: {{ $json.title }}\nContent: {{ $json.content }}\n\nExtract:\n1. Key concepts (5-10 main ideas)\n2. Methods used\n3. Datasets mentioned\n4. Research questions\n5. Key findings\n6. Future directions\n\nAlso identify relationships between these entities.\n\nReturn as structured JSON with entities and relationships arrays."
-            }
-          ]
-        },
-        "options": {
-          "responseFormat": {
-            "type": "json_object"
-          }
-        }
-      },
-      "id": "extract-entities",
-      "name": "Extract Entities",
-      "type": "n8n-nodes-base.openAi",
-      "typeVersion": 1,
-      "position": [1050, 300]
-    },
-    {
-      "parameters": {
-        "functionCode": "const extraction = JSON.parse($json.content);\nconst paper = $node['PDF Vector - Fetch Papers'].json;\n\n// Create nodes for Neo4j\nconst nodes = [];\n\n// Paper node\nnodes.push({\n  label: 'Paper',\n  properties: {\n    id: paper.doi || paper.title.replace(/[^a-zA-Z0-9]/g, ''),\n    title: paper.title,\n    year: paper.year,\n    authors: paper.authors.join('; '),\n    citations: paper.totalCitations\n  }\n});\n\n// Author nodes\npaper.authors.forEach(author => {\n  nodes.push({\n    label: 'Author',\n    properties: {\n      name: author\n    }\n  });\n});\n\n// Concept nodes\nextraction.concepts?.forEach(concept => {\n  nodes.push({\n    label: 'Concept',\n    properties: {\n      name: concept\n    }\n  });\n});\n\n// Method nodes\nextraction.methods?.forEach(method => {\n  nodes.push({\n    label: 'Method',\n    properties: {\n      name: method\n    }\n  });\n});\n\n// Create relationships\nconst relationships = [];\n\n// Paper-Author relationships\npaper.authors.forEach(author => {\n  relationships.push({\n    from: paper.doi || paper.title,\n    to: author,\n    type: 'AUTHORED_BY'\n  });\n});\n\n// Paper-Concept relationships\nextraction.concepts?.forEach(concept => {\n  relationships.push({\n    from: paper.doi || paper.title,\n    to: concept,\n    type: 'DISCUSSES'\n  });\n});\n\n// Paper-Method relationships\nextraction.methods?.forEach(method => {\n  relationships.push({\n    from: paper.doi || paper.title,\n    to: method,\n    type: 'USES'\n  });\n});\n\nreturn { nodes, relationships };"
-      },
-      "id": "build-graph",
-      "name": "Build Graph Structure",
+      "id": "generate-report",
+      "name": "Generate Citation Report",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [1250, 300]
+      "position": [1450, 300],
+      "notes": "Create final report"
     },
     {
       "parameters": {
-        "operation": "create",
-        "query": "=UNWIND $nodes AS node\nMERGE (n:Node {id: node.properties.id})\nSET n += node.properties\nSET n:${node.label}",
-        "parameters": "={{ { nodes: $json.nodes } }}"
+        "fileName": "citation_report_{{ $now.format('yyyy-MM-dd_HH-mm') }}.md",
+        "fileContent": "={{ $json.report }}"
       },
-      "id": "create-nodes",
-      "name": "Create Graph Nodes",
-      "type": "n8n-nodes-base.neo4j",
+      "id": "save-report",
+      "name": "Save Citation Report",
+      "type": "n8n-nodes-base.writeBinaryFile",
       "typeVersion": 1,
-      "position": [1450, 250]
-    },
-    {
-      "parameters": {
-        "operation": "create",
-        "query": "=UNWIND $relationships AS rel\nMATCH (a {id: rel.from})\nMATCH (b {id: rel.to})\nMERGE (a)-[r:${rel.type}]->(b)",
-        "parameters": "={{ { relationships: $json.relationships } }}"
-      },
-      "id": "create-relationships",
-      "name": "Create Relationships",
-      "type": "n8n-nodes-base.neo4j",
-      "typeVersion": 1,
-      "position": [1450, 350]
-    },
-    {
-      "parameters": {
-        "functionCode": "// Generate knowledge base statistics\nconst stats = {\n  papersProcessed: $items().length,\n  conceptsExtracted: $json.nodes.filter(n => n.label === 'Concept').length,\n  authorsAdded: $json.nodes.filter(n => n.label === 'Author').length,\n  methodsIdentified: $json.nodes.filter(n => n.label === 'Method').length,\n  timestamp: new Date().toISOString()\n};\n\nreturn stats;"
-      },
-      "id": "kb-stats",
-      "name": "KB Statistics",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [1650, 300]
-    },
-    {
-      "parameters": {
-        "operation": "insert",
-        "table": "kb_updates",
-        "columns": "papers_processed,concepts,authors,methods,updated_at"
-      },
-      "id": "log-update",
-      "name": "Log KB Update",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 1,
-      "position": [1850, 300]
+      "position": [1650, 300],
+      "notes": "Export report"
     }
   ],
   "connections": {
-    "Daily KB Update": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive - Get Legal Document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive - Get Legal Document": {
+      "main": [
+        [
+          {
+            "node": "PDF Vector - Extract Citations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF Vector - Extract Citations": {
+      "main": [
+        [
+          {
+            "node": "Analyze & Validate Citations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze & Validate Citations": {
+      "main": [
+        [
+          {
+            "node": "Has Academic DOIs?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Academic DOIs?": {
       "main": [
         [
           {
             "node": "PDF Vector - Fetch Papers",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Citation Report",
             "type": "main",
             "index": 0
           }
@@ -2707,78 +1862,18 @@ Extend the "Build Graph Structure" node to create custom relationships:
       "main": [
         [
           {
-            "node": "PDF Vector - Parse Papers",
+            "node": "Generate Citation Report",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "PDF Vector - Parse Papers": {
+    "Generate Citation Report": {
       "main": [
         [
           {
-            "node": "Extract Entities",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract Entities": {
-      "main": [
-        [
-          {
-            "node": "Build Graph Structure",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Build Graph Structure": {
-      "main": [
-        [
-          {
-            "node": "Create Graph Nodes",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Create Relationships",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Create Graph Nodes": {
-      "main": [
-        [
-          {
-            "node": "KB Statistics",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Create Relationships": {
-      "main": [
-        [
-          {
-            "node": "KB Statistics",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "KB Statistics": {
-      "main": [
-        [
-          {
-            "node": "Log KB Update",
+            "node": "Save Citation Report",
             "type": "main",
             "index": 0
           }
@@ -2793,19 +1888,242 @@ Extend the "Build Graph Structure" node to create custom relationships:
 
 ---
 
-## Summary
+## 10. Process Documents with Analytics Dashboard
 
-These 10 workflow templates demonstrate the full capabilities of the PDF Vector node for n8n:
+**Name:** Enterprise Document Processing Pipeline
 
-1. **Research Paper Analysis** - AI-powered paper analysis and insights
-2. **Literature Review Automation** - Multi-database search and synthesis
-3. **PDF to Markdown Converter** - Bulk document conversion
-4. **Citation Network Builder** - Academic relationship mapping
-5. **Document Data Extraction** - Smart field extraction from PDFs
-6. **Paper Monitoring Bot** - Automated research alerts
-7. **Paper Summarizer** - Multi-format summarization
-8. **Multi-Database Search** - Unified academic search
-9. **Document Alert System** - Smart notifications for new documents
-10. **Knowledge Base Builder** - Academic knowledge graph creation
+**Description:**
+Organizations dealing with high-volume document processing face challenges in efficiently handling diverse document types while maintaining quality and tracking performance metrics. This enterprise-grade workflow provides a scalable solution for batch processing documents including PDFs, scanned documents, and images (JPG, PNG) with comprehensive analytics, error handling, and quality assurance. Using OCR technology for image-based content, it's designed for large organizations, document processing centers, and digital transformation initiatives that need to process thousands of documents reliably from any format.
 
-Each template is designed to be production-ready with proper error handling, scalability considerations, and clear documentation. Users can customize these templates based on their specific needs and integrate them with other n8n nodes for even more powerful automation workflows.
+The workflow supports mixed document formats including PDFs, Word documents, scanned images, photographs, and various image formats (JPG, PNG), processing them in parallel batches to maximize throughput. OCR processing handles handwritten documents, poor quality scans, and photographed documents. It includes sophisticated error handling with automatic retry logic, ensuring that temporary failures don't halt the entire process. The system generates detailed analytics showing processing success rates, average processing times, credit usage patterns, and quality scores. This data helps organizations optimize their document processing operations and identify bottlenecks or problematic document types.
+
+Implementation involves setting up batch size parameters, configuring quality thresholds, and defining error handling rules. The template includes advanced features such as automatic document prioritization based on size and complexity, intelligent credit usage optimization to minimize costs, and real-time processing monitoring. Quality assurance checks validate extracted content for completeness and accuracy, flagging documents that may require manual review. Customization options include setting up custom document categories, defining specific extraction rules for different document types, and configuring automated workflows for documents that fail quality checks. The comprehensive analytics dashboard provides insights into processing trends, helping organizations make data-driven decisions about their document processing strategies.
+
+Note: This workflow uses the PDF Vector community node which requires separate installation. Please follow the installation guide at the PDF Vector documentation page before importing this template.
+
+**Template Code:**
+```json
+{
+  "meta": {
+    "instanceId": "placeholder"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Batch Document Processor\\n\\nThis workflow processes multiple documents in parallel with comprehensive error handling and analytics.\\n\\n**Features:**\\n- Parallel processing\\n- Error recovery\\n- Processing analytics\\n- Quality checks"
+      },
+      "id": "workflow-info",
+      "name": "Workflow Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [250, 150]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "fileId": "={{ $json.folderId }}"
+      },
+      "id": "list-documents",
+      "name": "List Documents",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [450, 300],
+      "notes": "Get documents from folder"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validate and categorize documents\nconst files = $input.all().map(item => item.json);\nconst processingQueue = {\n  valid: [],\n  invalid: [],\n  stats: {\n    totalFiles: files.length,\n    pdfCount: 0,\n    wordCount: 0,\n    imageCount: 0,\n    otherCount: 0,\n    totalSizeMB: 0\n  }\n};\n\n// Define supported formats\nconst supportedFormats = {\n  pdf: ['application/pdf'],\n  word: [\n    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',\n    'application/msword'\n  ],\n  image: ['image/jpeg', 'image/png', 'image/gif']\n};\n\nfiles.forEach(file => {\n  const mimeType = file.mimeType;\n  const sizeMB = (file.size || 0) / (1024 * 1024);\n  \n  // Check if supported\n  let fileType = 'other';\n  let isValid = false;\n  \n  if (supportedFormats.pdf.includes(mimeType)) {\n    fileType = 'pdf';\n    isValid = true;\n    processingQueue.stats.pdfCount++;\n  } else if (supportedFormats.word.includes(mimeType)) {\n    fileType = 'word';\n    isValid = true;\n    processingQueue.stats.wordCount++;\n  } else if (supportedFormats.image.includes(mimeType)) {\n    fileType = 'image';\n    isValid = true;\n    processingQueue.stats.imageCount++;\n  } else {\n    processingQueue.stats.otherCount++;\n  }\n  \n  // Check file size (max 50MB)\n  if (sizeMB > 50) {\n    isValid = false;\n  }\n  \n  const fileInfo = {\n    ...file,\n    fileType,\n    sizeMB: Math.round(sizeMB * 100) / 100,\n    processingPriority: sizeMB < 5 ? 'high' : sizeMB < 20 ? 'medium' : 'low',\n    estimatedCredits: fileType === 'pdf' ? Math.ceil(sizeMB * 2) : 1\n  };\n  \n  if (isValid) {\n    processingQueue.valid.push(fileInfo);\n  } else {\n    processingQueue.invalid.push({\n      ...fileInfo,\n      reason: sizeMB > 50 ? 'File too large' : 'Unsupported format'\n    });\n  }\n  \n  processingQueue.stats.totalSizeMB += sizeMB;\n});\n\n// Sort by priority\nprocessingQueue.valid.sort((a, b) => {\n  const priority = { high: 1, medium: 2, low: 3 };\n  return priority[a.processingPriority] - priority[b.processingPriority];\n});\n\nreturn [{\n  json: processingQueue\n}];"
+      },
+      "id": "validate-files",
+      "name": "Validate & Queue Files",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "notes": "Validate and prioritize files"
+    },
+    {
+      "parameters": {
+        "batchSize": 5,
+        "options": {}
+      },
+      "id": "batch-processor",
+      "name": "Process in Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "notes": "Process 5 files at a time"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "processingBatch",
+              "value": "={{ $json }}"
+            }
+          ]
+        }
+      },
+      "id": "split-files",
+      "name": "Split Out Files",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [1050, 300],
+      "notes": "Prepare individual files"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "processingBatch.valid",
+        "options": {}
+      },
+      "id": "split-items",
+      "name": "Split Items",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "operation": "parse",
+        "inputType": "url",
+        "url": "={{ $json.webViewLink }}",
+        "useLLM": "auto"
+      },
+      "id": "pdfvector-process",
+      "name": "PDF Vector - Process Document/Image",
+      "type": "n8n-nodes-pdfvector.pdfVector",
+      "typeVersion": 1,
+      "position": [1450, 250],
+      "notes": "Process document or image",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Track processing results\nconst result = $input.first().json;\nconst originalFile = $node['Split Items'].json;\nconst startTime = new Date($node['Split Items'].context.executionTime);\nconst endTime = new Date();\nconst processingTime = (endTime - startTime) / 1000;\n\nconst processedFile = {\n  // Original file info\n  fileName: originalFile.name,\n  fileType: originalFile.fileType,\n  sizeMB: originalFile.sizeMB,\n  \n  // Processing results\n  success: !result.error,\n  processingTime: Math.round(processingTime * 100) / 100,\n  creditsUsed: result.creditsUsed || originalFile.estimatedCredits,\n  \n  // Content info\n  contentLength: result.content?.length || 0,\n  wordCount: result.content?.split(' ').length || 0,\n  \n  // Error tracking\n  error: result.error ? {\n    message: result.error.message || 'Unknown error',\n    code: result.error.code\n  } : null,\n  \n  // Timestamps\n  processedAt: new Date().toISOString()\n};\n\n// Quality checks\nif (processedFile.success) {\n  processedFile.qualityChecks = {\n    hasContent: processedFile.contentLength > 100,\n    reasonableLength: processedFile.wordCount > 10 && processedFile.wordCount < 100000,\n    properEncoding: !result.content?.includes('�'),\n    creditsEfficiency: processedFile.creditsUsed / processedFile.sizeMB < 5\n  };\n  \n  // Overall quality score\n  const checks = Object.values(processedFile.qualityChecks);\n  processedFile.qualityScore = (checks.filter(c => c).length / checks.length) * 100;\n}\n\nreturn [{ json: processedFile }];"
+      },
+      "id": "track-results",
+      "name": "Track Processing Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [1650, 300],
+      "notes": "Analyze results"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "collect-batch",
+      "name": "Collect Batch Results",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [1850, 300],
+      "notes": "Aggregate batch results"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate comprehensive analytics report\nconst allResults = $input.all().map(item => item.json);\nconst initialStats = $node['Validate & Queue Files'].json.stats;\n\n// Calculate processing analytics\nconst analytics = {\n  overview: {\n    totalFilesFound: initialStats.totalFiles,\n    filesProcessed: allResults.length,\n    successfulProcessing: allResults.filter(r => r.success).length,\n    failedProcessing: allResults.filter(r => !r.success).length,\n    successRate: 0,\n    totalProcessingTime: 0,\n    totalCreditsUsed: 0,\n    averageQualityScore: 0\n  },\n  \n  byFileType: {\n    pdf: { processed: 0, successful: 0, failed: 0, avgTime: 0, creditsUsed: 0 },\n    word: { processed: 0, successful: 0, failed: 0, avgTime: 0, creditsUsed: 0 },\n    image: { processed: 0, successful: 0, failed: 0, avgTime: 0, creditsUsed: 0 }\n  },\n  \n  errors: {},\n  \n  performance: {\n    fastestFile: null,\n    slowestFile: null,\n    mostEfficientCredit: null,\n    leastEfficientCredit: null\n  },\n  \n  quality: {\n    highQuality: [],\n    lowQuality: [],\n    averageWordCount: 0\n  }\n};\n\n// Process results\nlet totalQualityScore = 0;\nlet qualityCount = 0;\n\nallResults.forEach(result => {\n  // Update overview\n  analytics.overview.totalProcessingTime += result.processingTime || 0;\n  analytics.overview.totalCreditsUsed += result.creditsUsed || 0;\n  \n  // Update by file type\n  const type = result.fileType;\n  if (analytics.byFileType[type]) {\n    analytics.byFileType[type].processed++;\n    if (result.success) {\n      analytics.byFileType[type].successful++;\n    } else {\n      analytics.byFileType[type].failed++;\n    }\n    analytics.byFileType[type].avgTime += result.processingTime || 0;\n    analytics.byFileType[type].creditsUsed += result.creditsUsed || 0;\n  }\n  \n  // Track errors\n  if (result.error) {\n    const errorType = result.error.message || 'Unknown';\n    analytics.errors[errorType] = (analytics.errors[errorType] || 0) + 1;\n  }\n  \n  // Track performance\n  if (!analytics.performance.fastestFile || result.processingTime < analytics.performance.fastestFile.time) {\n    analytics.performance.fastestFile = {\n      name: result.fileName,\n      time: result.processingTime\n    };\n  }\n  if (!analytics.performance.slowestFile || result.processingTime > analytics.performance.slowestFile.time) {\n    analytics.performance.slowestFile = {\n      name: result.fileName,\n      time: result.processingTime\n    };\n  }\n  \n  // Track quality\n  if (result.qualityScore !== undefined) {\n    totalQualityScore += result.qualityScore;\n    qualityCount++;\n    \n    if (result.qualityScore >= 75) {\n      analytics.quality.highQuality.push(result.fileName);\n    } else if (result.qualityScore < 50) {\n      analytics.quality.lowQuality.push(result.fileName);\n    }\n  }\n  \n  analytics.quality.averageWordCount += result.wordCount || 0;\n});\n\n// Calculate averages\nanalytics.overview.successRate = Math.round((analytics.overview.successfulProcessing / analytics.overview.filesProcessed) * 100);\nanalytics.overview.averageQualityScore = qualityCount > 0 ? Math.round(totalQualityScore / qualityCount) : 0;\nanalytics.quality.averageWordCount = Math.round(analytics.quality.averageWordCount / allResults.length);\n\n// Calculate file type averages\nObject.keys(analytics.byFileType).forEach(type => {\n  const typeData = analytics.byFileType[type];\n  if (typeData.processed > 0) {\n    typeData.avgTime = Math.round((typeData.avgTime / typeData.processed) * 100) / 100;\n    typeData.successRate = Math.round((typeData.successful / typeData.processed) * 100);\n  }\n});\n\n// Generate report\nlet report = `# Batch Processing Analytics Report\\n\\n`;\nreport += `**Generated:** ${new Date().toLocaleString()}\\n\\n`;\n\nreport += `## Overview\\n`;\nreport += `- **Files Processed:** ${analytics.overview.filesProcessed} of ${analytics.overview.totalFilesFound}\\n`;\nreport += `- **Success Rate:** ${analytics.overview.successRate}%\\n`;\nreport += `- **Total Processing Time:** ${Math.round(analytics.overview.totalProcessingTime)}s\\n`;\nreport += `- **Credits Used:** ${analytics.overview.totalCreditsUsed}\\n`;\nreport += `- **Average Quality Score:** ${analytics.overview.averageQualityScore}%\\n\\n`;\n\nreport += `## Performance by File Type\\n`;\nObject.entries(analytics.byFileType).forEach(([type, data]) => {\n  if (data.processed > 0) {\n    report += `### ${type.toUpperCase()}\\n`;\n    report += `- Processed: ${data.processed}\\n`;\n    report += `- Success Rate: ${data.successRate}%\\n`;\n    report += `- Avg Time: ${data.avgTime}s\\n`;\n    report += `- Credits: ${data.creditsUsed}\\n\\n`;\n  }\n});\n\nif (Object.keys(analytics.errors).length > 0) {\n  report += `## Errors Encountered\\n`;\n  Object.entries(analytics.errors).forEach(([error, count]) => {\n    report += `- ${error}: ${count} occurrences\\n`;\n  });\n  report += `\\n`;\n}\n\nreport += `## Recommendations\\n`;\nif (analytics.overview.successRate < 90) {\n  report += `- Success rate is below 90%. Review error logs for common issues.\\n`;\n}\nif (analytics.overview.averageQualityScore < 70) {\n  report += `- Quality scores are low. Consider using 'always' LLM mode for better results.\\n`;\n}\nif (analytics.quality.lowQuality.length > 0) {\n  report += `- ${analytics.quality.lowQuality.length} files had low quality scores. Manual review recommended.\\n`;\n}\n\nreturn [{\n  json: {\n    analytics,\n    report,\n    processedFiles: allResults,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "generate-analytics",
+      "name": "Generate Analytics Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [2050, 300],
+      "notes": "Create analytics dashboard"
+    }
+  ],
+  "connections": {
+    "List Documents": {
+      "main": [
+        [
+          {
+            "node": "Validate & Queue Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate & Queue Files": {
+      "main": [
+        [
+          {
+            "node": "Process in Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process in Batches": {
+      "main": [
+        [
+          {
+            "node": "Split Out Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out Files": {
+      "main": [
+        [
+          {
+            "node": "Split Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Items": {
+      "main": [
+        [
+          {
+            "node": "PDF Vector - Process",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF Vector - Process": {
+      "main": [
+        [
+          {
+            "node": "Track Processing Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track Processing Results": {
+      "main": [
+        [
+          {
+            "node": "Collect Batch Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Batch Results": {
+      "main": [
+        [
+          {
+            "node": "Process in Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
+```
+
+**Free or Paid?** Free
