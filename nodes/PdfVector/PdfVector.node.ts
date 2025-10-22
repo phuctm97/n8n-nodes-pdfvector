@@ -17,7 +17,8 @@ export class PdfVector implements INodeType {
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Turn complex PDFs, Word documents, or images into clean Markdown texts and search across millions of academic papers using PDF Vector with OCR support.',
+		description:
+			'Convert PDFs, Word, Excel documents, and images to clean markdown, extract structured data with AI, process invoices with specialized parsing, and search millions of academic papers across PubMed, ArXiv, Google Scholar, and more.',
 		defaults: {
 			name: 'PDF Vector',
 		},
@@ -46,6 +47,10 @@ export class PdfVector implements INodeType {
 						name: 'Document',
 						value: 'document',
 					},
+					{
+						name: 'Invoice',
+						value: 'invoice',
+					},
 				],
 				default: 'academic',
 			},
@@ -63,13 +68,13 @@ export class PdfVector implements INodeType {
 					{
 						name: 'Search',
 						value: 'search',
-						description: 'Search academic publications',
+						description: 'Search across PubMed, ArXiv, Google Scholar, and more',
 						action: 'Search academic publications',
 					},
 					{
 						name: 'Fetch',
 						value: 'fetch',
-						description: 'Fetch a specific publication',
+						description: 'Fetch publications by DOI, PubMed ID, ArXiv ID, etc',
 						action: 'Fetch a specific publication',
 					},
 				],
@@ -89,20 +94,55 @@ export class PdfVector implements INodeType {
 					{
 						name: 'Parse',
 						value: 'parse',
-						description: 'Parse a PDF, Word document, or image',
+						description: 'Convert PDFs, Word, Excel, or images to markdown',
 						action: 'Parse a document',
 					},
 					{
 						name: 'Ask',
 						value: 'ask',
-						description: 'Ask questions about a PDF, Word document, or image',
+						description: 'Ask questions about PDF, Word, Excel, or image',
 						action: 'Ask questions about a document',
 					},
 					{
 						name: 'Extract',
 						value: 'extract',
-						description: 'Extract structured data from a PDF, Word document, or image',
+						description:
+							'Extract structured data from PDF, Word, Excel, or image using JSON Schema',
 						action: 'Extract structured data from a document',
+					},
+				],
+				default: 'parse',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+					},
+				},
+				options: [
+					{
+						name: 'Parse',
+						value: 'parse',
+						description: 'Parse invoice, expense, bank statement or financial document',
+						action: 'Parse an invoice',
+					},
+					{
+						name: 'Ask',
+						value: 'ask',
+						description:
+							'Ask questions about invoice, expense, bank statement or financial document',
+						action: 'Ask questions about an invoice',
+					},
+					{
+						name: 'Extract',
+						value: 'extract',
+						description:
+							'Extract invoice, expense, bank statement or financial document structured data',
+						action: 'Extract structured data from an invoice',
 					},
 				],
 				default: 'parse',
@@ -120,7 +160,8 @@ export class PdfVector implements INodeType {
 					},
 				},
 				default: '',
-				description: 'Search query for academic publications',
+				description: 'Search query for academic publications (1-400 characters)',
+				placeholder: 'machine learning in healthcare',
 			},
 			{
 				displayName: 'Providers',
@@ -142,8 +183,16 @@ export class PdfVector implements INodeType {
 						value: 'eric',
 					},
 					{
+						name: 'Europe PMC',
+						value: 'europe-pmc',
+					},
+					{
 						name: 'Google Scholar',
 						value: 'google-scholar',
+					},
+					{
+						name: 'OpenAlex',
+						value: 'openalex',
 					},
 					{
 						name: 'PubMed',
@@ -155,7 +204,8 @@ export class PdfVector implements INodeType {
 					},
 				],
 				default: ['semantic-scholar'],
-				description: 'Database providers to search',
+				description:
+					'Academic database providers to search. Select multiple to search across databases.',
 			},
 			{
 				displayName: 'Limit',
@@ -311,8 +361,8 @@ export class PdfVector implements INodeType {
 				},
 				default: '',
 				description:
-					'Publication IDs (DOI, PubMed ID, ArXiv ID, etc.). Separate multiple IDs with commas.',
-				placeholder: '10.1038/nature12373, PMC3883140, arXiv:1234.5678',
+					'Publication IDs with auto-detection. Supports DOI, PubMed ID, ArXiv ID, Semantic Scholar ID, ERIC ID, Europe PMC ID, and OpenAlex ID. Separate multiple IDs with commas (max 100).',
+				placeholder: '10.1038/nature12373, PMC3883140, arXiv:1234.5678, ED123456',
 			},
 			{
 				displayName: 'Fields',
@@ -396,12 +446,12 @@ export class PdfVector implements INodeType {
 					{
 						name: 'URL',
 						value: 'url',
-						description: 'Provide a URL to the document',
+						description: 'Provide a public URL to the document',
 					},
 					{
 						name: 'File',
 						value: 'file',
-						description: 'Upload a PDF, Word doc, or image file from the workflow',
+						description: 'Upload a PDF, Word, Excel, or image file',
 					},
 				],
 				default: 'url',
@@ -420,7 +470,7 @@ export class PdfVector implements INodeType {
 					},
 				},
 				default: '',
-				description: 'URL of the document or image to parse (PDF, Word, JPG, PNG)',
+				description: 'URL of the document to parse (PDF, Word, Excel, Image)',
 			},
 			{
 				displayName: 'Binary Property',
@@ -483,12 +533,12 @@ export class PdfVector implements INodeType {
 					{
 						name: 'URL',
 						value: 'url',
-						description: 'Provide a URL to the document',
+						description: 'Provide a public URL to the document',
 					},
 					{
 						name: 'File',
 						value: 'file',
-						description: 'Upload a PDF, Word doc, or image file from the workflow',
+						description: 'Upload a PDF, Word, Excel, or image file',
 					},
 				],
 				default: 'url',
@@ -507,7 +557,7 @@ export class PdfVector implements INodeType {
 					},
 				},
 				default: '',
-				description: 'URL of the document or image to ask questions about (PDF, Word, JPG, PNG)',
+				description: 'URL of the document to ask questions about (PDF, Word, Excel, Image)',
 			},
 			{
 				displayName: 'Binary Property',
@@ -557,12 +607,12 @@ export class PdfVector implements INodeType {
 					{
 						name: 'URL',
 						value: 'url',
-						description: 'Provide a URL to the document',
+						description: 'Provide a public URL to the document',
 					},
 					{
 						name: 'File',
 						value: 'file',
-						description: 'Upload a PDF, Word doc, or image file from the workflow',
+						description: 'Upload a PDF, Word, Excel, or image file',
 					},
 				],
 				default: 'url',
@@ -581,7 +631,7 @@ export class PdfVector implements INodeType {
 					},
 				},
 				default: '',
-				description: 'URL of the document to extract data from',
+				description: 'URL of the document to extract data from (PDF, Word, Excel, Image)',
 			},
 			{
 				displayName: 'Binary Property',
@@ -628,8 +678,241 @@ export class PdfVector implements INodeType {
 						operation: ['extract'],
 					},
 				},
-				default: '{\n  "type": "object",\n  "properties": {\n    "invoiceNumber": { "type": "string" },\n    "date": { "type": "string" },\n    "total": { "type": "number" },\n    "items": {\n      "type": "array",\n      "items": {\n        "type": "object",\n        "properties": {\n          "description": { "type": "string" },\n          "quantity": { "type": "number" },\n          "price": { "type": "number" }\n        }\n      }\n    }\n  },\n  "required": ["invoiceNumber"],\n  "additionalProperties": false\n}',
+				default:
+					'{\n  "type": "object",\n  "properties": {\n    "invoiceNumber": { "type": "string" },\n    "date": { "type": "string" },\n    "total": { "type": "number" },\n    "items": {\n      "type": "array",\n      "items": {\n        "type": "object",\n        "properties": {\n          "description": { "type": "string" },\n          "quantity": { "type": "number" },\n          "price": { "type": "number" }\n        }\n      }\n    }\n  },\n  "required": ["invoiceNumber"],\n  "additionalProperties": false\n}',
 				description: 'JSON schema that defines the structure of data to extract',
+				typeOptions: {
+					rows: 10,
+				},
+				hint: 'Use our free [JSON Schema Editor](https://www.pdfvector.com/json-schema-editor) to create and validate your schema.',
+			},
+			// Invoice Parse Parameters
+			{
+				displayName: 'Input Type',
+				name: 'inputType',
+				type: 'options',
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['parse'],
+					},
+				},
+				options: [
+					{
+						name: 'URL',
+						value: 'url',
+						description:
+							'Provide a public URL to the invoice, expense, bank statement or financial document',
+					},
+					{
+						name: 'File',
+						value: 'file',
+						description: 'Upload an invoice, expense, bank statement or financial document file',
+					},
+				],
+				default: 'url',
+				description: 'Choose how to provide the invoice',
+			},
+			{
+				displayName: 'Invoice URL',
+				name: 'url',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['parse'],
+						inputType: ['url'],
+					},
+				},
+				default: '',
+				description:
+					'URL of the invoice, expense, bank statement or financial document to parse (PDF, Word, Image)',
+			},
+			{
+				displayName: 'Binary Property',
+				name: 'binaryPropertyName',
+				type: 'string',
+				default: 'data',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['parse'],
+						inputType: ['file'],
+					},
+				},
+				description: 'Name of the binary property containing the invoice file',
+				hint: 'The name of the property that holds the binary data from the previous node',
+			},
+			// Invoice Ask Parameters
+			{
+				displayName: 'Input Type',
+				name: 'inputType',
+				type: 'options',
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['ask'],
+					},
+				},
+				options: [
+					{
+						name: 'URL',
+						value: 'url',
+						description:
+							'Provide a public URL to the invoice, expense, bank statement or financial document',
+					},
+					{
+						name: 'File',
+						value: 'file',
+						description: 'Upload an invoice, expense, bank statement or financial document file',
+					},
+				],
+				default: 'url',
+				description: 'Choose how to provide the invoice',
+			},
+			{
+				displayName: 'Invoice URL',
+				name: 'url',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['ask'],
+						inputType: ['url'],
+					},
+				},
+				default: '',
+				description:
+					'URL of the invoice, expense, bank statement or financial document to ask questions about (PDF, Word, Image)',
+			},
+			{
+				displayName: 'Binary Property',
+				name: 'binaryPropertyName',
+				type: 'string',
+				default: 'data',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['ask'],
+						inputType: ['file'],
+					},
+				},
+				description: 'Name of the binary property containing the invoice file',
+				hint: 'The name of the property that holds the binary data from the previous node',
+			},
+			{
+				displayName: 'Prompt',
+				name: 'prompt',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['ask'],
+					},
+				},
+				default: '',
+				description: 'Question about the invoice (1-2000 characters)',
+				typeOptions: {
+					rows: 4,
+				},
+				placeholder: 'What is the total amount and due date?',
+			},
+			// Invoice Extract Parameters
+			{
+				displayName: 'Input Type',
+				name: 'inputType',
+				type: 'options',
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['extract'],
+					},
+				},
+				options: [
+					{
+						name: 'URL',
+						value: 'url',
+						description:
+							'Provide a public URL to the invoice, expense, bank statement or financial document',
+					},
+					{
+						name: 'File',
+						value: 'file',
+						description: 'Upload an invoice, expense, bank statement or financial document file',
+					},
+				],
+				default: 'url',
+				description: 'Choose how to provide the invoice',
+			},
+			{
+				displayName: 'Invoice URL',
+				name: 'url',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['extract'],
+						inputType: ['url'],
+					},
+				},
+				default: '',
+				description:
+					'URL of the invoice, expense, bank statement or financial document to extract data from (PDF, Word, Image)',
+			},
+			{
+				displayName: 'Binary Property',
+				name: 'binaryPropertyName',
+				type: 'string',
+				default: 'data',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['extract'],
+						inputType: ['file'],
+					},
+				},
+				description: 'Name of the binary property containing the invoice file',
+				hint: 'The name of the property that holds the binary data from the previous node',
+			},
+			{
+				displayName: 'Prompt',
+				name: 'prompt',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['extract'],
+					},
+				},
+				default: '',
+				description: 'Instructions for data extraction from the invoice (1-2000 characters)',
+				typeOptions: {
+					rows: 4,
+				},
+				placeholder: 'Extract vendor details, line items, totals, taxes, and payment terms',
+			},
+			{
+				displayName: 'JSON Schema',
+				name: 'schema',
+				type: 'json',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['invoice'],
+						operation: ['extract'],
+					},
+				},
+				default:
+					'{\n  "type": "object",\n  "properties": {\n    "invoiceNumber": { "type": "string" },\n    "vendorName": { "type": "string" },\n    "date": { "type": "string" },\n    "dueDate": { "type": "string" },\n    "subtotal": { "type": "number" },\n    "tax": { "type": "number" },\n    "total": { "type": "number" },\n    "lineItems": {\n      "type": "array",\n      "items": {\n        "type": "object",\n        "properties": {\n          "description": { "type": "string" },\n          "quantity": { "type": "number" },\n          "unitPrice": { "type": "number" },\n          "amount": { "type": "number" }\n        }\n      }\n    }\n  },\n  "required": ["invoiceNumber", "total"],\n  "additionalProperties": false\n}',
+				description: 'JSON schema that defines the structure of invoice data to extract',
 				typeOptions: {
 					rows: 10,
 				},
@@ -874,11 +1157,9 @@ export class PdfVector implements INodeType {
 
 								// Validate that the schema is an object type with additionalProperties: false
 								if (schema.type !== 'object') {
-									throw new NodeOperationError(
-										this.getNode(),
-										'Schema must have type "object"',
-										{ itemIndex: i },
-									);
+									throw new NodeOperationError(this.getNode(), 'Schema must have type "object"', {
+										itemIndex: i,
+									});
 								}
 
 								if (schema.additionalProperties !== false) {
@@ -957,6 +1238,248 @@ export class PdfVector implements INodeType {
 								{
 									method: 'POST' as IHttpRequestMethods,
 									url: `${baseURL}/extract`,
+									body,
+									json: true,
+								},
+							)) as IDataObject;
+						}
+						break;
+					}
+					case 'invoice': {
+						if (operation === 'parse') {
+							const inputType = this.getNodeParameter('inputType', i) as string;
+
+							// Create a clean body object with only the required fields
+							const body: IDataObject = {};
+
+							if (inputType === 'file') {
+								// Handle binary file upload - send as base64
+								const binaryPropertyName = this.getNodeParameter('binaryPropertyName', i) as string;
+
+								// Check if binary data exists
+								if (!items[i].binary?.[binaryPropertyName]) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`No binary data found in property "${binaryPropertyName}"`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Get the binary data reference
+								const binaryData = items[i].binary![binaryPropertyName];
+
+								// Get the buffer using n8n helper method
+								const buffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
+
+								// Check if buffer is empty
+								if (!buffer || buffer.length === 0) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`Binary data in property "${binaryPropertyName}" is empty or invalid`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Convert buffer to base64
+								const base64File = buffer.toString('base64');
+
+								// Send file as base64 in the request body
+								body.file = base64File;
+
+								// Optional: Add filename if available
+								if (binaryData.fileName) {
+									body.fileName = binaryData.fileName;
+								}
+							} else if (inputType === 'url') {
+								// Use URL directly
+								const invoiceUrl = this.getNodeParameter('url', i) as string;
+								body.url = invoiceUrl;
+							} else {
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid input type: ${inputType}. Must be either 'file' or 'url'`,
+									{ itemIndex: i },
+								);
+							}
+
+							responseData = (await this.helpers.httpRequestWithAuthentication.call(
+								this,
+								'pdfVectorApi',
+								{
+									method: 'POST' as IHttpRequestMethods,
+									url: `${baseURL}/invoice-parse`,
+									body,
+									json: true,
+								},
+							)) as IDataObject;
+						} else if (operation === 'ask') {
+							const inputType = this.getNodeParameter('inputType', i) as string;
+							const prompt = this.getNodeParameter('prompt', i) as string;
+
+							// Create a clean body object with only the required fields
+							const body: IDataObject = {};
+
+							// Always include prompt
+							body.prompt = prompt;
+
+							if (inputType === 'file') {
+								// Handle binary file upload - send as base64
+								const binaryPropertyName = this.getNodeParameter('binaryPropertyName', i) as string;
+
+								// Check if binary data exists
+								if (!items[i].binary?.[binaryPropertyName]) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`No binary data found in property "${binaryPropertyName}"`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Get the binary data reference
+								const binaryData = items[i].binary![binaryPropertyName];
+
+								// Get the buffer using n8n helper method
+								const buffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
+
+								// Check if buffer is empty
+								if (!buffer || buffer.length === 0) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`Binary data in property "${binaryPropertyName}" is empty or invalid`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Convert buffer to base64
+								const base64File = buffer.toString('base64');
+
+								// Send file as base64 in the request body
+								body.file = base64File;
+
+								// Optional: Add filename if available
+								if (binaryData.fileName) {
+									body.fileName = binaryData.fileName;
+								}
+							} else if (inputType === 'url') {
+								// Use URL directly
+								const invoiceUrl = this.getNodeParameter('url', i) as string;
+								body.url = invoiceUrl;
+							} else {
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid input type: ${inputType}. Must be either 'file' or 'url'`,
+									{ itemIndex: i },
+								);
+							}
+
+							responseData = (await this.helpers.httpRequestWithAuthentication.call(
+								this,
+								'pdfVectorApi',
+								{
+									method: 'POST' as IHttpRequestMethods,
+									url: `${baseURL}/invoice-ask`,
+									body,
+									json: true,
+								},
+							)) as IDataObject;
+						} else if (operation === 'extract') {
+							const inputType = this.getNodeParameter('inputType', i) as string;
+							const prompt = this.getNodeParameter('prompt', i) as string;
+							const schemaString = this.getNodeParameter('schema', i) as string;
+
+							// Create a clean body object with only the required fields
+							const body: IDataObject = {};
+
+							// Always include prompt
+							body.prompt = prompt;
+
+							// Parse and validate the JSON schema
+							try {
+								const schema = JSON.parse(schemaString);
+
+								// Validate that the schema is an object type with additionalProperties: false
+								if (schema.type !== 'object') {
+									throw new NodeOperationError(this.getNode(), 'Schema must have type "object"', {
+										itemIndex: i,
+									});
+								}
+
+								if (schema.additionalProperties !== false) {
+									throw new NodeOperationError(
+										this.getNode(),
+										'Schema must include "additionalProperties": false',
+										{ itemIndex: i },
+									);
+								}
+
+								body.schema = schema;
+							} catch (error) {
+								if (error instanceof NodeOperationError) {
+									throw error;
+								}
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid JSON schema: ${(error as Error).message}`,
+									{ itemIndex: i },
+								);
+							}
+
+							if (inputType === 'file') {
+								// Handle binary file upload - send as base64
+								const binaryPropertyName = this.getNodeParameter('binaryPropertyName', i) as string;
+
+								// Check if binary data exists
+								if (!items[i].binary?.[binaryPropertyName]) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`No binary data found in property "${binaryPropertyName}"`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Get the binary data reference
+								const binaryData = items[i].binary![binaryPropertyName];
+
+								// Get the buffer using n8n helper method
+								const buffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
+
+								// Check if buffer is empty
+								if (!buffer || buffer.length === 0) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`Binary data in property "${binaryPropertyName}" is empty or invalid`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Convert buffer to base64
+								const base64File = buffer.toString('base64');
+
+								// Send file as base64 in the request body
+								body.file = base64File;
+
+								// Optional: Add filename if available
+								if (binaryData.fileName) {
+									body.fileName = binaryData.fileName;
+								}
+							} else if (inputType === 'url') {
+								// Use URL directly
+								const invoiceUrl = this.getNodeParameter('url', i) as string;
+								body.url = invoiceUrl;
+							} else {
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid input type: ${inputType}. Must be either 'file' or 'url'`,
+									{ itemIndex: i },
+								);
+							}
+
+							responseData = (await this.helpers.httpRequestWithAuthentication.call(
+								this,
+								'pdfVectorApi',
+								{
+									method: 'POST' as IHttpRequestMethods,
+									url: `${baseURL}/invoice-extract`,
 									body,
 									json: true,
 								},

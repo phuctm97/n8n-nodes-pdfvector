@@ -1,12 +1,19 @@
 {
   "name": "n8n-nodes-pdfvector",
-  "version": "0.8.2",
-  "description": "PDF Vector node for n8n to parse any PDF or Word document, extract structured data, and access millions of academic papers.",
+  "version": "0.8.3",
+  "description": "PDF Vector node for n8n to parse any PDF, Word, Excel, or image document, extract structured data, and access millions of academic papers.",
   "keywords": [
     "n8n-community-node-package",
     "pdfvector",
     "PDF",
+    "Word",
+    "Excel",
+    "Image",
     "parse-document",
+    "parse-invoice",
+    "parse-expense",
+    "parse-bank-statement",
+    "parse-financial-document",
     "academic",
     "academic-search",
     "academic-fetch"
