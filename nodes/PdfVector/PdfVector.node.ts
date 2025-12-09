@@ -48,6 +48,10 @@ export class PdfVector implements INodeType {
 						value: 'document',
 					},
 					{
+						name: 'Identity Document',
+						value: 'identityDocument',
+					},
+					{
 						name: 'Invoice',
 						value: 'invoice',
 					},
@@ -143,6 +147,39 @@ export class PdfVector implements INodeType {
 						description:
 							'Extract invoice, expense, bank statement or financial document structured data',
 						action: 'Extract structured data from an invoice',
+					},
+				],
+				default: 'parse',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['identityDocument'],
+					},
+				},
+				options: [
+					{
+						name: 'Parse',
+						value: 'parse',
+						description:
+							'Parse identity documents (passports, driver licenses, ID cards, national IDs) to markdown',
+						action: 'Parse an identity document',
+					},
+					{
+						name: 'Ask',
+						value: 'ask',
+						description: 'Ask questions about identity document content',
+						action: 'Ask questions about an identity document',
+					},
+					{
+						name: 'Extract',
+						value: 'extract',
+						description: 'Extract structured data from identity documents using JSON Schema',
+						action: 'Extract structured data from an identity document',
 					},
 				],
 				default: 'parse',
@@ -918,6 +955,235 @@ export class PdfVector implements INodeType {
 				},
 				hint: 'Use our free [JSON Schema Editor](https://www.pdfvector.com/json-schema-editor) to create and validate your schema.',
 			},
+			// Identity Document Parse Parameters
+			{
+				displayName: 'Input Type',
+				name: 'inputType',
+				type: 'options',
+				displayOptions: {
+					show: {
+						resource: ['identityDocument'],
+						operation: ['parse'],
+					},
+				},
+				options: [
+					{
+						name: 'URL',
+						value: 'url',
+						description: 'Provide a public URL to the identity document',
+					},
+					{
+						name: 'File',
+						value: 'file',
+						description: 'Upload a PDF or image file of the identity document',
+					},
+				],
+				default: 'url',
+				description: 'Choose how to provide the identity document',
+			},
+			{
+				displayName: 'Identity Document URL',
+				name: 'url',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['identityDocument'],
+						operation: ['parse'],
+						inputType: ['url'],
+					},
+				},
+				default: '',
+				description:
+					'URL of the identity document to parse (passport, driver license, ID card, national ID)',
+			},
+			{
+				displayName: 'Binary Property',
+				name: 'binaryPropertyName',
+				type: 'string',
+				default: 'data',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['identityDocument'],
+						operation: ['parse'],
+						inputType: ['file'],
+					},
+				},
+				description: 'Name of the binary property containing the identity document file',
+				hint: 'The name of the property that holds the binary data from the previous node',
+			},
+			// ID Document Ask Parameters
+			{
+				displayName: 'Input Type',
+				name: 'inputType',
+				type: 'options',
+				displayOptions: {
+					show: {
+						resource: ['identityDocument'],
+						operation: ['ask'],
+					},
+				},
+				options: [
+					{
+						name: 'URL',
+						value: 'url',
+						description: 'Provide a public URL to the identity document',
+					},
+					{
+						name: 'File',
+						value: 'file',
+						description: 'Upload a PDF or image file of the identity document',
+					},
+				],
+				default: 'url',
+				description: 'Choose how to provide the identity document',
+			},
+			{
+				displayName: 'Identity Document URL',
+				name: 'url',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['identityDocument'],
+						operation: ['ask'],
+						inputType: ['url'],
+					},
+				},
+				default: '',
+				description:
+						'URL of the identity document to ask questions about (passport, driver license, ID card, national ID)',
+			},
+			{
+				displayName: 'Binary Property',
+				name: 'binaryPropertyName',
+				type: 'string',
+				default: 'data',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['identityDocument'],
+						operation: ['ask'],
+						inputType: ['file'],
+					},
+				},
+				description: 'Name of the binary property containing the identity document file',
+				hint: 'The name of the property that holds the binary data from the previous node',
+			},
+			{
+				displayName: 'Prompt',
+				name: 'prompt',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['identityDocument'],
+						operation: ['ask'],
+					},
+				},
+				default: '',
+				description: 'Question about the identity document (1-2000 characters)',
+				typeOptions: {
+					rows: 4,
+				},
+				placeholder: 'What is the full name, date of birth, and expiry date on this ID?',
+			},
+			// ID Document Extract Parameters
+			{
+				displayName: 'Input Type',
+				name: 'inputType',
+				type: 'options',
+				displayOptions: {
+					show: {
+						resource: ['identityDocument'],
+						operation: ['extract'],
+					},
+				},
+				options: [
+					{
+						name: 'URL',
+						value: 'url',
+						description: 'Provide a public URL to the identity document',
+					},
+					{
+						name: 'File',
+						value: 'file',
+						description: 'Upload a PDF or image file of the identity document',
+					},
+				],
+				default: 'url',
+				description: 'Choose how to provide the identity document',
+			},
+			{
+				displayName: 'Identity Document URL',
+				name: 'url',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['identityDocument'],
+						operation: ['extract'],
+						inputType: ['url'],
+					},
+				},
+				default: '',
+				description:
+					'URL of the identity document to extract data from (passport, driver license, ID card, national ID)',
+			},
+			{
+				displayName: 'Binary Property',
+				name: 'binaryPropertyName',
+				type: 'string',
+				default: 'data',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['identityDocument'],
+						operation: ['extract'],
+						inputType: ['file'],
+					},
+				},
+				description: 'Name of the binary property containing the identity document file',
+				hint: 'The name of the property that holds the binary data from the previous node',
+			},
+			{
+				displayName: 'Prompt',
+				name: 'prompt',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['identityDocument'],
+						operation: ['extract'],
+					},
+				},
+				default: '',
+				description: 'Instructions for data extraction from the identity document (1-2000 characters)',
+				typeOptions: {
+					rows: 4,
+				},
+				placeholder: 'Extract all personal and document information from this identity document',
+			},
+			{
+				displayName: 'JSON Schema',
+				name: 'schema',
+				type: 'json',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['identityDocument'],
+						operation: ['extract'],
+					},
+				},
+				default:
+					'{\n  "type": "object",\n  "properties": {\n    "documentType": { "type": "string" },\n    "documentNumber": { "type": "string" },\n    "issuingCountry": { "type": "string" },\n    "fullName": { "type": "string" },\n    "firstName": { "type": "string" },\n    "lastName": { "type": "string" },\n    "dateOfBirth": { "type": "string" },\n    "gender": { "type": "string" },\n    "nationality": { "type": "string" },\n    "address": { "type": "string" },\n    "issueDate": { "type": "string" },\n    "expiryDate": { "type": "string" }\n  },\n  "required": ["documentType", "documentNumber", "fullName"],\n  "additionalProperties": false\n}',
+					description: 'JSON schema that defines the structure of identity document data to extract',
+				typeOptions: {
+					rows: 10,
+				},
+				hint: 'Use our free [JSON Schema Editor](https://www.pdfvector.com/json-schema-editor) to create and validate your schema.',
+			},
 		],
 	};
 
@@ -1480,6 +1746,248 @@ export class PdfVector implements INodeType {
 								{
 									method: 'POST' as IHttpRequestMethods,
 									url: `${baseURL}/invoice-extract`,
+									body,
+									json: true,
+								},
+							)) as IDataObject;
+						}
+						break;
+					}
+					case 'identityDocument': {
+						if (operation === 'parse') {
+							const inputType = this.getNodeParameter('inputType', i) as string;
+
+							// Create a clean body object with only the required fields
+							const body: IDataObject = {};
+
+							if (inputType === 'file') {
+								// Handle binary file upload - send as base64
+								const binaryPropertyName = this.getNodeParameter('binaryPropertyName', i) as string;
+
+								// Check if binary data exists
+								if (!items[i].binary?.[binaryPropertyName]) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`No binary data found in property "${binaryPropertyName}"`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Get the binary data reference
+								const binaryData = items[i].binary![binaryPropertyName];
+
+								// Get the buffer using n8n helper method
+								const buffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
+
+								// Check if buffer is empty
+								if (!buffer || buffer.length === 0) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`Binary data in property "${binaryPropertyName}" is empty or invalid`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Convert buffer to base64
+								const base64File = buffer.toString('base64');
+
+								// Send file as base64 in the request body
+								body.file = base64File;
+
+								// Optional: Add filename if available
+								if (binaryData.fileName) {
+									body.fileName = binaryData.fileName;
+								}
+							} else if (inputType === 'url') {
+								// Use URL directly
+								const idDocumentUrl = this.getNodeParameter('url', i) as string;
+								body.url = idDocumentUrl;
+							} else {
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid input type: ${inputType}. Must be either 'file' or 'url'`,
+									{ itemIndex: i },
+								);
+							}
+
+							responseData = (await this.helpers.httpRequestWithAuthentication.call(
+								this,
+								'pdfVectorApi',
+								{
+									method: 'POST' as IHttpRequestMethods,
+									url: `${baseURL}/id-parse`,
+									body,
+									json: true,
+								},
+							)) as IDataObject;
+						} else if (operation === 'ask') {
+							const inputType = this.getNodeParameter('inputType', i) as string;
+							const prompt = this.getNodeParameter('prompt', i) as string;
+
+							// Create a clean body object with only the required fields
+							const body: IDataObject = {};
+
+							// Always include prompt
+							body.prompt = prompt;
+
+							if (inputType === 'file') {
+								// Handle binary file upload - send as base64
+								const binaryPropertyName = this.getNodeParameter('binaryPropertyName', i) as string;
+
+								// Check if binary data exists
+								if (!items[i].binary?.[binaryPropertyName]) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`No binary data found in property "${binaryPropertyName}"`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Get the binary data reference
+								const binaryData = items[i].binary![binaryPropertyName];
+
+								// Get the buffer using n8n helper method
+								const buffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
+
+								// Check if buffer is empty
+								if (!buffer || buffer.length === 0) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`Binary data in property "${binaryPropertyName}" is empty or invalid`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Convert buffer to base64
+								const base64File = buffer.toString('base64');
+
+								// Send file as base64 in the request body
+								body.file = base64File;
+
+								// Optional: Add filename if available
+								if (binaryData.fileName) {
+									body.fileName = binaryData.fileName;
+								}
+							} else if (inputType === 'url') {
+								// Use URL directly
+								const idDocumentUrl = this.getNodeParameter('url', i) as string;
+								body.url = idDocumentUrl;
+							} else {
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid input type: ${inputType}. Must be either 'file' or 'url'`,
+									{ itemIndex: i },
+								);
+							}
+
+							responseData = (await this.helpers.httpRequestWithAuthentication.call(
+								this,
+								'pdfVectorApi',
+								{
+									method: 'POST' as IHttpRequestMethods,
+									url: `${baseURL}/id-ask`,
+									body,
+									json: true,
+								},
+							)) as IDataObject;
+						} else if (operation === 'extract') {
+							const inputType = this.getNodeParameter('inputType', i) as string;
+							const prompt = this.getNodeParameter('prompt', i) as string;
+							const schemaString = this.getNodeParameter('schema', i) as string;
+
+							// Create a clean body object with only the required fields
+							const body: IDataObject = {};
+
+							// Always include prompt
+							body.prompt = prompt;
+
+							// Parse and validate the JSON schema
+							try {
+								const schema = JSON.parse(schemaString);
+
+								// Validate that the schema is an object type with additionalProperties: false
+								if (schema.type !== 'object') {
+									throw new NodeOperationError(this.getNode(), 'Schema must have type "object"', {
+										itemIndex: i,
+									});
+								}
+
+								if (schema.additionalProperties !== false) {
+									throw new NodeOperationError(
+										this.getNode(),
+										'Schema must include "additionalProperties": false',
+										{ itemIndex: i },
+									);
+								}
+
+								body.schema = schema;
+							} catch (error) {
+								if (error instanceof NodeOperationError) {
+									throw error;
+								}
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid JSON schema: ${(error as Error).message}`,
+									{ itemIndex: i },
+								);
+							}
+
+							if (inputType === 'file') {
+								// Handle binary file upload - send as base64
+								const binaryPropertyName = this.getNodeParameter('binaryPropertyName', i) as string;
+
+								// Check if binary data exists
+								if (!items[i].binary?.[binaryPropertyName]) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`No binary data found in property "${binaryPropertyName}"`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Get the binary data reference
+								const binaryData = items[i].binary![binaryPropertyName];
+
+								// Get the buffer using n8n helper method
+								const buffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
+
+								// Check if buffer is empty
+								if (!buffer || buffer.length === 0) {
+									throw new NodeOperationError(
+										this.getNode(),
+										`Binary data in property "${binaryPropertyName}" is empty or invalid`,
+										{ itemIndex: i },
+									);
+								}
+
+								// Convert buffer to base64
+								const base64File = buffer.toString('base64');
+
+								// Send file as base64 in the request body
+								body.file = base64File;
+
+								// Optional: Add filename if available
+								if (binaryData.fileName) {
+									body.fileName = binaryData.fileName;
+								}
+							} else if (inputType === 'url') {
+								// Use URL directly
+								const idDocumentUrl = this.getNodeParameter('url', i) as string;
+								body.url = idDocumentUrl;
+							} else {
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid input type: ${inputType}. Must be either 'file' or 'url'`,
+									{ itemIndex: i },
+								);
+							}
+
+							responseData = (await this.helpers.httpRequestWithAuthentication.call(
+								this,
+								'pdfVectorApi',
+								{
+									method: 'POST' as IHttpRequestMethods,
+									url: `${baseURL}/id-extract`,
 									body,
 									json: true,
 								},
