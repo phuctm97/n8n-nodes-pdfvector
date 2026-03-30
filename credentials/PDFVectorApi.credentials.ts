@@ -1,5 +1,4 @@
 import type {
-	IAuthenticateGeneric,
 	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
@@ -8,7 +7,8 @@ import type {
 export class PDFVectorApi implements ICredentialType {
 	name = 'pdfVectorApi';
 	displayName = 'PDF Vector API';
-	documentationUrl = 'https://www.pdfvector.com/v1/api/scalar';
+	documentationUrl = 'https://global.pdfvector.com/api/reference';
+	icon = 'file:icon.svg' as const;
 	properties: INodeProperties[] = [
 		{
 			displayName: 'API Key',
@@ -20,24 +20,29 @@ export class PDFVectorApi implements ICredentialType {
 			default: '',
 			required: true,
 			description:
-				'Your PDFVector API key (format: pdfvector_xxxxxxxxxxxxxxxx). You can get it from https://www.pdfvector.com/api-keys.',
+				'Your PDFVector API key. Get it from https://app.pdfvector.com/instances/2?tab=settings.',
+		},
+		{
+			displayName: 'Domain',
+			name: 'domain',
+			type: 'string',
+			default: 'global.pdfvector.com',
+			required: false,
+			description:
+				'PDFVector instance domain. Leave default for the shared instance. Change only for custom instances.',
 		},
 	];
 
-	authenticate: IAuthenticateGeneric = {
-		type: 'generic',
-		properties: {
-			headers: {
-				Authorization: '={{"Bearer " + $credentials.apiKey}}',
-			},
-		},
-	};
-
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: 'https://www.pdfvector.com/v1/api',
-			url: '/validate-key',
-			method: 'GET',
+			baseURL: '={{(($credentials.domain || "global.pdfvector.com").startsWith("localhost") || ($credentials.domain || "").startsWith("127.0.0.1") ? "http://" : "https://") + ($credentials.domain || "global.pdfvector.com")}}',
+			url: '/rpc/authenticate/validateCredential',
+			method: 'POST',
+			headers: {
+				Authorization: '={{"Bearer " + $credentials.apiKey}}',
+				'Content-Type': 'application/json',
+			},
+			body: '{}',
 		},
 		rules: [
 			{

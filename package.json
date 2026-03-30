@@ -1,66 +1,61 @@
 {
-  "name": "n8n-nodes-pdfvector",
-  "version": "0.8.4",
-  "description": "PDF Vector node for n8n to parse any PDF, Word, Excel, or image document, extract structured data, and access millions of academic papers.",
-  "keywords": [
-    "n8n-community-node-package",
-    "pdfvector",
-    "PDF",
-    "Word",
-    "Excel",
-    "Image",
-    "parse-document",
-    "parse-invoice",
-    "parse-expense",
-    "parse-bank-statement",
-    "parse-financial-document",
-    "academic",
-    "academic-search",
-    "academic-fetch"
-  ],
-  "license": "MIT",
-  "homepage": "https://www.pdfvector.com",
-  "author": {
-    "name": "PDF Vector",
-    "email": "team@pdfvector.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/phuctm97/n8n-nodes-pdfvector"
-  },
-  "engines": {
-    "node": ">=20.15"
-  },
-  "main": "index.js",
-  "scripts": {
-    "build": "npx rimraf dist && tsc && gulp build:icons",
-    "dev": "tsc --watch",
-    "format": "prettier nodes credentials --write",
-    "lint": "eslint nodes credentials package.json",
-    "lintfix": "eslint nodes credentials package.json --fix",
-    "prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes credentials package.json"
-  },
-  "files": [
-    "dist"
-  ],
-  "n8n": {
-    "n8nNodesApiVersion": 1,
-    "credentials": [
-      "dist/credentials/PDFVectorApi.credentials.js"
-    ],
-    "nodes": [
-      "dist/nodes/PdfVector/PdfVector.node.js"
-    ]
-  },
-  "devDependencies": {
-    "@typescript-eslint/parser": "~8.32.0",
-    "eslint": "^8.57.0",
-    "eslint-plugin-n8n-nodes-base": "^1.16.3",
-    "gulp": "^5.0.0",
-    "prettier": "^3.5.3",
-    "typescript": "^5.8.2"
-  },
-  "peerDependencies": {
-    "n8n-workflow": "*"
-  }
+	"name": "n8n-nodes-pdfvector",
+	"version": "1.0.0",
+	"description": "n8n community node for PDF Vector — parse PDF, Word, Excel, and image documents, extract structured data with JSON Schema, ask AI questions, and search academic papers across multiple databases.",
+	"keywords": [
+		"n8n-community-node-package",
+		"pdfvector",
+		"PDF",
+		"Word",
+		"Excel",
+		"Image",
+		"parse-document",
+		"parse-invoice",
+		"parse-bank-statement",
+		"academic",
+		"academic-search",
+		"academic-fetch"
+	],
+	"license": "MIT",
+	"homepage": "https://www.pdfvector.com",
+	"author": {
+		"name": "PDF Vector",
+		"email": "team@pdfvector.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/phuctm97/n8n-nodes-pdfvector.git"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/PDFVectorApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/PdfVector/PdfVector.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "*",
+		"eslint": "9.39.4",
+		"prettier": "3.8.1",
+		"release-it": "19.2.4",
+		"typescript": "5.9.3"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
 }
