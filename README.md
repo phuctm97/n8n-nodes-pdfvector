@@ -4,7 +4,7 @@
 
 ## Installation
 
-Follow the [n8n community nodes installation guide](https://docs.n8n.io/integrations/community-nodes/installation/).
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
 In n8n, go to **Settings > Community Nodes** and install:
 
@@ -20,7 +20,7 @@ n8n-nodes-pdfvector
 
 **Custom instance:** If you have a custom PDF Vector instance, enter your instance domain in the credential's Domain field. Otherwise, leave it as `global.pdfvector.com`.
 
-## Resources & Operations
+## Operations
 
 ### Document
 
@@ -95,14 +95,19 @@ All document operations (except Academic) support an optional **Document ID** fi
 ## Compatibility
 
 - **n8n version:** 1.0+
-- **Node.js version:** 20+
+- **Node.js version for local development and CI:** 22+
 
-## Support
+## Resources
 
 - [PDF Vector API Reference](https://global.pdfvector.com/api/reference)
 - [PDF Vector Dashboard](https://app.pdfvector.com)
 - [PDF Vector Website](https://www.pdfvector.com)
 - [Report Issues](https://github.com/phuctm97/n8n-nodes-pdfvector/issues)
+
+## Version History
+
+- **2.x:** Unified PDF Vector node with document, identity, invoice, bank statement, and academic operations
+- **1.x:** Earlier PDF Vector integration releases
 
 ## License
 
