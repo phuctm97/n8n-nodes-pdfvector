@@ -101,6 +101,7 @@ All document operations (except Academic) support an optional **Document ID** fi
 
 - [PDF Vector API Reference](https://global.pdfvector.com/api/reference)
 - [PDF Vector Dashboard](https://app.pdfvector.com)
+- [PDF Vector Website](https://www.pdfvector.com)
 - [Report Issues](https://github.com/phuctm97/n8n-nodes-pdfvector/issues)
 
 ## License
