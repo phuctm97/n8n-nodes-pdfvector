@@ -5,6 +5,7 @@ import type {
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
+import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 import { academicProperties, executeAcademic } from './academic/index.js';
 import { bankStatementProperties, executeBankStatement } from './bankStatement/index.js';
 import { documentProperties, executeDocument } from './document/index.js';
@@ -23,8 +24,8 @@ export class PdfVector implements INodeType {
 		description:
 			'Convert PDFs, Word, Excel documents, and images to clean markdown, extract structured data with AI, process invoices with specialized parsing, and search millions of academic papers across PubMed, ArXiv, Google Scholar, and more.',
 		defaults: { name: 'PDF Vector' },
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionTypes.Main],
+		outputs: [NodeConnectionTypes.Main],
 		credentials: [{ name: 'pdfVectorApi', required: true }],
 		properties: [
 			{
@@ -93,11 +94,17 @@ export class PdfVector implements INodeType {
 						message = error.message;
 					} else {
 						message = String(error);
-					}
+				}
 					returnData.push({ json: { error: message }, pairedItem: { item: i } });
 					continue;
 				}
-				throw error;
+				if (error && typeof error === 'object' && 'context' in error) {
+					const errorWithContext = error as { context?: { itemIndex?: number } };
+					errorWithContext.context ??= {};
+					errorWithContext.context.itemIndex = i;
+					throw error;
+				}
+				throw new NodeOperationError(this.getNode(), error, { itemIndex: i });
 			}
 		}
 
