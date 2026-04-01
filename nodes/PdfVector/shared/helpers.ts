@@ -1,5 +1,14 @@
 import type { IExecuteFunctions } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
+import type { paths } from './pdfvector-api.types.js';
+
+type JsonContent<T> = T extends { content: { 'application/json': infer TJson } } ? TJson : never;
+type PostOperation<TPath extends keyof paths> = NonNullable<paths[TPath]['post']>;
+type ApiPath = keyof paths;
+type ApiRequestBody<TPath extends ApiPath> = JsonContent<PostOperation<TPath>['requestBody']>;
+type ApiResponse<TPath extends ApiPath> = JsonContent<PostOperation<TPath>['responses'][200]>;
+type DocumentInput = Pick<ApiRequestBody<'/document/parse'>, 'url' | 'base64'>;
+type ExtractSchema = ApiRequestBody<'/document/extract'>['schema'];
 
 export function getBaseUrl(domain: string): string {
 	const d = domain || 'global.pdfvector.com';
@@ -10,7 +19,7 @@ export function getBaseUrl(domain: string): string {
 export async function getDocumentInput(
 	ef: IExecuteFunctions,
 	i: number,
-): Promise<{ url: string } | { base64: string }> {
+): Promise<DocumentInput> {
 	const inputType = ef.getNodeParameter('inputType', i) as string;
 	if (inputType === 'url') {
 		return { url: ef.getNodeParameter('url', i) as string };
@@ -24,14 +33,35 @@ export async function getDocumentInput(
 	return { base64: buffer.toString('base64') };
 }
 
-export async function apiRequest(
+export function getJsonSchemaParameter(
+	ef: IExecuteFunctions,
+	i: number,
+	parameterName = 'schema',
+): ExtractSchema {
+	const rawSchema = ef.getNodeParameter(parameterName, i) as ExtractSchema;
+
+	if (typeof rawSchema !== 'string') {
+		return rawSchema;
+	}
+
+	try {
+		return JSON.parse(rawSchema) as ExtractSchema;
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		throw new NodeOperationError(ef.getNode(), `Invalid JSON schema: ${message}`, {
+			itemIndex: i,
+		});
+	}
+}
+
+export async function apiRequest<TPath extends ApiPath>(
 	ef: IExecuteFunctions,
 	domain: string,
 	apiKey: string,
-	path: string,
-	body: Record<string, unknown>,
+	path: TPath,
+	body: ApiRequestBody<TPath>,
 	documentId?: string,
-): Promise<Record<string, unknown>> {
+): Promise<ApiResponse<TPath>> {
 	const headers: Record<string, string> = {
 		Authorization: `Bearer ${apiKey}`,
 		'Content-Type': 'application/json',
@@ -41,9 +71,9 @@ export async function apiRequest(
 	}
 	return (await ef.helpers.httpRequest({
 		method: 'POST',
-		url: `${getBaseUrl(domain)}/api/${path}`,
+		url: `${getBaseUrl(domain)}/api${path}`,
 		headers,
 		body,
 		json: true,
-	})) as Record<string, unknown>;
+	})) as ApiResponse<TPath>;
 }

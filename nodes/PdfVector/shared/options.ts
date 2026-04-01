@@ -1,8 +1,17 @@
-import type { INodeProperties } from 'n8n-workflow';
+import type { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
+import type { paths } from './pdfvector-api.types.js';
+
+type TypedOption<TValue extends string> = INodePropertyOptions & { value: TValue };
+type DocumentParseModel = NonNullable<
+	paths['/document/parse']['post']['requestBody']['content']['application/json']['model']
+>;
+type SpecializedParseModel = NonNullable<
+	paths['/invoice/parse']['post']['requestBody']['content']['application/json']['model']
+>;
 
 // ─── Model options ──────────────────────────────────────────
 
-export const allModelOptions = [
+export const allModelOptions: TypedOption<DocumentParseModel>[] = [
 	{
 		name: 'Auto',
 		value: 'auto',
@@ -33,10 +42,18 @@ export const allModelOptions = [
 	},
 ];
 
-export const proMaxModelOptions = [
-	{ name: 'Auto', value: 'auto', description: 'Automatically selects between Pro and Max' },
-	{ name: 'Pro', value: 'pro', description: 'Standard accuracy' },
-	{ name: 'Max', value: 'max', description: 'Highest accuracy with HTML output' },
+export const specializedParseModelOptions: TypedOption<SpecializedParseModel>[] = [
+	{
+		name: 'Auto',
+		value: 'auto',
+		description: 'Automatically selects the best parsing strategy for structured document extraction',
+	},
+	{ name: 'Pro', value: 'pro', description: 'Standard accuracy for structured parsing' },
+	{
+		name: 'Max',
+		value: 'max',
+		description: 'Highest structured-parsing accuracy with HTML output when available',
+	},
 ];
 
 // ─── Shared document-like properties builder ────────────────
@@ -45,7 +62,8 @@ export function makeDocumentProperties(
 	resource: string,
 	label: string,
 ): INodeProperties[] {
-	const parseModelOptions = resource === 'document' ? allModelOptions : proMaxModelOptions;
+	const parseModelOptions =
+		resource === 'document' ? allModelOptions : specializedParseModelOptions;
 
 	return [
 		{

@@ -27,13 +27,14 @@
 		"url": "https://github.com/phuctm97/n8n-nodes-pdfvector.git"
 	},
 	"scripts": {
-		"build": "n8n-node build",
-		"build:watch": "tsc --watch",
-		"dev": "n8n-node dev",
-		"lint": "n8n-node lint",
-		"lint:fix": "n8n-node lint --fix",
-		"release": "n8n-node release",
-		"prepublishOnly": "n8n-node prerelease"
+		"generate": "openapi-typescript https://global.pdfvector.com/api/reference.json -o nodes/PdfVector/shared/pdfvector-api.types.ts",
+		"build": "npm run generate && n8n-node build",
+		"build:watch": "npm run generate && tsc --watch",
+		"dev": "npm run generate && n8n-node dev",
+		"lint": "npm run generate && n8n-node lint",
+		"lint:fix": "npm run generate && n8n-node lint --fix",
+		"release": "npm run generate && n8n-node release",
+		"prepublishOnly": "npm run generate && n8n-node prerelease"
 	},
 	"files": [
 		"dist"
@@ -51,6 +52,7 @@
 	"devDependencies": {
 		"@n8n/node-cli": "*",
 		"eslint": "9.39.4",
+		"openapi-typescript": "^7.13.0",
 		"prettier": "3.8.1",
 		"release-it": "19.2.4",
 		"typescript": "5.9.3"
