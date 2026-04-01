@@ -378,11 +378,15 @@ export interface operations {
                     "application/json": {
                         /** @description The answer to the question */
                         markdown: string;
+                        /** @description Total number of pages in the document */
+                        pageCount: number;
                         /**
                          * @description Model tier used to answer the question. 'nano': Supports PDF, Word, Excel, CSV. 'mini': Supports PDF, Word, Excel, CSV. 'pro': Supports PDF, Word, Excel, CSV, Image. 'max': Supports PDF, Word, Excel, CSV, Image.
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
+                        /** @description Number of credits consumed by this API call */
+                        credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
                         /** @description Document ID if provided via x-pdfvector-document-id header */
@@ -462,11 +466,15 @@ export interface operations {
                     "application/json": {
                         /** @description Extracted structured data matching the provided JSON Schema */
                         data?: unknown;
+                        /** @description Total number of pages in the document */
+                        pageCount: number;
                         /**
                          * @description Model tier used to extract the data. 'nano': Supports PDF, Word, Excel, CSV. 'mini': Supports PDF, Word, Excel, CSV. 'pro': Supports PDF, Word, Excel, CSV, Image. 'max': Supports PDF, Word, Excel, CSV, Image.
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
+                        /** @description Number of credits consumed by this API call */
+                        credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
                         /** @description Document ID if provided via x-pdfvector-document-id header */
@@ -541,6 +549,8 @@ export interface operations {
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
+                        /** @description Number of credits consumed by this API call */
+                        credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
                         /** @description Full HTML representation of the document content. Only available when using the 'max' model. Preserves rich formatting, tables, selection marks, and visual layout that cannot be fully represented in markdown. */
@@ -614,11 +624,15 @@ export interface operations {
                     "application/json": {
                         /** @description The answer to the question */
                         markdown: string;
+                        /** @description Total number of pages in the document */
+                        pageCount: number;
                         /**
                          * @description Model tier used to answer the question
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
+                        /** @description Number of credits consumed by this API call */
+                        credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
                         /** @description Document ID if provided via x-pdfvector-document-id header */
@@ -698,11 +712,15 @@ export interface operations {
                     "application/json": {
                         /** @description Extracted structured data matching the provided JSON Schema */
                         data?: unknown;
+                        /** @description Total number of pages in the document */
+                        pageCount: number;
                         /**
                          * @description Model tier used to extract the data
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
+                        /** @description Number of credits consumed by this API call */
+                        credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
                         /** @description Document ID if provided via x-pdfvector-document-id header */
@@ -781,6 +799,8 @@ export interface operations {
                         documentType?: string;
                         /** @description Full HTML representation of the document content. Only available when using the 'max' model. Preserves rich formatting, tables, selection marks, and visual layout that cannot be fully represented in markdown. */
                         html?: string;
+                        /** @description Number of credits consumed by this API call */
+                        credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
                         /** @description Document ID if provided via x-pdfvector-document-id header */
@@ -852,11 +872,15 @@ export interface operations {
                     "application/json": {
                         /** @description The answer to the question */
                         markdown: string;
+                        /** @description Total number of pages in the document */
+                        pageCount: number;
                         /**
                          * @description Model tier used to answer the question
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
+                        /** @description Number of credits consumed by this API call */
+                        credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
                         /** @description Document ID if provided via x-pdfvector-document-id header */
@@ -936,11 +960,15 @@ export interface operations {
                     "application/json": {
                         /** @description Extracted structured data matching the provided JSON Schema */
                         data?: unknown;
+                        /** @description Total number of pages in the document */
+                        pageCount: number;
                         /**
                          * @description Model tier used to extract the data
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
+                        /** @description Number of credits consumed by this API call */
+                        credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
                         /** @description Document ID if provided via x-pdfvector-document-id header */
@@ -1015,6 +1043,8 @@ export interface operations {
                          * @enum {string}
                          */
                         model: "pro" | "max";
+                        /** @description Number of credits consumed by this API call */
+                        credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
                         /** @description Full HTML representation of the document content. Only available when using the 'max' model. Preserves rich formatting, tables, selection marks, and visual layout that cannot be fully represented in markdown. */
@@ -1088,11 +1118,15 @@ export interface operations {
                     "application/json": {
                         /** @description The answer to the question */
                         markdown: string;
+                        /** @description Total number of pages in the document */
+                        pageCount: number;
                         /**
                          * @description Model tier used to answer the question
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
+                        /** @description Number of credits consumed by this API call */
+                        credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
                         /** @description Document ID if provided via x-pdfvector-document-id header */
@@ -1172,11 +1206,15 @@ export interface operations {
                     "application/json": {
                         /** @description Extracted structured data matching the provided JSON Schema */
                         data?: unknown;
+                        /** @description Total number of pages in the document */
+                        pageCount: number;
                         /**
                          * @description Model tier used to extract the data
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
+                        /** @description Number of credits consumed by this API call */
+                        credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
                         /** @description Document ID if provided via x-pdfvector-document-id header */
@@ -1251,6 +1289,8 @@ export interface operations {
                          * @enum {string}
                          */
                         model: "pro" | "max";
+                        /** @description Number of credits consumed by this API call */
+                        credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
                         /** @description Full HTML representation of the document content. Only available when using the 'max' model. Preserves rich formatting, tables, selection marks, and visual layout that cannot be fully represented in markdown. */
