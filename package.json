@@ -34,7 +34,6 @@
 		"lint:fix": "n8n-node lint --fix",
 		"openapi:generate": "openapi-typescript https://global.pdfvector.com/api/reference.json -o ./nodes/PdfVector/shared/pdfvector-api.d.ts",
 		"openapi:check": "openapi-typescript https://global.pdfvector.com/api/reference.json -o ./nodes/PdfVector/shared/pdfvector-api.d.ts --check",
-		"openapi:sync": "npm run openapi:generate",
 		"release": "n8n-node release",
 		"prepublishOnly": "n8n-node prerelease"
 	},
