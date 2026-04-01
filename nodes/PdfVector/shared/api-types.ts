@@ -1,6 +1,8 @@
 import type { paths } from './pdfvector-api';
 
-export type ApiPath = keyof paths & string;
+export type ApiPath = {
+	[TPath in keyof paths & string]: paths[TPath] extends { post: unknown } ? TPath : never;
+}[keyof paths & string];
 
 type PostOperation<TPath extends ApiPath> = paths[TPath] extends { post: infer TOperation }
 	? TOperation
