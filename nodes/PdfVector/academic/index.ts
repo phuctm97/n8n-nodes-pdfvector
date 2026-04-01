@@ -1,5 +1,10 @@
 import type { IExecuteFunctions, INodeProperties } from 'n8n-workflow';
+import type { JsonRequestBody } from '../shared/api-types.js';
 import { apiRequest } from '../shared/helpers.js';
+
+type AcademicSearchBody = JsonRequestBody<'/academic/search'>;
+type AcademicFetchBody = JsonRequestBody<'/academic/fetch'>;
+type AcademicFindCitationsBody = JsonRequestBody<'/academic/findCitations'>;
 
 const providerOptions = [
 	{ name: 'Semantic Scholar', value: 'semantic-scholar', description: 'Semanticscholar.org — largest free academic search engine' },
@@ -161,13 +166,17 @@ export async function executeAcademic(
 ): Promise<Record<string, unknown>> {
 	if (operation === 'search') {
 		const query = ef.getNodeParameter('query', i) as string;
-		const providers = ef.getNodeParameter('providers', i, ['semantic-scholar']) as string[];
+		const providers = ef.getNodeParameter('providers', i, ['semantic-scholar']) as NonNullable<
+			AcademicSearchBody['providers']
+		>;
 		const limit = ef.getNodeParameter('limit', i, 50) as number;
 		const offset = ef.getNodeParameter('offset', i, 0) as number;
 		const yearFrom = ef.getNodeParameter('yearFrom', i, '') as number | '';
 		const yearTo = ef.getNodeParameter('yearTo', i, '') as number | '';
-		const fields = ef.getNodeParameter('fields', i, []) as string[];
-		return await apiRequest(ef, domain, apiKey, 'academic/search', {
+		const fields = ef.getNodeParameter('fields', i, []) as NonNullable<
+			NonNullable<AcademicSearchBody['fields']>
+		>;
+		const body: AcademicSearchBody = {
 			query,
 			providers,
 			limit,
@@ -175,26 +184,33 @@ export async function executeAcademic(
 			...(yearFrom ? { yearFrom } : {}),
 			...(yearTo ? { yearTo } : {}),
 			...(fields.length > 0 ? { fields } : {}),
-		});
+		};
+		return await apiRequest(ef, domain, apiKey, '/academic/search', body);
 	}
 	if (operation === 'fetch') {
 		const ids = (ef.getNodeParameter('ids', i) as string)
 			.split(',')
 			.map((id) => id.trim())
 			.filter(Boolean);
-		const fields = ef.getNodeParameter('fields', i, []) as string[];
-		return await apiRequest(ef, domain, apiKey, 'academic/fetch', {
+		const fields = ef.getNodeParameter('fields', i, []) as NonNullable<
+			NonNullable<AcademicFetchBody['fields']>
+		>;
+		const body: AcademicFetchBody = {
 			ids,
 			...(fields.length > 0 ? { fields } : {}),
-		});
+		};
+		return await apiRequest(ef, domain, apiKey, '/academic/fetch', body);
 	}
 	if (operation === 'findCitations') {
 		const paragraph = ef.getNodeParameter('paragraph', i) as string;
-		const providers = ef.getNodeParameter('providers', i, ['semantic-scholar']) as string[];
-		return await apiRequest(ef, domain, apiKey, 'academic/findCitations', {
+		const providers = ef.getNodeParameter('providers', i, ['semantic-scholar']) as NonNullable<
+			AcademicFindCitationsBody['providers']
+		>;
+		const body: AcademicFindCitationsBody = {
 			paragraph,
 			providers,
-		});
+		};
+		return await apiRequest(ef, domain, apiKey, '/academic/findCitations', body);
 	}
 	return {};
 }

@@ -32,6 +32,10 @@
 		"dev": "n8n-node dev",
 		"lint": "n8n-node lint",
 		"lint:fix": "n8n-node lint --fix",
+		"openapi:refresh": "node ./scripts/fetch-openapi-spec.mjs",
+		"openapi:generate": "openapi-typescript ./openapi/pdfvector.openapi.json -o ./nodes/PdfVector/shared/pdfvector-api.d.ts",
+		"openapi:check": "openapi-typescript ./openapi/pdfvector.openapi.json -o ./nodes/PdfVector/shared/pdfvector-api.d.ts --check",
+		"openapi:sync": "npm run openapi:refresh && npm run openapi:generate",
 		"release": "n8n-node release",
 		"prepublishOnly": "n8n-node prerelease"
 	},
@@ -51,6 +55,7 @@
 	"devDependencies": {
 		"@n8n/node-cli": "*",
 		"eslint": "9.39.4",
+		"openapi-typescript": "7.13.0",
 		"prettier": "3.8.1",
 		"release-it": "19.2.4",
 		"typescript": "5.9.3"

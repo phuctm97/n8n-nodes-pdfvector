@@ -1,0 +1,4225 @@
+{
+  "servers": [
+    {
+      "url": "https://global.pdfvector.com/api"
+    }
+  ],
+  "info": {
+    "version": "0.1.21",
+    "title": "API Reference",
+    "description": "Custom document-processing APIs powered by PDF Vector"
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "openapi": "3.1.1",
+  "paths": {
+    "/document/ask": {
+      "post": {
+        "operationId": "document.ask",
+        "summary": "Ask a question about a document",
+        "description": "Parse a document and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Files up to 1000 pages and up to 500MB in size. Provide the document via file upload, a public URL, or a base64-encoded string.",
+        "tags": [
+          "Document"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the document file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded document file content"
+                  },
+                  "question": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The question to answer about the document"
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for answering the question. 'auto' (default): Automatically selects the best tier based on document page count and document complexity. 'nano': Uses lightweight models (likely better than GPT-5-nano). Supports PDF, Word, Excel, CSV. 'mini': Uses mid-range models (likely better than GPT-5-mini). Supports PDF, Word, Excel, CSV. 'pro': Uses capable models (likely better than GPT-5.2). Supports PDF, Word, Excel, CSV, Image. 'max': Uses the most powerful models (likely better than Claude Opus 4.6). Supports PDF, Word, Excel, CSV, Image."
+                  }
+                },
+                "required": [
+                  "question"
+                ]
+              },
+              "examples": {
+                "Ask from URL": {
+                  "summary": "Ask from URL",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "question": "What are the main findings of this study?"
+                  }
+                },
+                "Ask from base64": {
+                  "summary": "Ask from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg==",
+                    "question": "What is the content of this document?"
+                  }
+                },
+                "Ask from file upload": {
+                  "summary": "Ask from file upload",
+                  "value": {
+                    "file": "(binary)",
+                    "question": "Summarize this document"
+                  }
+                },
+                "Ask with lightweight models (nano)": {
+                  "summary": "Ask with lightweight models (nano)",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "question": "What is the title of this paper?",
+                    "model": "nano"
+                  }
+                },
+                "Ask with powerful models (max)": {
+                  "summary": "Ask with powerful models (max)",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "question": "Provide a detailed analysis of the methodology used in this study.",
+                    "model": "max"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the document file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded document file content"
+                  },
+                  "question": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The question to answer about the document"
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for answering the question. 'auto' (default): Automatically selects the best tier based on document page count and document complexity. 'nano': Uses lightweight models (likely better than GPT-5-nano). Supports PDF, Word, Excel, CSV. 'mini': Uses mid-range models (likely better than GPT-5-mini). Supports PDF, Word, Excel, CSV. 'pro': Uses capable models (likely better than GPT-5.2). Supports PDF, Word, Excel, CSV, Image. 'max': Uses the most powerful models (likely better than Claude Opus 4.6). Supports PDF, Word, Excel, CSV, Image."
+                  }
+                },
+                "required": [
+                  "question"
+                ]
+              },
+              "examples": {
+                "Ask from URL": {
+                  "summary": "Ask from URL",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "question": "What are the main findings of this study?"
+                  }
+                },
+                "Ask from base64": {
+                  "summary": "Ask from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg==",
+                    "question": "What is the content of this document?"
+                  }
+                },
+                "Ask from file upload": {
+                  "summary": "Ask from file upload",
+                  "value": {
+                    "file": "(binary)",
+                    "question": "Summarize this document"
+                  }
+                },
+                "Ask with lightweight models (nano)": {
+                  "summary": "Ask with lightweight models (nano)",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "question": "What is the title of this paper?",
+                    "model": "nano"
+                  }
+                },
+                "Ask with powerful models (max)": {
+                  "summary": "Ask with powerful models (max)",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "question": "Provide a detailed analysis of the methodology used in this study.",
+                    "model": "max"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "markdown": {
+                      "type": "string",
+                      "description": "The answer to the question"
+                    },
+                    "model": {
+                      "enum": [
+                        "nano",
+                        "mini",
+                        "pro",
+                        "max"
+                      ],
+                      "type": "string",
+                      "description": "Model tier used to answer the question. 'nano': Supports PDF, Word, Excel, CSV. 'mini': Supports PDF, Word, Excel, CSV. 'pro': Supports PDF, Word, Excel, CSV, Image. 'max': Supports PDF, Word, Excel, CSV, Image."
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Unique request identifier for this API call"
+                    },
+                    "documentId": {
+                      "type": "string",
+                      "description": "Document ID if provided via x-pdfvector-document-id header"
+                    }
+                  },
+                  "required": [
+                    "markdown",
+                    "model",
+                    "requestId"
+                  ],
+                  "examples": [
+                    {
+                      "markdown": "The study found that viral shedding peaked during the first week of symptoms, with the highest viral loads detected in throat swabs.",
+                      "model": "mini",
+                      "requestId": 1
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-pdfvector-document-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "my-doc-123"
+            },
+            "description": "Optional document ID to associate with this request. Returned in the response and saved for usage tracking."
+          }
+        ]
+      }
+    },
+    "/document/extract": {
+      "post": {
+        "operationId": "document.extract",
+        "summary": "Extract structured data from a document",
+        "description": "Parse a document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Files up to 1000 pages and up to 500MB in size. Provide the document via file upload, a public URL, or a base64-encoded string.",
+        "tags": [
+          "Document"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the document file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded document file content"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The prompt instructing the AI how to extract data from the document"
+                  },
+                  "schema": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {}
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "description": "JSON Schema describing the structure of the data to extract from the document. Can be a JSON object or a JSON string."
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier based on document page count and document complexity. 'nano': Uses lightweight models (likely better than GPT-5-nano). Supports PDF, Word, Excel, CSV. 'mini': Uses mid-range models (likely better than GPT-5-mini). Supports PDF, Word, Excel, CSV. 'pro': Uses capable models (likely better than GPT-5.2). Supports PDF, Word, Excel, CSV, Image. 'max': Uses the most powerful models (likely better than Claude Opus 4.6). Supports PDF, Word, Excel, CSV, Image."
+                  }
+                },
+                "required": [
+                  "prompt",
+                  "schema"
+                ]
+              },
+              "examples": {
+                "Extract from URL": {
+                  "summary": "Extract from URL",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "prompt": "Extract the title, authors, and publication year from this research paper",
+                    "schema": "{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\"},\"authors\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"year\":{\"type\":\"number\"}},\"required\":[\"title\",\"authors\",\"year\"]}"
+                  }
+                },
+                "Extract from base64": {
+                  "summary": "Extract from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg==",
+                    "prompt": "Extract the main content from this document",
+                    "schema": "{\"type\":\"object\",\"properties\":{\"content\":{\"type\":\"string\"}},\"required\":[\"content\"]}"
+                  }
+                },
+                "Extract from file upload": {
+                  "summary": "Extract from file upload",
+                  "value": {
+                    "file": "(binary)",
+                    "prompt": "Extract the title and summary from this document",
+                    "schema": "{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\"},\"summary\":{\"type\":\"string\"}},\"required\":[\"title\",\"summary\"]}"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the document file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded document file content"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The prompt instructing the AI how to extract data from the document"
+                  },
+                  "schema": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {}
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "description": "JSON Schema describing the structure of the data to extract from the document. Can be a JSON object or a JSON string."
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier based on document page count and document complexity. 'nano': Uses lightweight models (likely better than GPT-5-nano). Supports PDF, Word, Excel, CSV. 'mini': Uses mid-range models (likely better than GPT-5-mini). Supports PDF, Word, Excel, CSV. 'pro': Uses capable models (likely better than GPT-5.2). Supports PDF, Word, Excel, CSV, Image. 'max': Uses the most powerful models (likely better than Claude Opus 4.6). Supports PDF, Word, Excel, CSV, Image."
+                  }
+                },
+                "required": [
+                  "prompt",
+                  "schema"
+                ]
+              },
+              "examples": {
+                "Extract from URL": {
+                  "summary": "Extract from URL",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "prompt": "Extract the title, authors, and publication year from this research paper",
+                    "schema": "{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\"},\"authors\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"year\":{\"type\":\"number\"}},\"required\":[\"title\",\"authors\",\"year\"]}"
+                  }
+                },
+                "Extract from base64": {
+                  "summary": "Extract from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg==",
+                    "prompt": "Extract the main content from this document",
+                    "schema": "{\"type\":\"object\",\"properties\":{\"content\":{\"type\":\"string\"}},\"required\":[\"content\"]}"
+                  }
+                },
+                "Extract from file upload": {
+                  "summary": "Extract from file upload",
+                  "value": {
+                    "file": "(binary)",
+                    "prompt": "Extract the title and summary from this document",
+                    "schema": "{\"type\":\"object\",\"properties\":{\"title\":{\"type\":\"string\"},\"summary\":{\"type\":\"string\"}},\"required\":[\"title\",\"summary\"]}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "description": "Extracted structured data matching the provided JSON Schema"
+                    },
+                    "model": {
+                      "enum": [
+                        "nano",
+                        "mini",
+                        "pro",
+                        "max"
+                      ],
+                      "type": "string",
+                      "description": "Model tier used to extract the data. 'nano': Supports PDF, Word, Excel, CSV. 'mini': Supports PDF, Word, Excel, CSV. 'pro': Supports PDF, Word, Excel, CSV, Image. 'max': Supports PDF, Word, Excel, CSV, Image."
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Unique request identifier for this API call"
+                    },
+                    "documentId": {
+                      "type": "string",
+                      "description": "Document ID if provided via x-pdfvector-document-id header"
+                    }
+                  },
+                  "required": [
+                    "model",
+                    "requestId"
+                  ],
+                  "examples": [
+                    {
+                      "data": {
+                        "title": "Virological assessment of hospitalized patients with COVID-2019",
+                        "authors": [
+                          "Roman Wölfel",
+                          "Victor M. Corman"
+                        ],
+                        "year": 2020
+                      },
+                      "model": "mini",
+                      "requestId": 1
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-pdfvector-document-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "my-doc-123"
+            },
+            "description": "Optional document ID to associate with this request. Returned in the response and saved for usage tracking."
+          }
+        ]
+      }
+    },
+    "/document/parse": {
+      "post": {
+        "operationId": "document.parse",
+        "summary": "Parse a document",
+        "description": "Extract text and page count from a document. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.",
+        "tags": [
+          "Document"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the document file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded document file content"
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. File up to 1000 pages, up to 500MB in size. Supports PDF, Word, Excel, CSV, Image. 'nano': For simple documents with plain text content. File up to 30 pages, up to 10MB in size. Supports PDF, Word, Excel, CSV. 'mini': For documents with tables and structured content. File up to 30 pages, up to 10MB in size. Supports PDF, Word, Excel, CSV. 'pro': For documents up to 30 pages with tables, handwritten text, figures, math, and Arabic. File up to 30 pages, up to 40MB in size. Supports PDF, Word, Excel, CSV, Image. 'max': For large documents with full Pro capabilities plus enhanced multilingual support. File up to 1000 pages, up to 500MB in size. Supports PDF, Word, Excel, CSV, Image."
+                  }
+                }
+              },
+              "examples": {
+                "Parse from URL": {
+                  "summary": "Parse from URL",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link"
+                  }
+                },
+                "Parse from base64": {
+                  "summary": "Parse from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg=="
+                  }
+                },
+                "Parse from file upload": {
+                  "summary": "Parse from file upload",
+                  "value": {
+                    "file": "(binary)"
+                  }
+                },
+                "Parse with simple PDF (nano)": {
+                  "summary": "Parse with simple PDF (nano)",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "model": "nano"
+                  }
+                },
+                "Parse with small complex documents (pro)": {
+                  "summary": "Parse with small complex documents (pro)",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "model": "pro"
+                  }
+                },
+                "Parse with large complex documents (max)": {
+                  "summary": "Parse with large complex documents (max)",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "model": "max"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the document file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded document file content"
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. File up to 1000 pages, up to 500MB in size. Supports PDF, Word, Excel, CSV, Image. 'nano': For simple documents with plain text content. File up to 30 pages, up to 10MB in size. Supports PDF, Word, Excel, CSV. 'mini': For documents with tables and structured content. File up to 30 pages, up to 10MB in size. Supports PDF, Word, Excel, CSV. 'pro': For documents up to 30 pages with tables, handwritten text, figures, math, and Arabic. File up to 30 pages, up to 40MB in size. Supports PDF, Word, Excel, CSV, Image. 'max': For large documents with full Pro capabilities plus enhanced multilingual support. File up to 1000 pages, up to 500MB in size. Supports PDF, Word, Excel, CSV, Image."
+                  }
+                }
+              },
+              "examples": {
+                "Parse from URL": {
+                  "summary": "Parse from URL",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link"
+                  }
+                },
+                "Parse from base64": {
+                  "summary": "Parse from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg=="
+                  }
+                },
+                "Parse from file upload": {
+                  "summary": "Parse from file upload",
+                  "value": {
+                    "file": "(binary)"
+                  }
+                },
+                "Parse with simple PDF (nano)": {
+                  "summary": "Parse with simple PDF (nano)",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "model": "nano"
+                  }
+                },
+                "Parse with small complex documents (pro)": {
+                  "summary": "Parse with small complex documents (pro)",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "model": "pro"
+                  }
+                },
+                "Parse with large complex documents (max)": {
+                  "summary": "Parse with large complex documents (max)",
+                  "value": {
+                    "url": "https://drive.google.com/file/d/13T04Yk20OwBNIDyvJJ3XlUg9WfOsmbjm/view?usp=share_link",
+                    "model": "max"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "markdown": {
+                      "type": "string",
+                      "description": "Extracted text content from the document"
+                    },
+                    "pageCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Total number of pages in the document"
+                    },
+                    "model": {
+                      "enum": [
+                        "nano",
+                        "mini",
+                        "pro",
+                        "max"
+                      ],
+                      "type": "string",
+                      "description": "Model tier used to parse the document. 'nano': Supports PDF, Word, Excel, CSV. 'mini': Supports PDF, Word, Excel, CSV. 'pro': Supports PDF, Word, Excel, CSV, Image. 'max': Supports PDF, Word, Excel, CSV, Image."
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Unique request identifier for this API call"
+                    },
+                    "html": {
+                      "type": "string",
+                      "description": "Full HTML representation of the document content. Only available when using the 'max' model. Preserves rich formatting, tables, selection marks, and visual layout that cannot be fully represented in markdown."
+                    },
+                    "documentId": {
+                      "type": "string",
+                      "description": "Document ID if provided via x-pdfvector-document-id header"
+                    }
+                  },
+                  "required": [
+                    "markdown",
+                    "pageCount",
+                    "model",
+                    "requestId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-pdfvector-document-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "my-doc-123"
+            },
+            "description": "Optional document ID to associate with this request. Returned in the response and saved for usage tracking."
+          }
+        ]
+      }
+    },
+    "/identity/ask": {
+      "post": {
+        "operationId": "identity.ask",
+        "summary": "Ask a question about an identity document",
+        "description": "Parse an identity document and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.",
+        "tags": [
+          "Identity"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the identity document file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Identity document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded identity document file content"
+                  },
+                  "question": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The question to answer about the identity document"
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for answering the question. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models."
+                  }
+                },
+                "required": [
+                  "question"
+                ]
+              },
+              "examples": {
+                "Ask from URL": {
+                  "summary": "Ask from URL",
+                  "value": {
+                    "url": "https://example.com/identity-document.pdf",
+                    "question": "What is the name on this identity document?"
+                  }
+                },
+                "Ask from base64": {
+                  "summary": "Ask from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg==",
+                    "question": "What is the document number?"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the identity document file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Identity document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded identity document file content"
+                  },
+                  "question": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The question to answer about the identity document"
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for answering the question. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models."
+                  }
+                },
+                "required": [
+                  "question"
+                ]
+              },
+              "examples": {
+                "Ask from URL": {
+                  "summary": "Ask from URL",
+                  "value": {
+                    "url": "https://example.com/identity-document.pdf",
+                    "question": "What is the name on this identity document?"
+                  }
+                },
+                "Ask from base64": {
+                  "summary": "Ask from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg==",
+                    "question": "What is the document number?"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "markdown": {
+                      "type": "string",
+                      "description": "The answer to the question"
+                    },
+                    "model": {
+                      "enum": [
+                        "nano",
+                        "mini",
+                        "pro",
+                        "max"
+                      ],
+                      "type": "string",
+                      "description": "Model tier used to answer the question"
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Unique request identifier for this API call"
+                    },
+                    "documentId": {
+                      "type": "string",
+                      "description": "Document ID if provided via x-pdfvector-document-id header"
+                    }
+                  },
+                  "required": [
+                    "markdown",
+                    "model",
+                    "requestId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-pdfvector-document-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "my-doc-123"
+            },
+            "description": "Optional document ID to associate with this request. Returned in the response and saved for usage tracking."
+          }
+        ]
+      }
+    },
+    "/identity/extract": {
+      "post": {
+        "operationId": "identity.extract",
+        "summary": "Extract structured data from an identity document",
+        "description": "Parse an identity document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.",
+        "tags": [
+          "Identity"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the identity document file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Identity document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded identity document file content"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The prompt instructing the AI how to extract data from the identity document"
+                  },
+                  "schema": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {}
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "description": "JSON Schema describing the structure of the data to extract from the identity document. Can be a JSON object or a JSON string."
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models."
+                  }
+                },
+                "required": [
+                  "prompt",
+                  "schema"
+                ]
+              },
+              "examples": {
+                "Extract from URL": {
+                  "summary": "Extract from URL",
+                  "value": {
+                    "url": "https://example.com/identity-document.pdf",
+                    "prompt": "Extract the name, date of birth, and document number",
+                    "schema": "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"dateOfBirth\":{\"type\":\"string\"},\"documentNumber\":{\"type\":\"string\"}},\"required\":[\"name\",\"dateOfBirth\",\"documentNumber\"]}"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the identity document file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Identity document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded identity document file content"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The prompt instructing the AI how to extract data from the identity document"
+                  },
+                  "schema": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {}
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "description": "JSON Schema describing the structure of the data to extract from the identity document. Can be a JSON object or a JSON string."
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models."
+                  }
+                },
+                "required": [
+                  "prompt",
+                  "schema"
+                ]
+              },
+              "examples": {
+                "Extract from URL": {
+                  "summary": "Extract from URL",
+                  "value": {
+                    "url": "https://example.com/identity-document.pdf",
+                    "prompt": "Extract the name, date of birth, and document number",
+                    "schema": "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"dateOfBirth\":{\"type\":\"string\"},\"documentNumber\":{\"type\":\"string\"}},\"required\":[\"name\",\"dateOfBirth\",\"documentNumber\"]}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "description": "Extracted structured data matching the provided JSON Schema"
+                    },
+                    "model": {
+                      "enum": [
+                        "nano",
+                        "mini",
+                        "pro",
+                        "max"
+                      ],
+                      "type": "string",
+                      "description": "Model tier used to extract the data"
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Unique request identifier for this API call"
+                    },
+                    "documentId": {
+                      "type": "string",
+                      "description": "Document ID if provided via x-pdfvector-document-id header"
+                    }
+                  },
+                  "required": [
+                    "model",
+                    "requestId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-pdfvector-document-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "my-doc-123"
+            },
+            "description": "Optional document ID to associate with this request. Returned in the response and saved for usage tracking."
+          }
+        ]
+      }
+    },
+    "/identity/parse": {
+      "post": {
+        "operationId": "identity.parse",
+        "summary": "Parse an identity document",
+        "description": "Extract text and structured data from an identity document. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.",
+        "tags": [
+          "Identity"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the identity document file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Identity document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded identity document file content"
+                  },
+                  "model": {
+                    "enum": [
+                      "pro",
+                      "max",
+                      "auto"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. 'pro': Extracts structured identity document fields with standard accuracy. 'max': Extracts structured identity document fields with highest accuracy."
+                  }
+                }
+              },
+              "examples": {
+                "Parse from URL": {
+                  "summary": "Parse from URL",
+                  "value": {
+                    "url": "https://example.com/identity-document.pdf"
+                  }
+                },
+                "Parse from base64": {
+                  "summary": "Parse from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg=="
+                  }
+                },
+                "Parse from file upload": {
+                  "summary": "Parse from file upload",
+                  "value": {
+                    "file": "(binary)"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the identity document file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Identity document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded identity document file content"
+                  },
+                  "model": {
+                    "enum": [
+                      "pro",
+                      "max",
+                      "auto"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. 'pro': Extracts structured identity document fields with standard accuracy. 'max': Extracts structured identity document fields with highest accuracy."
+                  }
+                }
+              },
+              "examples": {
+                "Parse from URL": {
+                  "summary": "Parse from URL",
+                  "value": {
+                    "url": "https://example.com/identity-document.pdf"
+                  }
+                },
+                "Parse from base64": {
+                  "summary": "Parse from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg=="
+                  }
+                },
+                "Parse from file upload": {
+                  "summary": "Parse from file upload",
+                  "value": {
+                    "file": "(binary)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "markdown": {
+                      "type": "string",
+                      "description": "Extracted text content from the identity document"
+                    },
+                    "pageCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Total number of pages in the document"
+                    },
+                    "model": {
+                      "enum": [
+                        "pro",
+                        "max"
+                      ],
+                      "type": "string",
+                      "description": "Model tier used to parse the identity document"
+                    },
+                    "documentType": {
+                      "type": "string",
+                      "description": "Detected identity document type (e.g., passport, driver's license)"
+                    },
+                    "html": {
+                      "type": "string",
+                      "description": "Full HTML representation of the document content. Only available when using the 'max' model. Preserves rich formatting, tables, selection marks, and visual layout that cannot be fully represented in markdown."
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Unique request identifier for this API call"
+                    },
+                    "documentId": {
+                      "type": "string",
+                      "description": "Document ID if provided via x-pdfvector-document-id header"
+                    }
+                  },
+                  "required": [
+                    "markdown",
+                    "pageCount",
+                    "model",
+                    "requestId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-pdfvector-document-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "my-doc-123"
+            },
+            "description": "Optional document ID to associate with this request. Returned in the response and saved for usage tracking."
+          }
+        ]
+      }
+    },
+    "/invoice/ask": {
+      "post": {
+        "operationId": "invoice.ask",
+        "summary": "Ask a question about an invoice",
+        "description": "Parse an invoice and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.",
+        "tags": [
+          "Invoice"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the invoice file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Invoice file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded invoice file content"
+                  },
+                  "question": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The question to answer about the invoice"
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for answering the question. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models."
+                  }
+                },
+                "required": [
+                  "question"
+                ]
+              },
+              "examples": {
+                "Ask from URL": {
+                  "summary": "Ask from URL",
+                  "value": {
+                    "url": "https://example.com/invoice.pdf",
+                    "question": "What is the total amount on this invoice?"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the invoice file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Invoice file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded invoice file content"
+                  },
+                  "question": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The question to answer about the invoice"
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for answering the question. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models."
+                  }
+                },
+                "required": [
+                  "question"
+                ]
+              },
+              "examples": {
+                "Ask from URL": {
+                  "summary": "Ask from URL",
+                  "value": {
+                    "url": "https://example.com/invoice.pdf",
+                    "question": "What is the total amount on this invoice?"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "markdown": {
+                      "type": "string",
+                      "description": "The answer to the question"
+                    },
+                    "model": {
+                      "enum": [
+                        "nano",
+                        "mini",
+                        "pro",
+                        "max"
+                      ],
+                      "type": "string",
+                      "description": "Model tier used to answer the question"
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Unique request identifier for this API call"
+                    },
+                    "documentId": {
+                      "type": "string",
+                      "description": "Document ID if provided via x-pdfvector-document-id header"
+                    }
+                  },
+                  "required": [
+                    "markdown",
+                    "model",
+                    "requestId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-pdfvector-document-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "my-doc-123"
+            },
+            "description": "Optional document ID to associate with this request. Returned in the response and saved for usage tracking."
+          }
+        ]
+      }
+    },
+    "/invoice/extract": {
+      "post": {
+        "operationId": "invoice.extract",
+        "summary": "Extract structured data from an invoice",
+        "description": "Parse an invoice and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.",
+        "tags": [
+          "Invoice"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the invoice file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Invoice file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded invoice file content"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The prompt instructing the AI how to extract data from the invoice"
+                  },
+                  "schema": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {}
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "description": "JSON Schema describing the structure of the data to extract from the invoice. Can be a JSON object or a JSON string."
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models."
+                  }
+                },
+                "required": [
+                  "prompt",
+                  "schema"
+                ]
+              },
+              "examples": {
+                "Extract from URL": {
+                  "summary": "Extract from URL",
+                  "value": {
+                    "url": "https://example.com/invoice.pdf",
+                    "prompt": "Extract the vendor name, total amount, and line items",
+                    "schema": "{\"type\":\"object\",\"properties\":{\"vendorName\":{\"type\":\"string\"},\"totalAmount\":{\"type\":\"number\"},\"lineItems\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"description\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}}}}},\"required\":[\"vendorName\",\"totalAmount\"]}"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the invoice file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Invoice file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded invoice file content"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The prompt instructing the AI how to extract data from the invoice"
+                  },
+                  "schema": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {}
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "description": "JSON Schema describing the structure of the data to extract from the invoice. Can be a JSON object or a JSON string."
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models."
+                  }
+                },
+                "required": [
+                  "prompt",
+                  "schema"
+                ]
+              },
+              "examples": {
+                "Extract from URL": {
+                  "summary": "Extract from URL",
+                  "value": {
+                    "url": "https://example.com/invoice.pdf",
+                    "prompt": "Extract the vendor name, total amount, and line items",
+                    "schema": "{\"type\":\"object\",\"properties\":{\"vendorName\":{\"type\":\"string\"},\"totalAmount\":{\"type\":\"number\"},\"lineItems\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"description\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}}}}},\"required\":[\"vendorName\",\"totalAmount\"]}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "description": "Extracted structured data matching the provided JSON Schema"
+                    },
+                    "model": {
+                      "enum": [
+                        "nano",
+                        "mini",
+                        "pro",
+                        "max"
+                      ],
+                      "type": "string",
+                      "description": "Model tier used to extract the data"
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Unique request identifier for this API call"
+                    },
+                    "documentId": {
+                      "type": "string",
+                      "description": "Document ID if provided via x-pdfvector-document-id header"
+                    }
+                  },
+                  "required": [
+                    "model",
+                    "requestId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-pdfvector-document-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "my-doc-123"
+            },
+            "description": "Optional document ID to associate with this request. Returned in the response and saved for usage tracking."
+          }
+        ]
+      }
+    },
+    "/invoice/parse": {
+      "post": {
+        "operationId": "invoice.parse",
+        "summary": "Parse an invoice",
+        "description": "Extract text and structured data from an invoice. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.",
+        "tags": [
+          "Invoice"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the invoice file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Invoice file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded invoice file content"
+                  },
+                  "model": {
+                    "enum": [
+                      "pro",
+                      "max",
+                      "auto"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. 'pro': Extracts structured invoice fields with standard accuracy. 'max': Extracts structured invoice fields with highest accuracy and fallback."
+                  }
+                }
+              },
+              "examples": {
+                "Parse from URL": {
+                  "summary": "Parse from URL",
+                  "value": {
+                    "url": "https://example.com/invoice.pdf"
+                  }
+                },
+                "Parse from base64": {
+                  "summary": "Parse from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg=="
+                  }
+                },
+                "Parse from file upload": {
+                  "summary": "Parse from file upload",
+                  "value": {
+                    "file": "(binary)"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the invoice file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Invoice file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded invoice file content"
+                  },
+                  "model": {
+                    "enum": [
+                      "pro",
+                      "max",
+                      "auto"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. 'pro': Extracts structured invoice fields with standard accuracy. 'max': Extracts structured invoice fields with highest accuracy and fallback."
+                  }
+                }
+              },
+              "examples": {
+                "Parse from URL": {
+                  "summary": "Parse from URL",
+                  "value": {
+                    "url": "https://example.com/invoice.pdf"
+                  }
+                },
+                "Parse from base64": {
+                  "summary": "Parse from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg=="
+                  }
+                },
+                "Parse from file upload": {
+                  "summary": "Parse from file upload",
+                  "value": {
+                    "file": "(binary)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "markdown": {
+                      "type": "string",
+                      "description": "Extracted text content from the invoice"
+                    },
+                    "pageCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Total number of pages in the document"
+                    },
+                    "model": {
+                      "enum": [
+                        "pro",
+                        "max"
+                      ],
+                      "type": "string",
+                      "description": "Model tier used to parse the invoice"
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Unique request identifier for this API call"
+                    },
+                    "html": {
+                      "type": "string",
+                      "description": "Full HTML representation of the document content. Only available when using the 'max' model. Preserves rich formatting, tables, selection marks, and visual layout that cannot be fully represented in markdown."
+                    },
+                    "documentId": {
+                      "type": "string",
+                      "description": "Document ID if provided via x-pdfvector-document-id header"
+                    }
+                  },
+                  "required": [
+                    "markdown",
+                    "pageCount",
+                    "model",
+                    "requestId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-pdfvector-document-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "my-doc-123"
+            },
+            "description": "Optional document ID to associate with this request. Returned in the response and saved for usage tracking."
+          }
+        ]
+      }
+    },
+    "/bankStatement/ask": {
+      "post": {
+        "operationId": "bankStatement.ask",
+        "summary": "Ask a question about a bank statement",
+        "description": "Parse a bank statement and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.",
+        "tags": [
+          "Bank Statement"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the bank statement file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded bank statement file content"
+                  },
+                  "question": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The question to answer about the bank statement"
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for answering the question. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models."
+                  }
+                },
+                "required": [
+                  "question"
+                ]
+              },
+              "examples": {
+                "Ask from URL": {
+                  "summary": "Ask from URL",
+                  "value": {
+                    "url": "https://example.com/bank-statement.pdf",
+                    "question": "What is the ending balance?"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the bank statement file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded bank statement file content"
+                  },
+                  "question": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The question to answer about the bank statement"
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for answering the question. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models."
+                  }
+                },
+                "required": [
+                  "question"
+                ]
+              },
+              "examples": {
+                "Ask from URL": {
+                  "summary": "Ask from URL",
+                  "value": {
+                    "url": "https://example.com/bank-statement.pdf",
+                    "question": "What is the ending balance?"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "markdown": {
+                      "type": "string",
+                      "description": "The answer to the question"
+                    },
+                    "model": {
+                      "enum": [
+                        "nano",
+                        "mini",
+                        "pro",
+                        "max"
+                      ],
+                      "type": "string",
+                      "description": "Model tier used to answer the question"
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Unique request identifier for this API call"
+                    },
+                    "documentId": {
+                      "type": "string",
+                      "description": "Document ID if provided via x-pdfvector-document-id header"
+                    }
+                  },
+                  "required": [
+                    "markdown",
+                    "model",
+                    "requestId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-pdfvector-document-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "my-doc-123"
+            },
+            "description": "Optional document ID to associate with this request. Returned in the response and saved for usage tracking."
+          }
+        ]
+      }
+    },
+    "/bankStatement/extract": {
+      "post": {
+        "operationId": "bankStatement.extract",
+        "summary": "Extract structured data from a bank statement",
+        "description": "Parse a bank statement and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.",
+        "tags": [
+          "Bank Statement"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the bank statement file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded bank statement file content"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The prompt instructing the AI how to extract data from the bank statement"
+                  },
+                  "schema": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {}
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "description": "JSON Schema describing the structure of the data to extract from the bank statement. Can be a JSON object or a JSON string."
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models."
+                  }
+                },
+                "required": [
+                  "prompt",
+                  "schema"
+                ]
+              },
+              "examples": {
+                "Extract from URL": {
+                  "summary": "Extract from URL",
+                  "value": {
+                    "url": "https://example.com/bank-statement.pdf",
+                    "prompt": "Extract the account number, statement period, and transactions",
+                    "schema": "{\"type\":\"object\",\"properties\":{\"accountNumber\":{\"type\":\"string\"},\"statementPeriod\":{\"type\":\"string\"},\"transactions\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"date\":{\"type\":\"string\"},\"description\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}}}}},\"required\":[\"accountNumber\",\"statementPeriod\"]}"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the bank statement file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded bank statement file content"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 4,
+                    "description": "The prompt instructing the AI how to extract data from the bank statement"
+                  },
+                  "schema": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {}
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "description": "JSON Schema describing the structure of the data to extract from the bank statement. Can be a JSON object or a JSON string."
+                  },
+                  "model": {
+                    "enum": [
+                      "auto",
+                      "nano",
+                      "mini",
+                      "pro",
+                      "max"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models."
+                  }
+                },
+                "required": [
+                  "prompt",
+                  "schema"
+                ]
+              },
+              "examples": {
+                "Extract from URL": {
+                  "summary": "Extract from URL",
+                  "value": {
+                    "url": "https://example.com/bank-statement.pdf",
+                    "prompt": "Extract the account number, statement period, and transactions",
+                    "schema": "{\"type\":\"object\",\"properties\":{\"accountNumber\":{\"type\":\"string\"},\"statementPeriod\":{\"type\":\"string\"},\"transactions\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"date\":{\"type\":\"string\"},\"description\":{\"type\":\"string\"},\"amount\":{\"type\":\"number\"}}}}},\"required\":[\"accountNumber\",\"statementPeriod\"]}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "description": "Extracted structured data matching the provided JSON Schema"
+                    },
+                    "model": {
+                      "enum": [
+                        "nano",
+                        "mini",
+                        "pro",
+                        "max"
+                      ],
+                      "type": "string",
+                      "description": "Model tier used to extract the data"
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Unique request identifier for this API call"
+                    },
+                    "documentId": {
+                      "type": "string",
+                      "description": "Document ID if provided via x-pdfvector-document-id header"
+                    }
+                  },
+                  "required": [
+                    "model",
+                    "requestId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-pdfvector-document-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "my-doc-123"
+            },
+            "description": "Optional document ID to associate with this request. Returned in the response and saved for usage tracking."
+          }
+        ]
+      }
+    },
+    "/bankStatement/parse": {
+      "post": {
+        "operationId": "bankStatement.parse",
+        "summary": "Parse a bank statement",
+        "description": "Extract text and structured data from a bank statement. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.",
+        "tags": [
+          "Bank Statement"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the bank statement file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded bank statement file content"
+                  },
+                  "model": {
+                    "enum": [
+                      "pro",
+                      "max",
+                      "auto"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. 'pro': Extracts structured bank statement fields with standard accuracy. 'max': Extracts structured bank statement fields with highest accuracy and fallback."
+                  }
+                }
+              },
+              "examples": {
+                "Parse from URL": {
+                  "summary": "Parse from URL",
+                  "value": {
+                    "url": "https://example.com/bank-statement.pdf"
+                  }
+                },
+                "Parse from base64": {
+                  "summary": "Parse from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg=="
+                  }
+                },
+                "Parse from file upload": {
+                  "summary": "Parse from file upload",
+                  "value": {
+                    "file": "(binary)"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of the bank statement file to fetch and parse"
+                  },
+                  "file": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/pdf"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "text/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "application/csv"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/png"
+                      },
+                      {
+                        "type": "string",
+                        "contentMediaType": "image/jpeg"
+                      }
+                    ],
+                    "description": "Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG)"
+                  },
+                  "base64": {
+                    "type": "string",
+                    "description": "Base64-encoded bank statement file content"
+                  },
+                  "model": {
+                    "enum": [
+                      "pro",
+                      "max",
+                      "auto"
+                    ],
+                    "type": "string",
+                    "default": "auto",
+                    "description": "Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. 'pro': Extracts structured bank statement fields with standard accuracy. 'max': Extracts structured bank statement fields with highest accuracy and fallback."
+                  }
+                }
+              },
+              "examples": {
+                "Parse from URL": {
+                  "summary": "Parse from URL",
+                  "value": {
+                    "url": "https://example.com/bank-statement.pdf"
+                  }
+                },
+                "Parse from base64": {
+                  "summary": "Parse from base64",
+                  "value": {
+                    "base64": "JVBERi0xLjAKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqIDIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iaiAzIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzIDNdL1BhcmVudCAyIDAgUj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjE5MAolJUVPRg=="
+                  }
+                },
+                "Parse from file upload": {
+                  "summary": "Parse from file upload",
+                  "value": {
+                    "file": "(binary)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "markdown": {
+                      "type": "string",
+                      "description": "Extracted text content from the bank statement"
+                    },
+                    "pageCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Total number of pages in the document"
+                    },
+                    "model": {
+                      "enum": [
+                        "pro",
+                        "max"
+                      ],
+                      "type": "string",
+                      "description": "Model tier used to parse the bank statement"
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Unique request identifier for this API call"
+                    },
+                    "html": {
+                      "type": "string",
+                      "description": "Full HTML representation of the document content. Only available when using the 'max' model. Preserves rich formatting, tables, selection marks, and visual layout that cannot be fully represented in markdown."
+                    },
+                    "documentId": {
+                      "type": "string",
+                      "description": "Document ID if provided via x-pdfvector-document-id header"
+                    }
+                  },
+                  "required": [
+                    "markdown",
+                    "pageCount",
+                    "model",
+                    "requestId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "x-pdfvector-document-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "my-doc-123"
+            },
+            "description": "Optional document ID to associate with this request. Returned in the response and saved for usage tracking."
+          }
+        ]
+      }
+    },
+    "/academic/fetch": {
+      "post": {
+        "operationId": "academic.fetch",
+        "summary": "Fetch academic papers by ID",
+        "description": "Fetch specific academic publications by their unique identifiers with automatic provider detection and batch processing.",
+        "tags": [
+          "Academic"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 100,
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Publication identifiers to fetch. Supports DOI, PubMed ID, ArXiv ID, Semantic Scholar ID, ERIC ID, Europe PMC ID, OpenAlex ID."
+                  },
+                  "fields": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "enum": [
+                            "doi",
+                            "title",
+                            "url",
+                            "providerURL",
+                            "authors",
+                            "date",
+                            "year",
+                            "totalCitations",
+                            "totalReferences",
+                            "abstract",
+                            "pdfURL",
+                            "provider",
+                            "providerData"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "Specific publication fields to return. If omitted, returns all fields except providerData."
+                  }
+                },
+                "required": [
+                  "ids"
+                ]
+              },
+              "examples": {
+                "Fetch by DOI": {
+                  "summary": "Fetch a paper by DOI",
+                  "value": {
+                    "ids": [
+                      "10.1038/nature12373"
+                    ]
+                  }
+                },
+                "Fetch multiple IDs": {
+                  "summary": "Fetch papers by mixed identifier types",
+                  "value": {
+                    "ids": [
+                      "10.1038/nature12373",
+                      "2301.08745",
+                      "33293753"
+                    ]
+                  }
+                },
+                "Fetch ArXiv paper": {
+                  "summary": "Fetch by ArXiv ID",
+                  "value": {
+                    "ids": [
+                      "2303.08774"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Original input identifier"
+                          },
+                          "detectedProvider": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ],
+                            "description": "Provider that returned this result"
+                          },
+                          "doi": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "title": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "url": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "providerURL": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "authors": {
+                            "anyOf": [
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "url": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "name"
+                                  ]
+                                }
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "date": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "year": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "totalCitations": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "totalReferences": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "abstract": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "pdfURL": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "provider": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "providerData": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "propertyNames": {
+                                  "type": "string"
+                                },
+                                "additionalProperties": {}
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id"
+                        ]
+                      }
+                    },
+                    "errors": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "error": {
+                                "type": "string"
+                              },
+                              "code": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "error"
+                            ]
+                          }
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "results",
+                    "requestId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/academic/findCitations": {
+      "post": {
+        "operationId": "academic.findCitations",
+        "summary": "Find citations for a paragraph",
+        "description": "Find relevant academic citations for a paragraph by splitting it into sentences and scoring papers using semantic embedding similarity.",
+        "tags": [
+          "Academic"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "paragraph": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 5000,
+                    "description": "Text paragraph to find relevant academic citations for"
+                  },
+                  "providers": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "semantic-scholar",
+                        "pubmed",
+                        "arxiv",
+                        "google-scholar",
+                        "eric",
+                        "europe-pmc",
+                        "openalex"
+                      ],
+                      "type": "string"
+                    },
+                    "default": [
+                      "semantic-scholar"
+                    ],
+                    "description": "Academic databases to search for citations"
+                  },
+                  "fields": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "enum": [
+                            "doi",
+                            "title",
+                            "url",
+                            "providerURL",
+                            "authors",
+                            "date",
+                            "year",
+                            "totalCitations",
+                            "totalReferences",
+                            "abstract",
+                            "pdfURL",
+                            "provider",
+                            "providerData"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "Specific citation fields to return. If omitted, returns all fields except providerData."
+                  }
+                },
+                "required": [
+                  "paragraph"
+                ]
+              },
+              "examples": {
+                "Find citations for a paragraph": {
+                  "summary": "Find citations for a research paragraph",
+                  "value": {
+                    "paragraph": "Deep learning has revolutionized computer vision and natural language processing. Transformer architectures have become the dominant approach for sequence modeling tasks. Recent large language models demonstrate emergent capabilities not seen in smaller models."
+                  }
+                },
+                "Find citations with multiple providers": {
+                  "summary": "Search across multiple databases",
+                  "value": {
+                    "paragraph": "CRISPR-Cas9 gene editing technology has transformed molecular biology. The ability to precisely modify DNA sequences has opened new avenues for treating genetic diseases.",
+                    "providers": [
+                      "semantic-scholar",
+                      "pubmed"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "sentence": {
+                            "type": "string"
+                          },
+                          "citations": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "score": {
+                                  "type": "number",
+                                  "description": "Relevance score (0-10)"
+                                },
+                                "doi": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "title": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "url": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "providerURL": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "authors": {
+                                  "anyOf": [
+                                    {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "name": {
+                                            "type": "string"
+                                          },
+                                          "url": {
+                                            "anyOf": [
+                                              {
+                                                "type": "string"
+                                              },
+                                              {
+                                                "type": "null"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "name"
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "date": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "year": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "totalCitations": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "totalReferences": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "abstract": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "pdfURL": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "provider": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "providerData": {
+                                  "anyOf": [
+                                    {
+                                      "type": "object",
+                                      "propertyNames": {
+                                        "type": "string"
+                                      },
+                                      "additionalProperties": {}
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "score"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "sentence",
+                          "citations"
+                        ]
+                      }
+                    },
+                    "sentenceCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "totalCitations": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "errors": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "results",
+                    "sentenceCount",
+                    "totalCitations",
+                    "requestId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/academic/search": {
+      "post": {
+        "operationId": "academic.search",
+        "summary": "Search academic papers",
+        "description": "Search for academic publications across multiple databases with relevance ranking.",
+        "tags": [
+          "Academic"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 400,
+                    "description": "Search query string for academic papers"
+                  },
+                  "providers": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "semantic-scholar",
+                        "pubmed",
+                        "arxiv",
+                        "google-scholar",
+                        "eric",
+                        "europe-pmc",
+                        "openalex"
+                      ],
+                      "type": "string"
+                    },
+                    "default": [
+                      "semantic-scholar"
+                    ],
+                    "description": "Academic databases to search"
+                  },
+                  "offset": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991,
+                    "default": 0,
+                    "description": "Results offset"
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 100,
+                    "default": 20,
+                    "description": "Results per provider"
+                  },
+                  "yearFrom": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 1900,
+                        "maximum": 2100
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "Filter papers published from this year"
+                  },
+                  "yearTo": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 1900,
+                        "maximum": 2100
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "Filter papers published up to this year"
+                  },
+                  "fields": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "enum": [
+                            "doi",
+                            "title",
+                            "url",
+                            "providerURL",
+                            "authors",
+                            "date",
+                            "year",
+                            "totalCitations",
+                            "totalReferences",
+                            "abstract",
+                            "pdfURL",
+                            "provider",
+                            "providerData"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "Specific publication fields to return. If omitted, returns all fields except providerData."
+                  }
+                },
+                "required": [
+                  "query"
+                ]
+              },
+              "examples": {
+                "Search with default provider": {
+                  "summary": "Search with Semantic Scholar",
+                  "value": {
+                    "query": "deep learning for natural language processing"
+                  }
+                },
+                "Search multiple providers": {
+                  "summary": "Search across multiple databases",
+                  "value": {
+                    "query": "CRISPR gene editing",
+                    "providers": [
+                      "semantic-scholar",
+                      "pubmed",
+                      "openalex"
+                    ],
+                    "limit": 10
+                  }
+                },
+                "Search with year filter": {
+                  "summary": "Search recent papers",
+                  "value": {
+                    "query": "large language models",
+                    "providers": [
+                      "semantic-scholar"
+                    ],
+                    "yearFrom": 2023,
+                    "yearTo": 2026,
+                    "limit": 20
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "estimatedTotalResults": {
+                      "type": "number"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "doi": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "title": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "url": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "providerURL": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "authors": {
+                            "anyOf": [
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "url": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "name"
+                                  ]
+                                }
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "date": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "year": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "totalCitations": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "totalReferences": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "abstract": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "pdfURL": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "provider": {
+                            "anyOf": [
+                              {
+                                "enum": [
+                                  "semantic-scholar",
+                                  "pubmed",
+                                  "arxiv",
+                                  "google-scholar",
+                                  "eric",
+                                  "europe-pmc",
+                                  "openalex"
+                                ],
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "providerData": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "propertyNames": {
+                                  "type": "string"
+                                },
+                                "additionalProperties": {}
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    "errors": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "provider": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string"
+                              },
+                              "code": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "details": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "propertyNames": {
+                                      "type": "string"
+                                    },
+                                    "additionalProperties": {}
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "provider",
+                              "message"
+                            ]
+                          }
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "requestId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "estimatedTotalResults",
+                    "results",
+                    "requestId"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  }
+}

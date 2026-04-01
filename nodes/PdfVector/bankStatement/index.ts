@@ -1,4 +1,5 @@
 import type { IExecuteFunctions } from 'n8n-workflow';
+import type { JsonRequestBody } from '../shared/api-types.js';
 import { apiRequest, getDocumentInput } from '../shared/helpers.js';
 import { makeDocumentProperties } from '../shared/options.js';
 
@@ -12,42 +13,29 @@ export async function executeBankStatement(
 	i: number,
 ): Promise<Record<string, unknown>> {
 	const input = await getDocumentInput(ef, i);
-	const model = ef.getNodeParameter('model', i, 'auto') as string;
 	const documentId = ef.getNodeParameter('documentId', i, '') as string;
 
 	if (operation === 'parse') {
-		return await apiRequest(
-			ef,
-			domain,
-			apiKey,
-			'bankStatement/parse',
-			{ ...input, model },
-			documentId,
-		);
+		const model =
+			ef.getNodeParameter('model', i, 'auto') as JsonRequestBody<'/bankStatement/parse'>['model'];
+		const body: JsonRequestBody<'/bankStatement/parse'> = { ...input, model };
+		return await apiRequest(ef, domain, apiKey, '/bankStatement/parse', body, documentId);
 	}
 	if (operation === 'ask') {
 		const question = ef.getNodeParameter('question', i) as string;
-		return await apiRequest(
-			ef,
-			domain,
-			apiKey,
-			'bankStatement/ask',
-			{ ...input, question, model },
-			documentId,
-		);
+		const model =
+			ef.getNodeParameter('model', i, 'auto') as JsonRequestBody<'/bankStatement/ask'>['model'];
+		const body: JsonRequestBody<'/bankStatement/ask'> = { ...input, question, model };
+		return await apiRequest(ef, domain, apiKey, '/bankStatement/ask', body, documentId);
 	}
 	if (operation === 'extract') {
 		const prompt = ef.getNodeParameter('prompt', i) as string;
 		const schemaStr = ef.getNodeParameter('schema', i) as string;
 		const schema = typeof schemaStr === 'string' ? JSON.parse(schemaStr) : schemaStr;
-		return await apiRequest(
-			ef,
-			domain,
-			apiKey,
-			'bankStatement/extract',
-			{ ...input, prompt, schema, model },
-			documentId,
-		);
+		const model =
+			ef.getNodeParameter('model', i, 'auto') as JsonRequestBody<'/bankStatement/extract'>['model'];
+		const body: JsonRequestBody<'/bankStatement/extract'> = { ...input, prompt, schema, model };
+		return await apiRequest(ef, domain, apiKey, '/bankStatement/extract', body, documentId);
 	}
 	return {};
 }

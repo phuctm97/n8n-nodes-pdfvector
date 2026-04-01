@@ -1,5 +1,6 @@
 import type { IExecuteFunctions } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
+import type { ApiPath, JsonRequestBody, JsonResponseBody } from './api-types.js';
 
 export function getBaseUrl(domain: string): string {
 	const d = domain || 'global.pdfvector.com';
@@ -24,14 +25,14 @@ export async function getDocumentInput(
 	return { base64: buffer.toString('base64') };
 }
 
-export async function apiRequest(
+export async function apiRequest<TPath extends ApiPath>(
 	ef: IExecuteFunctions,
 	domain: string,
 	apiKey: string,
-	path: string,
-	body: Record<string, unknown>,
+	path: TPath,
+	body: JsonRequestBody<TPath>,
 	documentId?: string,
-): Promise<Record<string, unknown>> {
+): Promise<JsonResponseBody<TPath>> {
 	const headers: Record<string, string> = {
 		Authorization: `Bearer ${apiKey}`,
 		'Content-Type': 'application/json',
@@ -41,9 +42,9 @@ export async function apiRequest(
 	}
 	return (await ef.helpers.httpRequest({
 		method: 'POST',
-		url: `${getBaseUrl(domain)}/api/${path}`,
+		url: `${getBaseUrl(domain)}/api${path}`,
 		headers,
-		body,
+		body: body as Record<string, unknown>,
 		json: true,
-	})) as Record<string, unknown>;
+	})) as JsonResponseBody<TPath>;
 }
