@@ -1,5 +1,6 @@
 import type { IExecuteFunctions } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
+import type { ApiPath, DocumentInput, JsonRequestBody, JsonResponseBody } from './api.js';
 
 export function getBaseUrl(domain: string): string {
 	const d = domain || 'global.pdfvector.com';
@@ -7,10 +8,7 @@ export function getBaseUrl(domain: string): string {
 	return `${protocol}://${d}`;
 }
 
-export async function getDocumentInput(
-	ef: IExecuteFunctions,
-	i: number,
-): Promise<{ url: string } | { base64: string }> {
+export async function getDocumentInput(ef: IExecuteFunctions, i: number): Promise<DocumentInput> {
 	const inputType = ef.getNodeParameter('inputType', i) as string;
 	if (inputType === 'url') {
 		return { url: ef.getNodeParameter('url', i) as string };
@@ -24,14 +22,14 @@ export async function getDocumentInput(
 	return { base64: buffer.toString('base64') };
 }
 
-export async function apiRequest(
+export async function apiRequest<Path extends ApiPath>(
 	ef: IExecuteFunctions,
 	domain: string,
 	apiKey: string,
-	path: string,
-	body: Record<string, unknown>,
+	path: Path,
+	body: JsonRequestBody<Path>,
 	documentId?: string,
-): Promise<Record<string, unknown>> {
+): Promise<JsonResponseBody<Path>> {
 	const headers: Record<string, string> = {
 		Authorization: `Bearer ${apiKey}`,
 		'Content-Type': 'application/json',
@@ -41,9 +39,9 @@ export async function apiRequest(
 	}
 	return (await ef.helpers.httpRequest({
 		method: 'POST',
-		url: `${getBaseUrl(domain)}/api/${path}`,
+		url: `${getBaseUrl(domain)}/api${path}`,
 		headers,
-		body,
+		body: body as Record<string, unknown>,
 		json: true,
-	})) as Record<string, unknown>;
+	})) as JsonResponseBody<Path>;
 }

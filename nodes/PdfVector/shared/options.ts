@@ -1,8 +1,9 @@
 import type { INodeProperties } from 'n8n-workflow';
+import type { JsonRequestModel, OptionValue } from './api.js';
 
 // ─── Model options ──────────────────────────────────────────
 
-export const allModelOptions = [
+export const allModelOptions: Array<OptionValue<JsonRequestModel<'/document/ask'>>> = [
 	{
 		name: 'Auto',
 		value: 'auto',
@@ -33,7 +34,7 @@ export const allModelOptions = [
 	},
 ];
 
-export const proMaxModelOptions = [
+export const proMaxModelOptions: Array<OptionValue<JsonRequestModel<'/identity/parse'>>> = [
 	{ name: 'Auto', value: 'auto', description: 'Automatically selects between Pro and Max' },
 	{ name: 'Pro', value: 'pro', description: 'Standard accuracy' },
 	{ name: 'Max', value: 'max', description: 'Highest accuracy with HTML output' },
@@ -44,9 +45,9 @@ export const proMaxModelOptions = [
 export function makeDocumentProperties(
 	resource: string,
 	label: string,
+	parseModelOptions: ReadonlyArray<OptionValue<string>>,
+	askExtractModelOptions: ReadonlyArray<OptionValue<string>>,
 ): INodeProperties[] {
-	const parseModelOptions = resource === 'document' ? allModelOptions : proMaxModelOptions;
-
 	return [
 		{
 			displayName: 'Operation',
@@ -112,7 +113,7 @@ export function makeDocumentProperties(
 			displayName: 'Model',
 			name: 'model',
 			type: 'options',
-			options: parseModelOptions,
+			options: [...parseModelOptions],
 			default: 'auto',
 			displayOptions: { show: { resource: [resource], operation: ['parse'] } },
 			description: 'AI model tier for parsing. Higher tiers support more complex documents but cost more credits.',
@@ -121,7 +122,7 @@ export function makeDocumentProperties(
 			displayName: 'Model',
 			name: 'model',
 			type: 'options',
-			options: allModelOptions,
+			options: [...askExtractModelOptions],
 			default: 'auto',
 			displayOptions: { show: { resource: [resource], operation: ['ask', 'extract'] } },
 			description: 'AI model tier. Higher tiers produce better results but cost more credits.',
