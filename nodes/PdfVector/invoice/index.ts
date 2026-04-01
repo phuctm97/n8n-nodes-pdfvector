@@ -1,8 +1,17 @@
 import type { IExecuteFunctions } from 'n8n-workflow';
+import type { JsonRequestBody, JsonRequestModel, JsonRequestSchema } from '../shared/api.js';
 import { apiRequest, getDocumentInput } from '../shared/helpers.js';
-import { makeDocumentProperties } from '../shared/options.js';
+import { allModelOptions, makeDocumentProperties, proMaxModelOptions } from '../shared/options.js';
 
-export const invoiceProperties = makeDocumentProperties('invoice', 'Invoice');
+type InvoiceAskRequest = JsonRequestBody<'/invoice/ask'>;
+type InvoiceExtractRequest = JsonRequestBody<'/invoice/extract'>;
+
+export const invoiceProperties = makeDocumentProperties(
+	'invoice',
+	'Invoice',
+	proMaxModelOptions,
+	allModelOptions,
+);
 
 export async function executeInvoice(
 	ef: IExecuteFunctions,
@@ -12,32 +21,37 @@ export async function executeInvoice(
 	i: number,
 ): Promise<Record<string, unknown>> {
 	const input = await getDocumentInput(ef, i);
-	const model = ef.getNodeParameter('model', i, 'auto') as string;
 	const documentId = ef.getNodeParameter('documentId', i, '') as string;
 
 	if (operation === 'parse') {
-		return await apiRequest(ef, domain, apiKey, 'invoice/parse', { ...input, model }, documentId);
+		const model = ef.getNodeParameter('model', i, 'auto') as JsonRequestModel<'/invoice/parse'>;
+		return await apiRequest(ef, domain, apiKey, '/invoice/parse', { ...input, model }, documentId);
 	}
 	if (operation === 'ask') {
-		const question = ef.getNodeParameter('question', i) as string;
+		const question = ef.getNodeParameter('question', i) as InvoiceAskRequest['question'];
+		const model = ef.getNodeParameter('model', i, 'auto') as JsonRequestModel<'/invoice/ask'>;
 		return await apiRequest(
 			ef,
 			domain,
 			apiKey,
-			'invoice/ask',
+			'/invoice/ask',
 			{ ...input, question, model },
 			documentId,
 		);
 	}
 	if (operation === 'extract') {
-		const prompt = ef.getNodeParameter('prompt', i) as string;
-		const schemaStr = ef.getNodeParameter('schema', i) as string;
-		const schema = typeof schemaStr === 'string' ? JSON.parse(schemaStr) : schemaStr;
+		const prompt = ef.getNodeParameter('prompt', i) as InvoiceExtractRequest['prompt'];
+		const schemaParameter = ef.getNodeParameter('schema', i) as InvoiceExtractRequest['schema'];
+		const model = ef.getNodeParameter('model', i, 'auto') as JsonRequestModel<'/invoice/extract'>;
+		const schema =
+			typeof schemaParameter === 'string'
+				? (JSON.parse(schemaParameter) as JsonRequestSchema<'/invoice/extract'>)
+				: schemaParameter;
 		return await apiRequest(
 			ef,
 			domain,
 			apiKey,
-			'invoice/extract',
+			'/invoice/extract',
 			{ ...input, prompt, schema, model },
 			documentId,
 		);
