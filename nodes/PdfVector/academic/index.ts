@@ -1,44 +1,88 @@
 import type { IExecuteFunctions, INodeProperties, INodePropertyOptions } from 'n8n-workflow';
-import type { paths } from '../shared/pdfvector-api.types.js';
-import { apiRequest } from '../shared/helpers.js';
+import type { ApiOperation, ApiRequestBodyFor } from '../shared/helpers.js';
+import { apiRequest, assertNever } from '../shared/helpers.js';
+import { toActionOptions, toTypedOptions } from '../shared/options.js';
 
 type TypedOption<TValue extends string> = INodePropertyOptions & { value: TValue };
-type AcademicProvider = NonNullable<
-	paths['/academic/search']['post']['requestBody']['content']['application/json']['providers']
->[number];
-type AcademicField = NonNullable<
-	NonNullable<paths['/academic/search']['post']['requestBody']['content']['application/json']['fields']>
->[number];
+type AcademicOperation = ApiOperation<'academic'>;
+type AcademicProvider = NonNullable<ApiRequestBodyFor<'academic', 'search'>['providers']>[number];
+type AcademicField = NonNullable<ApiRequestBodyFor<'academic', 'search'>['fields']>[number];
 
-const providerOptions: TypedOption<AcademicProvider>[] = [
-	{
+const providerOptionMetadata: Record<
+	AcademicProvider,
+	Pick<INodePropertyOptions, 'name' | 'description'>
+> = {
+	'semantic-scholar': {
 		name: 'Semantic Scholar',
-		value: 'semantic-scholar',
 		description: 'Semanticscholar.org — largest free academic search engine',
 	},
-	{ name: 'PubMed', value: 'pubmed', description: 'Pubmed.ncbi.nlm.nih.gov — biomedical literature' },
-	{ name: 'ArXiv', value: 'arxiv', description: 'Arxiv.org — physics, math, CS preprints' },
-	{ name: 'Google Scholar', value: 'google-scholar', description: 'Scholar.google.com — broad academic search' },
-	{ name: 'OpenAlex', value: 'openalex', description: 'Openalex.org — open catalog of scholarly works' },
-	{ name: 'ERIC', value: 'eric', description: 'Eric.ed.gov — education research' },
-	{ name: 'Europe PMC', value: 'europe-pmc', description: 'Europepmc.org — European biomedical literature' },
-];
+	pubmed: {
+		name: 'PubMed',
+		description: 'Pubmed.ncbi.nlm.nih.gov — biomedical literature',
+	},
+	arxiv: {
+		name: 'ArXiv',
+		description: 'Arxiv.org — physics, math, CS preprints',
+	},
+	'google-scholar': {
+		name: 'Google Scholar',
+		description: 'Scholar.google.com — broad academic search',
+	},
+	openalex: {
+		name: 'OpenAlex',
+		description: 'Openalex.org — open catalog of scholarly works',
+	},
+	eric: {
+		name: 'ERIC',
+		description: 'Eric.ed.gov — education research',
+	},
+	'europe-pmc': {
+		name: 'Europe PMC',
+		description: 'Europepmc.org — European biomedical literature',
+	},
+};
 
-const fieldOptions: TypedOption<AcademicField>[] = [
-	{ name: 'Title', value: 'title' },
-	{ name: 'Authors', value: 'authors' },
-	{ name: 'Year', value: 'year' },
-	{ name: 'Abstract', value: 'abstract' },
-	{ name: 'DOI', value: 'doi' },
-	{ name: 'URL', value: 'url' },
-	{ name: 'PDF URL', value: 'pdfURL' },
-	{ name: 'Date', value: 'date' },
-	{ name: 'Total Citations', value: 'totalCitations' },
-	{ name: 'Total References', value: 'totalReferences' },
-	{ name: 'Provider', value: 'provider' },
-	{ name: 'Provider URL', value: 'providerURL' },
-	{ name: 'Provider Data', value: 'providerData', description: 'Raw provider-specific metadata' },
-];
+const fieldOptionMetadata: Record<
+	AcademicField,
+	Pick<INodePropertyOptions, 'name' | 'description'>
+> = {
+	title: { name: 'Title' },
+	authors: { name: 'Authors' },
+	year: { name: 'Year' },
+	abstract: { name: 'Abstract' },
+	doi: { name: 'DOI' },
+	url: { name: 'URL' },
+	pdfURL: { name: 'PDF URL' },
+	date: { name: 'Date' },
+	totalCitations: { name: 'Total Citations' },
+	totalReferences: { name: 'Total References' },
+	provider: { name: 'Provider' },
+	providerURL: { name: 'Provider URL' },
+	providerData: {
+		name: 'Provider Data',
+		description: 'Raw provider-specific metadata',
+	},
+};
+
+const providerOptions = toTypedOptions(providerOptionMetadata) as TypedOption<AcademicProvider>[];
+const fieldOptions = toTypedOptions(fieldOptionMetadata) as TypedOption<AcademicField>[];
+const academicOperationOptions = toActionOptions<AcademicOperation>({
+	search: {
+		name: 'Search',
+		description: 'Search for academic papers across multiple databases',
+		action: 'Search academic papers',
+	},
+	fetch: {
+		name: 'Fetch',
+		description: 'Fetch specific papers by DOI, PubMed ID, ArXiv ID, etc',
+		action: 'Fetch papers by ID',
+	},
+	findCitations: {
+		name: 'Find Citations',
+		description: 'Find relevant academic citations for a paragraph of text',
+		action: 'Find citations for text',
+	},
+});
 
 export const academicProperties: INodeProperties[] = [
 	{
@@ -47,26 +91,7 @@ export const academicProperties: INodeProperties[] = [
 		type: 'options',
 		noDataExpression: true,
 		displayOptions: { show: { resource: ['academic'] } },
-		options: [
-			{
-				name: 'Search',
-				value: 'search',
-				description: 'Search for academic papers across multiple databases',
-				action: 'Search academic papers',
-			},
-			{
-				name: 'Fetch',
-				value: 'fetch',
-				description: 'Fetch specific papers by DOI, PubMed ID, ArXiv ID, etc',
-				action: 'Fetch papers by ID',
-			},
-			{
-				name: 'Find Citations',
-				value: 'findCitations',
-				description: 'Find relevant academic citations for a paragraph of text',
-				action: 'Find citations for text',
-			},
-		],
+		options: academicOperationOptions,
 		default: 'search',
 	},
 
@@ -169,51 +194,57 @@ export async function executeAcademic(
 	ef: IExecuteFunctions,
 	domain: string,
 	apiKey: string,
-	operation: string,
+	operation: AcademicOperation,
 	i: number,
 ){
-	if (operation === 'search') {
-		const query = ef.getNodeParameter('query', i) as string;
-		const providers = ef.getNodeParameter('providers', i, [
-			'semantic-scholar',
-		]) as AcademicProvider[];
-		const limit = ef.getNodeParameter('limit', i, 50) as number;
-		const offset = ef.getNodeParameter('offset', i, 0) as number;
-		const yearFrom = ef.getNodeParameter('yearFrom', i, '') as number | '';
-		const yearTo = ef.getNodeParameter('yearTo', i, '') as number | '';
-		const fields = ef.getNodeParameter('fields', i, []) as AcademicField[];
-		return await apiRequest(ef, domain, apiKey, '/academic/search', {
-			query,
-			providers,
-			limit,
-			offset,
-			...(yearFrom === '' ? {} : { yearFrom }),
-			...(yearTo === '' ? {} : { yearTo }),
-			...(fields.length > 0 ? { fields } : {}),
-		});
+	switch (operation) {
+		case 'search': {
+			const query = ef.getNodeParameter('query', i) as string;
+			const providers = ef.getNodeParameter('providers', i, [
+				'semantic-scholar',
+			]) as AcademicProvider[];
+			const limit = ef.getNodeParameter('limit', i, 50) as number;
+			const offset = ef.getNodeParameter('offset', i, 0) as number;
+			const yearFrom = ef.getNodeParameter('yearFrom', i, '') as number | '';
+			const yearTo = ef.getNodeParameter('yearTo', i, '') as number | '';
+			const fields = ef.getNodeParameter('fields', i, []) as AcademicField[];
+
+			return await apiRequest(ef, domain, apiKey, '/academic/search', {
+				query,
+				providers,
+				limit,
+				offset,
+				...(yearFrom === '' ? {} : { yearFrom }),
+				...(yearTo === '' ? {} : { yearTo }),
+				...(fields.length > 0 ? { fields } : {}),
+			});
+		}
+		case 'fetch': {
+			const ids = (ef.getNodeParameter('ids', i) as string)
+				.split(',')
+				.map((id) => id.trim())
+				.filter(Boolean);
+			const fields = ef.getNodeParameter('fields', i, []) as AcademicField[];
+
+			return await apiRequest(ef, domain, apiKey, '/academic/fetch', {
+				ids,
+				...(fields.length > 0 ? { fields } : {}),
+			});
+		}
+		case 'findCitations': {
+			const paragraph = ef.getNodeParameter('paragraph', i) as string;
+			const providers = ef.getNodeParameter('providers', i, [
+				'semantic-scholar',
+			]) as AcademicProvider[];
+			const fields = ef.getNodeParameter('fields', i, []) as AcademicField[];
+
+			return await apiRequest(ef, domain, apiKey, '/academic/findCitations', {
+				paragraph,
+				providers,
+				...(fields.length > 0 ? { fields } : {}),
+			});
+		}
 	}
-	if (operation === 'fetch') {
-		const ids = (ef.getNodeParameter('ids', i) as string)
-			.split(',')
-			.map((id) => id.trim())
-			.filter(Boolean);
-		const fields = ef.getNodeParameter('fields', i, []) as AcademicField[];
-		return await apiRequest(ef, domain, apiKey, '/academic/fetch', {
-			ids,
-			...(fields.length > 0 ? { fields } : {}),
-		});
-	}
-	if (operation === 'findCitations') {
-		const paragraph = ef.getNodeParameter('paragraph', i) as string;
-		const providers = ef.getNodeParameter('providers', i, [
-			'semantic-scholar',
-		]) as AcademicProvider[];
-		const fields = ef.getNodeParameter('fields', i, []) as AcademicField[];
-		return await apiRequest(ef, domain, apiKey, '/academic/findCitations', {
-			paragraph,
-			providers,
-			...(fields.length > 0 ? { fields } : {}),
-		});
-	}
-	return {};
+
+	return assertNever(operation);
 }

@@ -1,69 +1,156 @@
 import type { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
-import type { paths } from './pdfvector-api.types.js';
+import type { ApiOperation, ApiRequestBodyFor, ApiResource } from './helpers.js';
 
 type TypedOption<TValue extends string> = INodePropertyOptions & { value: TValue };
-type DocumentParseModel = NonNullable<
-	paths['/document/parse']['post']['requestBody']['content']['application/json']['model']
->;
-type SpecializedParseModel = NonNullable<
-	paths['/invoice/parse']['post']['requestBody']['content']['application/json']['model']
->;
+type OptionMetadata = Pick<INodePropertyOptions, 'name' | 'description'>;
+type ActionOptionMetadata = OptionMetadata & Pick<INodePropertyOptions, 'action'>;
+type DocumentResource = Exclude<ApiResource, 'academic'>;
+type DocumentOperation = ApiOperation<'document'>;
+type DocumentParseModel = NonNullable<ApiRequestBodyFor<'document', 'parse'>['model']>;
+type DocumentAiModel = NonNullable<ApiRequestBodyFor<'document', 'ask'>['model']>;
+type IdentityParseModel = NonNullable<ApiRequestBodyFor<'identity', 'parse'>['model']>;
+type IdentityAiModel = NonNullable<ApiRequestBodyFor<'identity', 'ask'>['model']>;
+type InvoiceParseModel = NonNullable<ApiRequestBodyFor<'invoice', 'parse'>['model']>;
+type InvoiceAiModel = NonNullable<ApiRequestBodyFor<'invoice', 'ask'>['model']>;
+type BankStatementParseModel = NonNullable<ApiRequestBodyFor<'bankStatement', 'parse'>['model']>;
+type BankStatementAiModel = NonNullable<ApiRequestBodyFor<'bankStatement', 'ask'>['model']>;
+
+export function toTypedOptions<TValue extends string>(
+	optionMetadata: Record<TValue, OptionMetadata>,
+): TypedOption<TValue>[] {
+	return (Object.entries(optionMetadata) as Array<[TValue, OptionMetadata]>).map(
+		([value, metadata]) => ({
+			...metadata,
+			value,
+		}),
+	);
+}
+
+export function toActionOptions<TValue extends string>(
+	optionMetadata: Record<TValue, ActionOptionMetadata>,
+): TypedOption<TValue>[] {
+	return (Object.entries(optionMetadata) as Array<[TValue, ActionOptionMetadata]>).map(
+		([value, metadata]) => ({
+			...metadata,
+			value,
+		}),
+	);
+}
+
+function defineOptionMetadata<TValue extends string>(
+	optionMetadata: Record<TValue, OptionMetadata>,
+): Record<TValue, OptionMetadata> {
+	return optionMetadata;
+}
 
 // ─── Model options ──────────────────────────────────────────
 
-export const allModelOptions: TypedOption<DocumentParseModel>[] = [
-	{
+const generalModelOptionMetadata = {
+	auto: {
 		name: 'Auto',
-		value: 'auto',
 		description:
 			'Automatically selects the best model. Supports PDF, Word, Excel, CSV, Image. Up to 1000 pages, 500MB.',
 	},
-	{
+	nano: {
 		name: 'Nano',
-		value: 'nano',
 		description: 'Lightweight. PDF, Word, Excel, CSV only. Up to 30 pages, 10MB.',
 	},
-	{
+	mini: {
 		name: 'Mini',
-		value: 'mini',
 		description: 'Tables & structured content. PDF, Word, Excel, CSV only. Up to 30 pages, 10MB.',
 	},
-	{
+	pro: {
 		name: 'Pro',
-		value: 'pro',
 		description:
 			'Images, handwriting, math, Arabic. PDF, Word, Excel, CSV, Image. Up to 30 pages, 40MB.',
 	},
-	{
+	max: {
 		name: 'Max',
-		value: 'max',
 		description:
 			'Full capabilities + enhanced multilingual + HTML output. PDF, Word, Excel, CSV, Image. Up to 1000 pages, 500MB.',
 	},
-];
+};
 
-export const specializedParseModelOptions: TypedOption<SpecializedParseModel>[] = [
-	{
+const specializedParseModelOptionMetadata = {
+	auto: {
 		name: 'Auto',
-		value: 'auto',
 		description: 'Automatically selects the best parsing strategy for structured document extraction',
 	},
-	{ name: 'Pro', value: 'pro', description: 'Standard accuracy for structured parsing' },
-	{
+	pro: {
+		name: 'Pro',
+		description: 'Standard accuracy for structured parsing',
+	},
+	max: {
 		name: 'Max',
-		value: 'max',
 		description: 'Highest structured-parsing accuracy with HTML output when available',
 	},
-];
+};
+
+export const documentParseModelOptions = toTypedOptions(
+	defineOptionMetadata<DocumentParseModel>(generalModelOptionMetadata),
+);
+export const allModelOptions = toTypedOptions(
+	defineOptionMetadata<DocumentAiModel>(generalModelOptionMetadata),
+);
+
+const identityParseModelOptions = toTypedOptions(
+	defineOptionMetadata<IdentityParseModel>(specializedParseModelOptionMetadata),
+);
+const identityAiModelOptions = toTypedOptions(
+	defineOptionMetadata<IdentityAiModel>(generalModelOptionMetadata),
+);
+const invoiceParseModelOptions = toTypedOptions(
+	defineOptionMetadata<InvoiceParseModel>(specializedParseModelOptionMetadata),
+);
+const invoiceAiModelOptions = toTypedOptions(
+	defineOptionMetadata<InvoiceAiModel>(generalModelOptionMetadata),
+);
+const bankStatementParseModelOptions = toTypedOptions(
+	defineOptionMetadata<BankStatementParseModel>(specializedParseModelOptionMetadata),
+);
+const bankStatementAiModelOptions = toTypedOptions(
+	defineOptionMetadata<BankStatementAiModel>(generalModelOptionMetadata),
+);
+
+const parseModelOptionsByResource = {
+	document: documentParseModelOptions,
+	identity: identityParseModelOptions,
+	invoice: invoiceParseModelOptions,
+	bankStatement: bankStatementParseModelOptions,
+};
+
+const aiModelOptionsByResource = {
+	document: allModelOptions,
+	identity: identityAiModelOptions,
+	invoice: invoiceAiModelOptions,
+	bankStatement: bankStatementAiModelOptions,
+};
 
 // ─── Shared document-like properties builder ────────────────
 
 export function makeDocumentProperties(
-	resource: string,
+	resource: DocumentResource,
 	label: string,
 ): INodeProperties[] {
-	const parseModelOptions =
-		resource === 'document' ? allModelOptions : specializedParseModelOptions;
+	const parseModelOptions = parseModelOptionsByResource[resource];
+	const aiModelOptions = aiModelOptionsByResource[resource];
+	const operationOptions = toActionOptions<DocumentOperation>({
+		parse: {
+			name: 'Parse',
+			description: `Extract text and page count from a ${label.toLowerCase()}`,
+			action: `Parse a ${label.toLowerCase()}`,
+		},
+		ask: {
+			name: 'Ask',
+			description: `Ask a question about a ${label.toLowerCase()} and get an AI answer`,
+			action: `Ask about a ${label.toLowerCase()}`,
+		},
+		extract: {
+			name: 'Extract',
+			description: `Extract structured data from a ${label.toLowerCase()} using JSON Schema`,
+			action: `Extract from a ${label.toLowerCase()}`,
+		},
+	});
 
 	return [
 		{
@@ -72,26 +159,7 @@ export function makeDocumentProperties(
 			type: 'options',
 			noDataExpression: true,
 			displayOptions: { show: { resource: [resource] } },
-			options: [
-				{
-					name: 'Parse',
-					value: 'parse',
-					description: `Extract text and page count from a ${label.toLowerCase()}`,
-					action: `Parse a ${label.toLowerCase()}`,
-				},
-				{
-					name: 'Ask',
-					value: 'ask',
-					description: `Ask a question about a ${label.toLowerCase()} and get an AI answer`,
-					action: `Ask about a ${label.toLowerCase()}`,
-				},
-				{
-					name: 'Extract',
-					value: 'extract',
-					description: `Extract structured data from a ${label.toLowerCase()} using JSON Schema`,
-					action: `Extract from a ${label.toLowerCase()}`,
-				},
-			],
+			options: operationOptions,
 			default: 'parse',
 		},
 		{
@@ -136,13 +204,13 @@ export function makeDocumentProperties(
 			description: 'AI model tier for parsing. Higher tiers support more complex documents but cost more credits.',
 		},
 		{
-			displayName: 'Model',
-			name: 'model',
-			type: 'options',
-			options: allModelOptions,
-			default: 'auto',
-			displayOptions: { show: { resource: [resource], operation: ['ask', 'extract'] } },
-			description: 'AI model tier. Higher tiers produce better results but cost more credits.',
+				displayName: 'Model',
+				name: 'model',
+				type: 'options',
+				options: aiModelOptions,
+				default: 'auto',
+				displayOptions: { show: { resource: [resource], operation: ['ask', 'extract'] } },
+				description: 'AI model tier. Higher tiers produce better results but cost more credits.',
 		},
 		{
 			displayName: 'Question',

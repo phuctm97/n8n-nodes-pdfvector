@@ -2,6 +2,7 @@ import type {
 	IDataObject,
 	IExecuteFunctions,
 	INodeExecutionData,
+	INodePropertyOptions,
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
@@ -11,6 +12,22 @@ import { bankStatementProperties, executeBankStatement } from './bankStatement/i
 import { documentProperties, executeDocument } from './document/index.js';
 import { identityProperties, executeIdentity } from './identity/index.js';
 import { invoiceProperties, executeInvoice } from './invoice/index.js';
+import type { ApiOperation, ApiResource } from './shared/helpers.js';
+import { assertNever } from './shared/helpers.js';
+import { toTypedOptions } from './shared/options.js';
+
+const resourceOptionMetadata: Record<
+	ApiResource,
+	Pick<INodePropertyOptions, 'name'>
+> = {
+	academic: { name: 'Academic' },
+	bankStatement: { name: 'Bank Statement' },
+	document: { name: 'Document' },
+	identity: { name: 'Identity Document' },
+	invoice: { name: 'Invoice' },
+};
+
+const resourceOptions = toTypedOptions(resourceOptionMetadata);
 
 export class PdfVector implements INodeType {
 	description: INodeTypeDescription = {
@@ -33,13 +50,7 @@ export class PdfVector implements INodeType {
 				name: 'resource',
 				type: 'options',
 				noDataExpression: true,
-				options: [
-					{ name: 'Academic', value: 'academic' },
-					{ name: 'Bank Statement', value: 'bankStatement' },
-					{ name: 'Document', value: 'document' },
-					{ name: 'Identity Document', value: 'identity' },
-					{ name: 'Invoice', value: 'invoice' },
-				],
+				options: resourceOptions,
 				default: 'document',
 			},
 			...documentProperties,
@@ -58,29 +69,43 @@ export class PdfVector implements INodeType {
 		const domain = (credentials.domain as string) || 'global.pdfvector.com';
 		const apiKey = credentials.apiKey as string;
 
-		const resource = this.getNodeParameter('resource', 0) as string;
-		const operation = this.getNodeParameter('operation', 0) as string;
+		const resource = this.getNodeParameter('resource', 0) as ApiResource;
 
 		for (let i = 0; i < items.length; i++) {
 			try {
-				let result: Record<string, unknown> = {};
+				let result: Record<string, unknown>;
 
 				switch (resource) {
-					case 'document':
+					case 'document': {
+						const operation = this.getNodeParameter('operation', 0) as ApiOperation<'document'>;
 						result = await executeDocument(this, domain, apiKey, operation, i);
 						break;
-					case 'identity':
+					}
+					case 'identity': {
+						const operation = this.getNodeParameter('operation', 0) as ApiOperation<'identity'>;
 						result = await executeIdentity(this, domain, apiKey, operation, i);
 						break;
-					case 'invoice':
+					}
+					case 'invoice': {
+						const operation = this.getNodeParameter('operation', 0) as ApiOperation<'invoice'>;
 						result = await executeInvoice(this, domain, apiKey, operation, i);
 						break;
-					case 'bankStatement':
+					}
+					case 'bankStatement': {
+						const operation = this.getNodeParameter(
+							'operation',
+							0,
+						) as ApiOperation<'bankStatement'>;
 						result = await executeBankStatement(this, domain, apiKey, operation, i);
 						break;
-					case 'academic':
+					}
+					case 'academic': {
+						const operation = this.getNodeParameter('operation', 0) as ApiOperation<'academic'>;
 						result = await executeAcademic(this, domain, apiKey, operation, i);
 						break;
+					}
+					default:
+						result = assertNever(resource);
 				}
 
 				returnData.push({ json: result as IDataObject, pairedItem: { item: i } });
@@ -90,14 +115,14 @@ export class PdfVector implements INodeType {
 					if (error instanceof Error && 'code' in error) {
 						const err = error as Error & { code: string };
 						message = `[${err.code}] ${err.message}`;
-					} else if (error instanceof Error) {
-						message = error.message;
-					} else {
-						message = String(error);
-				}
-					returnData.push({ json: { error: message }, pairedItem: { item: i } });
-					continue;
-				}
+						} else if (error instanceof Error) {
+							message = error.message;
+						} else {
+							message = String(error);
+						}
+						returnData.push({ json: { error: message }, pairedItem: { item: i } });
+						continue;
+					}
 				if (error && typeof error === 'object' && 'context' in error) {
 					const errorWithContext = error as { context?: { itemIndex?: number } };
 					errorWithContext.context ??= {};
