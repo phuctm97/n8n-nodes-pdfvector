@@ -25,19 +25,17 @@ export async function getDocumentInput(ef: IExecuteFunctions, i: number): Promis
 export async function apiRequest<Path extends ApiPath>(
 	ef: IExecuteFunctions,
 	domain: string,
-	apiKey: string,
 	path: Path,
 	body: JsonRequestBody<Path>,
 	documentId?: string,
 ): Promise<JsonResponseBody<Path>> {
 	const headers: Record<string, string> = {
-		Authorization: `Bearer ${apiKey}`,
 		'Content-Type': 'application/json',
 	};
 	if (documentId) {
 		headers['x-pdfvector-document-id'] = documentId;
 	}
-	return (await ef.helpers.httpRequest({
+	return (await ef.helpers.httpRequestWithAuthentication.call(ef, 'pdfVectorApi', {
 		method: 'POST',
 		url: `${getBaseUrl(domain)}/api${path}`,
 		headers,

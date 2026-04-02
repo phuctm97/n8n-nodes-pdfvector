@@ -16,7 +16,6 @@ export const invoiceProperties = makeDocumentProperties(
 export async function executeInvoice(
 	ef: IExecuteFunctions,
 	domain: string,
-	apiKey: string,
 	operation: string,
 	i: number,
 ): Promise<Record<string, unknown>> {
@@ -25,7 +24,7 @@ export async function executeInvoice(
 
 	if (operation === 'parse') {
 		const model = ef.getNodeParameter('model', i, 'auto') as JsonRequestModel<'/invoice/parse'>;
-		return await apiRequest(ef, domain, apiKey, '/invoice/parse', { ...input, model }, documentId);
+		return await apiRequest(ef, domain, '/invoice/parse', { ...input, model }, documentId);
 	}
 	if (operation === 'ask') {
 		const question = ef.getNodeParameter('question', i) as InvoiceAskRequest['question'];
@@ -33,7 +32,6 @@ export async function executeInvoice(
 		return await apiRequest(
 			ef,
 			domain,
-			apiKey,
 			'/invoice/ask',
 			{ ...input, question, model },
 			documentId,
@@ -50,7 +48,6 @@ export async function executeInvoice(
 		return await apiRequest(
 			ef,
 			domain,
-			apiKey,
 			'/invoice/extract',
 			{ ...input, prompt, schema, model },
 			documentId,

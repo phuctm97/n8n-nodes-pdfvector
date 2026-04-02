@@ -16,7 +16,6 @@ export const identityProperties = makeDocumentProperties(
 export async function executeIdentity(
 	ef: IExecuteFunctions,
 	domain: string,
-	apiKey: string,
 	operation: string,
 	i: number,
 ): Promise<Record<string, unknown>> {
@@ -25,7 +24,7 @@ export async function executeIdentity(
 
 	if (operation === 'parse') {
 		const model = ef.getNodeParameter('model', i, 'auto') as JsonRequestModel<'/identity/parse'>;
-		return await apiRequest(ef, domain, apiKey, '/identity/parse', { ...input, model }, documentId);
+		return await apiRequest(ef, domain, '/identity/parse', { ...input, model }, documentId);
 	}
 	if (operation === 'ask') {
 		const question = ef.getNodeParameter('question', i) as IdentityAskRequest['question'];
@@ -33,7 +32,6 @@ export async function executeIdentity(
 		return await apiRequest(
 			ef,
 			domain,
-			apiKey,
 			'/identity/ask',
 			{ ...input, question, model },
 			documentId,
@@ -50,7 +48,6 @@ export async function executeIdentity(
 		return await apiRequest(
 			ef,
 			domain,
-			apiKey,
 			'/identity/extract',
 			{ ...input, prompt, schema, model },
 			documentId,

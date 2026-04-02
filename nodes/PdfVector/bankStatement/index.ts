@@ -16,7 +16,6 @@ export const bankStatementProperties = makeDocumentProperties(
 export async function executeBankStatement(
 	ef: IExecuteFunctions,
 	domain: string,
-	apiKey: string,
 	operation: string,
 	i: number,
 ): Promise<Record<string, unknown>> {
@@ -28,7 +27,6 @@ export async function executeBankStatement(
 		return await apiRequest(
 			ef,
 			domain,
-			apiKey,
 			'/bankStatement/parse',
 			{ ...input, model },
 			documentId,
@@ -40,7 +38,6 @@ export async function executeBankStatement(
 		return await apiRequest(
 			ef,
 			domain,
-			apiKey,
 			'/bankStatement/ask',
 			{ ...input, question, model },
 			documentId,
@@ -57,7 +54,6 @@ export async function executeBankStatement(
 		return await apiRequest(
 			ef,
 			domain,
-			apiKey,
 			'/bankStatement/extract',
 			{ ...input, prompt, schema, model },
 			documentId,

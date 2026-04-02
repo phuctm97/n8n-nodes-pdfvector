@@ -4,8 +4,9 @@ import type {
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
+	JsonObject,
 } from 'n8n-workflow';
-import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
+import { NodeApiError, NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 import { academicProperties, executeAcademic } from './academic/index.js';
 import { bankStatementProperties, executeBankStatement } from './bankStatement/index.js';
 import { documentProperties, executeDocument } from './document/index.js';
@@ -56,7 +57,6 @@ export class PdfVector implements INodeType {
 
 		const credentials = await this.getCredentials('pdfVectorApi');
 		const domain = (credentials.domain as string) || 'global.pdfvector.com';
-		const apiKey = credentials.apiKey as string;
 
 		const resource = this.getNodeParameter('resource', 0) as string;
 		const operation = this.getNodeParameter('operation', 0) as string;
@@ -67,19 +67,19 @@ export class PdfVector implements INodeType {
 
 				switch (resource) {
 					case 'document':
-						result = await executeDocument(this, domain, apiKey, operation, i);
+						result = await executeDocument(this, domain, operation, i);
 						break;
 					case 'identity':
-						result = await executeIdentity(this, domain, apiKey, operation, i);
+						result = await executeIdentity(this, domain, operation, i);
 						break;
 					case 'invoice':
-						result = await executeInvoice(this, domain, apiKey, operation, i);
+						result = await executeInvoice(this, domain, operation, i);
 						break;
 					case 'bankStatement':
-						result = await executeBankStatement(this, domain, apiKey, operation, i);
+						result = await executeBankStatement(this, domain, operation, i);
 						break;
 					case 'academic':
-						result = await executeAcademic(this, domain, apiKey, operation, i);
+						result = await executeAcademic(this, domain, operation, i);
 						break;
 				}
 
@@ -94,7 +94,7 @@ export class PdfVector implements INodeType {
 						message = error.message;
 					} else {
 						message = String(error);
-				}
+					}
 					returnData.push({ json: { error: message }, pairedItem: { item: i } });
 					continue;
 				}
@@ -103,6 +103,13 @@ export class PdfVector implements INodeType {
 					errorWithContext.context ??= {};
 					errorWithContext.context.itemIndex = i;
 					throw error;
+				}
+				if (
+					error &&
+					typeof error === 'object' &&
+					('statusCode' in error || 'response' in error || 'httpCode' in error)
+				) {
+					throw new NodeApiError(this.getNode(), error as JsonObject, { itemIndex: i });
 				}
 				throw new NodeOperationError(this.getNode(), error, { itemIndex: i });
 			}

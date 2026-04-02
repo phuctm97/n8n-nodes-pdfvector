@@ -16,7 +16,6 @@ export const documentProperties = makeDocumentProperties(
 export async function executeDocument(
 	ef: IExecuteFunctions,
 	domain: string,
-	apiKey: string,
 	operation: string,
 	i: number,
 ): Promise<Record<string, unknown>> {
@@ -25,7 +24,7 @@ export async function executeDocument(
 
 	if (operation === 'parse') {
 		const model = ef.getNodeParameter('model', i, 'auto') as JsonRequestModel<'/document/parse'>;
-		return await apiRequest(ef, domain, apiKey, '/document/parse', { ...input, model }, documentId);
+		return await apiRequest(ef, domain, '/document/parse', { ...input, model }, documentId);
 	}
 	if (operation === 'ask') {
 		const question = ef.getNodeParameter('question', i) as DocumentAskRequest['question'];
@@ -33,7 +32,6 @@ export async function executeDocument(
 		return await apiRequest(
 			ef,
 			domain,
-			apiKey,
 			'/document/ask',
 			{ ...input, question, model },
 			documentId,
@@ -50,7 +48,6 @@ export async function executeDocument(
 		return await apiRequest(
 			ef,
 			domain,
-			apiKey,
 			'/document/extract',
 			{ ...input, prompt, schema, model },
 			documentId,

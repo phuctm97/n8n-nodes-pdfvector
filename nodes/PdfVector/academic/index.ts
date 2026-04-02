@@ -168,7 +168,6 @@ export const academicProperties: INodeProperties[] = [
 export async function executeAcademic(
 	ef: IExecuteFunctions,
 	domain: string,
-	apiKey: string,
 	operation: string,
 	i: number,
 ): Promise<Record<string, unknown>> {
@@ -180,7 +179,7 @@ export async function executeAcademic(
 		const yearFrom = ef.getNodeParameter('yearFrom', i, '') as number | '';
 		const yearTo = ef.getNodeParameter('yearTo', i, '') as number | '';
 		const fields = ef.getNodeParameter('fields', i, []) as AcademicFields;
-		return await apiRequest(ef, domain, apiKey, '/academic/search', {
+		return await apiRequest(ef, domain, '/academic/search', {
 			query,
 			providers,
 			limit,
@@ -196,7 +195,7 @@ export async function executeAcademic(
 			.map((id) => id.trim())
 			.filter(Boolean) as AcademicFetchRequest['ids'];
 		const fields = ef.getNodeParameter('fields', i, []) as AcademicFields;
-		return await apiRequest(ef, domain, apiKey, '/academic/fetch', {
+		return await apiRequest(ef, domain, '/academic/fetch', {
 			ids,
 			...(fields.length > 0 ? { fields } : {}),
 		});
@@ -204,7 +203,7 @@ export async function executeAcademic(
 	if (operation === 'findCitations') {
 		const paragraph = ef.getNodeParameter('paragraph', i) as AcademicFindCitationsRequest['paragraph'];
 		const providers = ef.getNodeParameter('providers', i, ['semantic-scholar']) as AcademicProviders;
-		return await apiRequest(ef, domain, apiKey, '/academic/findCitations', {
+		return await apiRequest(ef, domain, '/academic/findCitations', {
 			paragraph,
 			providers,
 		});

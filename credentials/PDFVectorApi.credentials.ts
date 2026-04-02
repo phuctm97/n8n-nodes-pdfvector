@@ -1,4 +1,5 @@
 import type {
+	IAuthenticateGeneric,
 	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
@@ -33,13 +34,21 @@ export class PDFVectorApi implements ICredentialType {
 		},
 	];
 
+	authenticate: IAuthenticateGeneric = {
+		type: 'generic',
+		properties: {
+			headers: {
+				Authorization: '=Bearer {{$credentials.apiKey}}',
+			},
+		},
+	};
+
 	test: ICredentialTestRequest = {
 		request: {
 			baseURL: '={{(($credentials.domain || "global.pdfvector.com").startsWith("localhost") || ($credentials.domain || "").startsWith("127.0.0.1") ? "http://" : "https://") + ($credentials.domain || "global.pdfvector.com")}}',
 			url: '/rpc/authenticate/validateCredential',
 			method: 'POST',
 			headers: {
-				Authorization: '={{"Bearer " + $credentials.apiKey}}',
 				'Content-Type': 'application/json',
 			},
 			body: '{}',
