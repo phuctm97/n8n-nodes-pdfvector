@@ -1,5 +1,5 @@
-import type { IExecuteFunctions } from 'n8n-workflow';
-import { NodeOperationError } from 'n8n-workflow';
+import type { IExecuteFunctions, JsonObject } from 'n8n-workflow';
+import { NodeApiError, NodeOperationError } from 'n8n-workflow';
 import type { ApiPath, DocumentInput, JsonRequestBody, JsonResponseBody } from './api.js';
 
 export function getBaseUrl(domain: string): string {
@@ -35,11 +35,38 @@ export async function apiRequest<Path extends ApiPath>(
 	if (documentId) {
 		headers['x-pdfvector-document-id'] = documentId;
 	}
-	return (await ef.helpers.httpRequestWithAuthentication.call(ef, 'pdfVectorApi', {
-		method: 'POST',
-		url: `${getBaseUrl(domain)}/api${path}`,
-		headers,
-		body: body as Record<string, unknown>,
-		json: true,
-	})) as JsonResponseBody<Path>;
+	try {
+		return (await ef.helpers.httpRequestWithAuthentication.call(ef, 'pdfVectorApi', {
+			method: 'POST',
+			url: `${getBaseUrl(domain)}/api${path}`,
+			headers,
+			body: body as Record<string, unknown>,
+			json: true,
+		})) as JsonResponseBody<Path>;
+	} catch (error) {
+		const apiMessage = extractApiErrorMessage(error);
+		throw new NodeApiError(ef.getNode(), error as JsonObject, {
+			...(apiMessage ? { message: apiMessage } : {}),
+		});
+	}
+}
+
+function extractApiErrorMessage(error: unknown): string | undefined {
+	if (!error || typeof error !== 'object') return undefined;
+	const err = error as Record<string, unknown>;
+	// n8n HTTP helpers put the response body in error.error (string or object)
+	for (const key of ['error', 'body', 'data']) {
+		let val = err[key];
+		if (typeof val === 'string') {
+			try {
+				val = JSON.parse(val);
+			} catch {
+				continue;
+			}
+		}
+		if (val && typeof val === 'object' && typeof (val as Record<string, unknown>).message === 'string') {
+			return (val as Record<string, unknown>).message as string;
+		}
+	}
+	return undefined;
 }
