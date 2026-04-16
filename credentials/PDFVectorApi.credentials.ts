@@ -20,8 +20,9 @@ export class PDFVectorApi implements ICredentialType {
 			},
 			default: '',
 			required: true,
+			hint: '<a href="https://app.pdfvector.com" target="_blank">Get your API key from the PDF Vector dashboard</a>',
 			description:
-				'Your PDFVector API key. Get it from https://app.pdfvector.com/instances/2?tab=settings.',
+				'Your PDF Vector API key',
 		},
 		{
 			displayName: 'Domain',
