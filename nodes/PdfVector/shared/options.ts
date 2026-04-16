@@ -55,6 +55,7 @@ export function makeDocumentProperties(
 			type: 'notice',
 			default: '',
 			displayOptions: { show: { resource: [resource] } },
+			// eslint-disable-next-line n8n-nodes-base/node-param-description-excess-final-period
 			description: `See the <a href="https://global.pdfvector.com/api/reference" target="_blank">API Reference</a> for full documentation on ${label} operations.`,
 		},
 		{
@@ -165,6 +166,7 @@ export function makeDocumentProperties(
 				'{\n  "type": "object",\n  "properties": {\n    "title": { "type": "string" },\n    "summary": { "type": "string" }\n  },\n  "required": ["title"]\n}',
 			required: true,
 			displayOptions: { show: { resource: [resource], operation: ['extract'] } },
+			// eslint-disable-next-line n8n-nodes-base/node-param-description-miscased-json
 			description: 'JSON Schema defining the structure of the data to extract. Use the <a href="https://www.pdfvector.com/json-schema-editor" target="_blank">JSON Schema Editor</a> to build your schema visually.',
 			hint: 'Tip: Use the <a href="https://www.pdfvector.com/json-schema-editor" target="_blank">JSON Schema Editor</a> to create your schema easily.',
 		},

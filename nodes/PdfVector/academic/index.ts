@@ -83,7 +83,7 @@ export const academicProperties: INodeProperties[] = [
 		type: 'notice',
 		default: '',
 		displayOptions: { show: { resource: ['academic'] } },
-		description: 'See the <a href="https://global.pdfvector.com/api/reference" target="_blank">API Reference</a> for full documentation on Academic operations.',
+		description: 'See the <a href="https://global.pdfvector.com/api/reference" target="_blank">API Reference</a> for full documentation on Academic operations',
 	},
 	{
 		displayName: 'Operation',
@@ -92,12 +92,6 @@ export const academicProperties: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: { show: { resource: ['academic'] } },
 		options: [
-			{
-				name: 'Search',
-				value: 'search',
-				description: 'Search for academic papers across multiple databases',
-				action: 'Search academic papers',
-			},
 			{
 				name: 'Fetch',
 				value: 'fetch',
@@ -117,16 +111,22 @@ export const academicProperties: INodeProperties[] = [
 				action: 'Get paper citation graph',
 			},
 			{
-				name: 'Similar Papers',
-				value: 'similarPapers',
-				description: 'Find papers similar to a given paper using citation network analysis',
-				action: 'Find similar papers',
+				name: 'Search',
+				value: 'search',
+				description: 'Search for academic papers across multiple databases',
+				action: 'Search academic papers',
 			},
 			{
 				name: 'Search Grants',
 				value: 'searchGrants',
 				description: 'Search for research grants across multiple funding databases',
 				action: 'Search research grants',
+			},
+			{
+				name: 'Similar Papers',
+				value: 'similarPapers',
+				description: 'Find papers similar to a given paper using citation network analysis',
+				action: 'Find similar papers',
 			},
 		],
 		default: 'search',
