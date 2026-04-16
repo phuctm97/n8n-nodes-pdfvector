@@ -38,6 +38,14 @@ export type AcademicField = ArrayElement<
 	Exclude<JsonRequestBody<'/academic/search'>['fields'], null | undefined>
 >;
 
+export type GrantProvider = ArrayElement<
+	Exclude<JsonRequestBody<'/academic/searchGrants'>['providers'], null | undefined>
+>;
+
+export type GrantField = ArrayElement<
+	Exclude<JsonRequestBody<'/academic/searchGrants'>['fields'], null | undefined>
+>;
+
 export type OptionValue<T extends string> = {
 	name: string;
 	value: T;

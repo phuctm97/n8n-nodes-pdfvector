@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-pdfvector",
-	"version": "2.0.5",
+	"version": "2.1.0",
 	"description": "n8n community node for PDF Vector — parse PDF, Word, Excel, and image documents, extract structured data with JSON Schema, ask AI questions, and search academic papers across multiple databases.",
 	"keywords": [
 		"n8n-community-node-package",

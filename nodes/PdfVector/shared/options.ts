@@ -50,6 +50,14 @@ export function makeDocumentProperties(
 ): INodeProperties[] {
 	return [
 		{
+			displayName: '',
+			name: 'apiDocsNotice',
+			type: 'notice',
+			default: '',
+			displayOptions: { show: { resource: [resource] } },
+			description: `See the <a href="https://global.pdfvector.com/api/reference" target="_blank">API Reference</a> for full documentation on ${label} operations.`,
+		},
+		{
 			displayName: 'Operation',
 			name: 'operation',
 			type: 'options',
@@ -157,7 +165,8 @@ export function makeDocumentProperties(
 				'{\n  "type": "object",\n  "properties": {\n    "title": { "type": "string" },\n    "summary": { "type": "string" }\n  },\n  "required": ["title"]\n}',
 			required: true,
 			displayOptions: { show: { resource: [resource], operation: ['extract'] } },
-			description: 'JSON Schema defining the structure of the data to extract',
+			description: 'JSON Schema defining the structure of the data to extract. Use the <a href="https://www.pdfvector.com/json-schema-editor" target="_blank">JSON Schema Editor</a> to build your schema visually.',
+			hint: 'Tip: Use the <a href="https://www.pdfvector.com/json-schema-editor" target="_blank">JSON Schema Editor</a> to create your schema easily.',
 		},
 		{
 			displayName: 'Document ID',

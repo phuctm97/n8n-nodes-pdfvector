@@ -304,6 +304,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/academic/paperGraph": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Get paper citation graph
+         * @description Get citations and references for a paper, building a citation graph around it.
+         */
+        post: operations["academic.paperGraph"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/academic/similarPapers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Find similar papers
+         * @description Find papers similar to a given paper using citation network analysis.
+         */
+        post: operations["academic.similarPapers"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/academic/searchGrants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Search research grants
+         * @description Search for research grants across multiple funding databases.
+         */
+        post: operations["academic.searchGrants"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1380,7 +1440,7 @@ export interface operations {
                      *       "semantic-scholar"
                      *     ]
                      */
-                    providers?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex")[];
+                    providers?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref")[];
                     /** @description Specific citation fields to return. If omitted, returns all fields except providerData. */
                     fields?: ("doi" | "title" | "url" | "providerURL" | "authors" | "date" | "year" | "totalCitations" | "totalReferences" | "abstract" | "pdfURL" | "provider" | "providerData")[] | null;
                 };
@@ -1446,7 +1506,7 @@ export interface operations {
                      *       "semantic-scholar"
                      *     ]
                      */
-                    providers?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex")[];
+                    providers?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref")[];
                     /**
                      * @description Results offset
                      * @default 0
@@ -1490,7 +1550,300 @@ export interface operations {
                             totalReferences?: number | null;
                             abstract?: string | null;
                             pdfURL?: string | null;
-                            provider?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex") | null;
+                            provider?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref") | null;
+                            providerData?: {
+                                [key: string]: unknown;
+                            } | null;
+                        }[];
+                        errors?: {
+                            provider: string;
+                            message: string;
+                            code?: string | null;
+                            details?: {
+                                [key: string]: unknown;
+                            } | null;
+                        }[] | null;
+                        requestId: number;
+                    };
+                };
+            };
+        };
+    };
+    "academic.paperGraph": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Paper identifier. Supports DOI, Semantic Scholar ID, ArXiv ID, PubMed ID, OpenAlex ID, or URL. */
+                    id: string;
+                    /**
+                     * @description Max number of citing papers to return
+                     * @default 100
+                     */
+                    citationsLimit?: number;
+                    /**
+                     * @description Max number of referenced papers to return
+                     * @default 100
+                     */
+                    referencesLimit?: number;
+                    /**
+                     * @description Offset for citing papers pagination
+                     * @default 0
+                     */
+                    citationsOffset?: number;
+                    /**
+                     * @description Offset for referenced papers pagination
+                     * @default 0
+                     */
+                    referencesOffset?: number;
+                    /** @description Specific publication fields to return. If omitted, returns all fields except providerData. */
+                    fields?: ("doi" | "title" | "url" | "providerURL" | "authors" | "date" | "year" | "totalCitations" | "totalReferences" | "abstract" | "pdfURL" | "provider" | "providerData")[] | null;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        paper: {
+                            doi?: string | null;
+                            title?: string | null;
+                            url?: string | null;
+                            providerURL?: string | null;
+                            authors?: {
+                                name: string;
+                                url?: string | null;
+                            }[] | null;
+                            date?: string | null;
+                            year?: number | null;
+                            totalCitations?: number | null;
+                            totalReferences?: number | null;
+                            abstract?: string | null;
+                            pdfURL?: string | null;
+                            provider?: string | null;
+                            providerData?: {
+                                [key: string]: unknown;
+                            } | null;
+                        };
+                        citations: {
+                            doi?: string | null;
+                            title?: string | null;
+                            url?: string | null;
+                            providerURL?: string | null;
+                            authors?: {
+                                name: string;
+                                url?: string | null;
+                            }[] | null;
+                            date?: string | null;
+                            year?: number | null;
+                            totalCitations?: number | null;
+                            totalReferences?: number | null;
+                            abstract?: string | null;
+                            pdfURL?: string | null;
+                            provider?: string | null;
+                            providerData?: {
+                                [key: string]: unknown;
+                            } | null;
+                        }[];
+                        references: {
+                            doi?: string | null;
+                            title?: string | null;
+                            url?: string | null;
+                            providerURL?: string | null;
+                            authors?: {
+                                name: string;
+                                url?: string | null;
+                            }[] | null;
+                            date?: string | null;
+                            year?: number | null;
+                            totalCitations?: number | null;
+                            totalReferences?: number | null;
+                            abstract?: string | null;
+                            pdfURL?: string | null;
+                            provider?: string | null;
+                            providerData?: {
+                                [key: string]: unknown;
+                            } | null;
+                        }[];
+                        totalCitations?: number | null;
+                        totalReferences?: number | null;
+                        requestId: number;
+                    };
+                };
+            };
+        };
+    };
+    "academic.similarPapers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Paper identifier. Supports DOI, Semantic Scholar ID, ArXiv ID, PubMed ID, OpenAlex ID, or URL. */
+                    id: string;
+                    /**
+                     * @description Max number of similar papers to return
+                     * @default 30
+                     */
+                    limit?: number;
+                    /**
+                     * @description Include citation graph edges (citingIds, citedByIds) in results
+                     * @default false
+                     */
+                    includeEdges?: boolean;
+                    /** @description Specific publication fields to return. If omitted, returns all fields except providerData. */
+                    fields?: ("doi" | "title" | "url" | "providerURL" | "authors" | "date" | "year" | "totalCitations" | "totalReferences" | "abstract" | "pdfURL" | "provider" | "providerData")[] | null;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        seed: {
+                            doi?: string | null;
+                            title?: string | null;
+                            url?: string | null;
+                            providerURL?: string | null;
+                            authors?: {
+                                name: string;
+                                url?: string | null;
+                            }[] | null;
+                            date?: string | null;
+                            year?: number | null;
+                            totalCitations?: number | null;
+                            totalReferences?: number | null;
+                            abstract?: string | null;
+                            pdfURL?: string | null;
+                            provider?: string | null;
+                            providerData?: {
+                                [key: string]: unknown;
+                            } | null;
+                        };
+                        results: {
+                            publication: {
+                                doi?: string | null;
+                                title?: string | null;
+                                url?: string | null;
+                                providerURL?: string | null;
+                                authors?: {
+                                    name: string;
+                                    url?: string | null;
+                                }[] | null;
+                                date?: string | null;
+                                year?: number | null;
+                                totalCitations?: number | null;
+                                totalReferences?: number | null;
+                                abstract?: string | null;
+                                pdfURL?: string | null;
+                                provider?: string | null;
+                                providerData?: {
+                                    [key: string]: unknown;
+                                } | null;
+                            };
+                            similarity: number;
+                            pageRank?: number | null;
+                            distance?: number | null;
+                            citingIds?: string[] | null;
+                            citedByIds?: string[] | null;
+                        }[];
+                        requestId: number;
+                    };
+                };
+            };
+        };
+    };
+    "academic.searchGrants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Search query string for grants */
+                    query: string;
+                    /**
+                     * @description Grant databases to search
+                     * @default [
+                     *       "grants-gov",
+                     *       "nih-reporter",
+                     *       "cordis",
+                     *       "ukri"
+                     *     ]
+                     */
+                    providers?: ("grants-gov" | "nih-reporter" | "cordis" | "ukri")[];
+                    /**
+                     * @description Results offset
+                     * @default 0
+                     */
+                    offset?: number;
+                    /**
+                     * @description Results per provider
+                     * @default 10
+                     */
+                    limit?: number;
+                    /** @description Filter grants with deadline on or after this date (YYYY-MM-DD) */
+                    deadlineFrom?: string | null;
+                    /** @description Filter grants with deadline on or before this date (YYYY-MM-DD) */
+                    deadlineTo?: string | null;
+                    /** @description Minimum funding amount */
+                    fundingMin?: number | null;
+                    /** @description Maximum funding amount */
+                    fundingMax?: number | null;
+                    /** @description Specific grant fields to return. If omitted, returns all fields except providerData. */
+                    fields?: ("sourceId" | "title" | "url" | "agency" | "program" | "description" | "eligibility" | "fundingAmountMin" | "fundingAmountMax" | "currency" | "deadlineDate" | "openDate" | "closeDate" | "grantType" | "region" | "keywords" | "piName" | "organizationName" | "provider" | "providerData")[] | null;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        estimatedTotalResults: number;
+                        results: {
+                            sourceId?: string | null;
+                            title?: string | null;
+                            url?: string | null;
+                            agency?: string | null;
+                            program?: string | null;
+                            description?: string | null;
+                            eligibility?: string | null;
+                            fundingAmountMin?: number | null;
+                            fundingAmountMax?: number | null;
+                            currency?: string | null;
+                            deadlineDate?: string | null;
+                            openDate?: string | null;
+                            closeDate?: string | null;
+                            grantType?: string | null;
+                            region?: string | null;
+                            keywords?: string[] | null;
+                            piName?: string | null;
+                            organizationName?: string | null;
+                            provider?: ("grants-gov" | "nih-reporter" | "cordis" | "ukri") | null;
                             providerData?: {
                                 [key: string]: unknown;
                             } | null;

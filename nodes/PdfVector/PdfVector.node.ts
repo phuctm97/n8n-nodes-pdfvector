@@ -24,6 +24,7 @@ export class PdfVector implements INodeType {
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description:
 			'Convert PDFs, Word, Excel documents, and images to clean markdown, extract structured data with AI, process invoices with specialized parsing, and search millions of academic papers across PubMed, ArXiv, Google Scholar, and more.',
+		documentationUrl: 'https://global.pdfvector.com/api/reference',
 		defaults: { name: 'PDF Vector' },
 		inputs: [NodeConnectionTypes.Main],
 		outputs: [NodeConnectionTypes.Main],
