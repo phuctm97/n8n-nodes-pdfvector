@@ -78,12 +78,11 @@ const grantFieldOptions: Array<OptionValue<GrantField>> = [
 
 export const academicProperties: INodeProperties[] = [
 	{
-		displayName: '',
+		displayName: 'See the <a href="https://global.pdfvector.com/api/reference" target="_blank">API Reference</a> for full documentation on Academic operations',
 		name: 'academicDocsNotice',
 		type: 'notice',
 		default: '',
 		displayOptions: { show: { resource: ['academic'] } },
-		description: 'See the <a href="https://global.pdfvector.com/api/reference" target="_blank">API Reference</a> for full documentation on Academic operations',
 	},
 	{
 		displayName: 'Operation',

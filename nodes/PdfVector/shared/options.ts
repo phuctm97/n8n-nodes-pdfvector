@@ -50,13 +50,11 @@ export function makeDocumentProperties(
 ): INodeProperties[] {
 	return [
 		{
-			displayName: '',
+			displayName: `See the <a href="https://global.pdfvector.com/api/reference" target="_blank">API Reference</a> for full documentation on ${label} operations`,
 			name: 'apiDocsNotice',
 			type: 'notice',
 			default: '',
 			displayOptions: { show: { resource: [resource] } },
-			// eslint-disable-next-line n8n-nodes-base/node-param-description-excess-final-period
-			description: `See the <a href="https://global.pdfvector.com/api/reference" target="_blank">API Reference</a> for full documentation on ${label} operations.`,
 		},
 		{
 			displayName: 'Operation',
