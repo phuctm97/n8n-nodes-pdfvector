@@ -40,6 +40,7 @@ export class PDFVectorApi implements ICredentialType {
 		properties: {
 			headers: {
 				Authorization: '=Bearer {{$credentials.apiKey}}',
+				'x-pdfvector-source': 'n8n',
 			},
 		},
 	};
