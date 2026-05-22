@@ -3,7 +3,11 @@ import { NodeApiError, NodeOperationError } from 'n8n-workflow';
 import type { ApiPath, DocumentInput, JsonRequestBody, JsonResponseBody } from './api.js';
 
 export function getBaseUrl(domain: string): string {
-	const d = domain || 'global.pdfvector.com';
+	const input = (domain || 'global.pdfvector.com').trim();
+	const d = input.replace(/\/api(?:\/.*)?$/, '').replace(/\/+$/, '');
+	if (d.startsWith('http://') || d.startsWith('https://')) {
+		return d;
+	}
 	const protocol = d.startsWith('localhost') || d.startsWith('127.0.0.1') ? 'http' : 'https';
 	return `${protocol}://${d}`;
 }

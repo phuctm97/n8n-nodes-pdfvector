@@ -36,8 +36,10 @@ This node supports:
 
 Create a PDF Vector API credential in n8n with:
 
-* An API key from [app.pdfvector.com](https://app.pdfvector.com)
-* An optional custom domain if you are not using `global.pdfvector.com`
+* A current API key from your PDF Vector instance settings at [app.pdfvector.com](https://app.pdfvector.com)
+* An optional custom domain or base URL if you are not using `global.pdfvector.com`
+
+Old PDFVector API keys no longer work with the current API. Create a new API key from the PDF Vector dashboard, then replace the key in your n8n credential.
 
 ## Compatibility
 
