@@ -15,10 +15,12 @@ n8n-nodes-pdfvector
 ## Credentials
 
 1. Sign up at [app.pdfvector.com](https://app.pdfvector.com)
-2. Go to **Settings** to get your API key
+2. Go to your PDF Vector instance settings to create a current API key
 3. In n8n, create a new **PDF Vector API** credential and paste your API key
 
-**Custom instance:** If you have a custom PDF Vector instance, enter your instance domain in the credential's Domain field. Otherwise, leave it as `global.pdfvector.com`.
+**Migrating an older credential:** Old PDFVector API keys no longer work with the current API. Create a new API key from the PDF Vector dashboard, then replace the key in your n8n credential.
+
+**Custom instance:** If you have a custom PDF Vector instance, enter your instance domain or base URL in the credential's Domain or Base URL field. Otherwise, leave it as `global.pdfvector.com`. Pasted URLs such as `https://global.pdfvector.com/api` are normalized automatically.
 
 ## Operations
 

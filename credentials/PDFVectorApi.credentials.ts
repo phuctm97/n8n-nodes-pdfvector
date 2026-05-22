@@ -25,13 +25,13 @@ export class PDFVectorApi implements ICredentialType {
 				'Your PDF Vector API key',
 		},
 		{
-			displayName: 'Domain',
+			displayName: 'Domain or Base URL',
 			name: 'domain',
 			type: 'string',
 			default: 'global.pdfvector.com',
 			required: false,
 			description:
-				'PDFVector instance domain. Leave default for the shared instance. Change only for custom instances.',
+				'PDF Vector API domain or base URL. Leave default for the shared instance. Change only for custom instances.',
 		},
 	];
 
@@ -47,8 +47,8 @@ export class PDFVectorApi implements ICredentialType {
 
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: '={{(($credentials.domain || "global.pdfvector.com").startsWith("localhost") || ($credentials.domain || "").startsWith("127.0.0.1") ? "http://" : "https://") + ($credentials.domain || "global.pdfvector.com")}}',
-			url: '/rpc/authenticate/validateCredential',
+			baseURL: '={{(() => { const input = ($credentials.domain || "global.pdfvector.com").trim(); const base = input.replace(/\\/api(?:\\/.*)?$/, "").replace(/\\/+$/, ""); if (base.startsWith("http://") || base.startsWith("https://")) return base; return ((base.startsWith("localhost") || base.startsWith("127.0.0.1")) ? "http://" : "https://") + base; })()}}',
+			url: '/api/authenticate/validateCredential',
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
