@@ -5,12 +5,14 @@ import { allModelOptions, makeDocumentProperties } from '../shared/options.js';
 
 type DocumentAskRequest = JsonRequestBody<'/document/ask'>;
 type DocumentExtractRequest = JsonRequestBody<'/document/extract'>;
+type DocumentParseRequest = JsonRequestBody<'/document/parse'>;
 
 export const documentProperties = makeDocumentProperties(
 	'document',
 	'Document',
 	allModelOptions,
 	allModelOptions,
+	true,
 );
 
 export async function executeDocument(
@@ -24,7 +26,18 @@ export async function executeDocument(
 
 	if (operation === 'parse') {
 		const model = ef.getNodeParameter('model', i, 'auto') as JsonRequestModel<'/document/parse'>;
-		return await apiRequest(ef, domain, '/document/parse', { ...input, model }, documentId);
+		const includePages = ef.getNodeParameter(
+			'includePages',
+			i,
+			false,
+		) as DocumentParseRequest['includePages'];
+		return await apiRequest(
+			ef,
+			domain,
+			'/document/parse',
+			{ ...input, model, includePages },
+			documentId,
+		);
 	}
 	if (operation === 'ask') {
 		const question = ef.getNodeParameter('question', i) as DocumentAskRequest['question'];

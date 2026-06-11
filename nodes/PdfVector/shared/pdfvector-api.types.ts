@@ -15,7 +15,7 @@ export interface paths {
         put?: never;
         /**
          * Ask a question about a document
-         * @description Parse a document and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Files up to 1000 pages and up to 500MB in size. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse a document and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 1000 pages and up to 500MB in size. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["document.ask"];
         delete?: never;
@@ -35,7 +35,7 @@ export interface paths {
         put?: never;
         /**
          * Extract structured data from a document
-         * @description Parse a document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Files up to 1000 pages and up to 500MB in size. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse a document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 1000 pages and up to 500MB in size. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["document.extract"];
         delete?: never;
@@ -55,7 +55,7 @@ export interface paths {
         put?: never;
         /**
          * Parse a document
-         * @description Extract text and page count from a document. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Extract text and page count from a document. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["document.parse"];
         delete?: never;
@@ -75,7 +75,7 @@ export interface paths {
         put?: never;
         /**
          * Ask a question about an identity document
-         * @description Parse an identity document and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse an identity document and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["identity.ask"];
         delete?: never;
@@ -95,7 +95,7 @@ export interface paths {
         put?: never;
         /**
          * Extract structured data from an identity document
-         * @description Parse an identity document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse an identity document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["identity.extract"];
         delete?: never;
@@ -115,7 +115,7 @@ export interface paths {
         put?: never;
         /**
          * Parse an identity document
-         * @description Extract text and structured data from an identity document. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Extract text and structured data from an identity document. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["identity.parse"];
         delete?: never;
@@ -135,7 +135,7 @@ export interface paths {
         put?: never;
         /**
          * Ask a question about an invoice
-         * @description Parse an invoice and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse an invoice and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["invoice.ask"];
         delete?: never;
@@ -155,7 +155,7 @@ export interface paths {
         put?: never;
         /**
          * Extract structured data from an invoice
-         * @description Parse an invoice and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse an invoice and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["invoice.extract"];
         delete?: never;
@@ -175,7 +175,7 @@ export interface paths {
         put?: never;
         /**
          * Parse an invoice
-         * @description Extract text and structured data from an invoice. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Extract text and structured data from an invoice. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["invoice.parse"];
         delete?: never;
@@ -195,7 +195,7 @@ export interface paths {
         put?: never;
         /**
          * Ask a question about a bank statement
-         * @description Parse a bank statement and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse a bank statement and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["bankStatement.ask"];
         delete?: never;
@@ -215,7 +215,7 @@ export interface paths {
         put?: never;
         /**
          * Extract structured data from a bank statement
-         * @description Parse a bank statement and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse a bank statement and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["bankStatement.extract"];
         delete?: never;
@@ -235,7 +235,7 @@ export interface paths {
         put?: never;
         /**
          * Parse a bank statement
-         * @description Extract text and structured data from a bank statement. Supports PDF, Word (.docx), Excel (.xlsx), CSV, and Image (.png, .jpg) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Extract text and structured data from a bank statement. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["bankStatement.parse"];
         delete?: never;
@@ -255,7 +255,7 @@ export interface paths {
         put?: never;
         /**
          * Fetch academic papers by ID
-         * @description Fetch specific academic publications by their unique identifiers with automatic provider detection and batch processing.
+         * @description Fetch specific academic publications by their unique identifiers with automatic provider detection and batch processing. Costs 2 credits per request.
          */
         post: operations["academic.fetch"];
         delete?: never;
@@ -275,9 +275,49 @@ export interface paths {
         put?: never;
         /**
          * Find citations for a paragraph
-         * @description Find relevant academic citations for a paragraph by splitting it into sentences and scoring papers using semantic embedding similarity.
+         * @description Find relevant academic citations for a paragraph by splitting it into sentences and scoring papers using semantic embedding similarity. Costs 2 credits per sentence.
          */
         post: operations["academic.findCitations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/academic/paperGraph": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Get paper citations and references
+         * @description Fetch a paper's citing papers and referenced papers as full publication objects with automatic provider detection and pagination support. Costs 2+ credits per request (scales with result count).
+         */
+        post: operations["academic.paperGraph"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/academic/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Parse an academic paper to markdown
+         * @description Resolve an academic paper URL or identifier to a public PDF URL, parse the PDF, and return markdown using the same model tiers as document.parse. Returns NOT_FOUND when the paper cannot be found or no public PDF is available.
+         */
+        post: operations["academic.parse"];
         delete?: never;
         options?: never;
         head?: never;
@@ -295,7 +335,7 @@ export interface paths {
         put?: never;
         /**
          * Search academic papers
-         * @description Search for academic publications across multiple databases with relevance ranking.
+         * @description Search for academic publications across multiple databases with relevance ranking. Costs 2 credits per request.
          */
         post: operations["academic.search"];
         delete?: never;
@@ -304,7 +344,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/academic/paperGraph": {
+    "/academic/searchGrants": {
         parameters: {
             query?: never;
             header?: never;
@@ -314,10 +354,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Get paper citation graph
-         * @description Get citations and references for a paper, building a citation graph around it.
+         * Search grants
+         * @description Search for research grants and funding opportunities across multiple databases (Grants.gov, NIH RePORTER, CORDIS, UKRI) with unified results, relevance ranking, and filtering by deadline and funding amount. Costs 2 credits per request.
          */
-        post: operations["academic.paperGraph"];
+        post: operations["academic.searchGrants"];
         delete?: never;
         options?: never;
         head?: never;
@@ -335,29 +375,9 @@ export interface paths {
         put?: never;
         /**
          * Find similar papers
-         * @description Find papers similar to a given paper using citation network analysis.
+         * @description Find papers similar to a seed paper using citation network analysis. Returns papers ranked by similarity with optional graph edge data for visualization. Costs 3 credits per request.
          */
         post: operations["academic.similarPapers"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/academic/searchGrants": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Search research grants
-         * @description Search for research grants across multiple funding databases.
-         */
-        post: operations["academic.searchGrants"];
         delete?: never;
         options?: never;
         head?: never;
@@ -394,18 +414,38 @@ export interface operations {
                      * @description URL of the document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded document file content */
                     base64?: string;
                     /** @description The question to answer about the document */
                     question: string;
                     /**
-                     * @description Model tier for answering the question. 'auto' (default): Automatically selects the best tier based on document page count and document complexity. 'nano': Uses lightweight models (likely better than GPT-5-nano). Supports PDF, Word, Excel, CSV. 'mini': Uses mid-range models (likely better than GPT-5-mini). Supports PDF, Word, Excel, CSV. 'pro': Uses capable models (likely better than GPT-5.2). Supports PDF, Word, Excel, CSV, Image. 'max': Uses the most powerful models (likely better than Claude Opus 4.6). Supports PDF, Word, Excel, CSV, Image.
+                     * @description Model tier for answering the question.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 2 credits/page. Fastest. Best for simple questions about straightforward documents.
+                     *     - mini: 4 credits/page. Balanced speed and accuracy. Moderately complex questions.
+                     *     - pro: 8 credits/page. High accuracy for nuanced questions about complex documents.
+                     *     - max: 16 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
                 "multipart/form-data": {
                     /**
@@ -413,18 +453,38 @@ export interface operations {
                      * @description URL of the document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded document file content */
                     base64?: string;
                     /** @description The question to answer about the document */
                     question: string;
                     /**
-                     * @description Model tier for answering the question. 'auto' (default): Automatically selects the best tier based on document page count and document complexity. 'nano': Uses lightweight models (likely better than GPT-5-nano). Supports PDF, Word, Excel, CSV. 'mini': Uses mid-range models (likely better than GPT-5-mini). Supports PDF, Word, Excel, CSV. 'pro': Uses capable models (likely better than GPT-5.2). Supports PDF, Word, Excel, CSV, Image. 'max': Uses the most powerful models (likely better than Claude Opus 4.6). Supports PDF, Word, Excel, CSV, Image.
+                     * @description Model tier for answering the question.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 2 credits/page. Fastest. Best for simple questions about straightforward documents.
+                     *     - mini: 4 credits/page. Balanced speed and accuracy. Moderately complex questions.
+                     *     - pro: 8 credits/page. High accuracy for nuanced questions about complex documents.
+                     *     - max: 16 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -441,11 +501,16 @@ export interface operations {
                         /** @description Total number of pages in the document */
                         pageCount: number;
                         /**
-                         * @description Model tier used to answer the question. 'nano': Supports PDF, Word, Excel, CSV. 'mini': Supports PDF, Word, Excel, CSV. 'pro': Supports PDF, Word, Excel, CSV, Image. 'max': Supports PDF, Word, Excel, CSV, Image.
+                         * @description Model tier used to answer the question.
+                         *
+                         *     - nano: Fastest, best for simple questions.
+                         *     - mini: Balanced speed and accuracy.
+                         *     - pro: High accuracy for complex questions.
+                         *     - max: Maximum accuracy with deep reasoning.
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
-                        /** @description Number of credits consumed by this API call */
+                        /** @description Number of credits consumed by this API call. Cost per page: nano=2, mini=4, pro=8, max=16. */
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
@@ -474,7 +539,7 @@ export interface operations {
                      * @description URL of the document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded document file content */
                     base64?: string;
@@ -485,11 +550,31 @@ export interface operations {
                         [key: string]: unknown;
                     } | string;
                     /**
-                     * @description Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier based on document page count and document complexity. 'nano': Uses lightweight models (likely better than GPT-5-nano). Supports PDF, Word, Excel, CSV. 'mini': Uses mid-range models (likely better than GPT-5-mini). Supports PDF, Word, Excel, CSV. 'pro': Uses capable models (likely better than GPT-5.2). Supports PDF, Word, Excel, CSV, Image. 'max': Uses the most powerful models (likely better than Claude Opus 4.6). Supports PDF, Word, Excel, CSV, Image.
+                     * @description Model tier for extracting structured data.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 2 credits/page. Fastest. Best for simple documents with straightforward schemas.
+                     *     - mini: 4 credits/page. Balanced speed and accuracy. Moderately complex schemas.
+                     *     - pro: 8 credits/page. High accuracy for complex documents with large or nested schemas.
+                     *     - max: 16 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
                 "multipart/form-data": {
                     /**
@@ -497,7 +582,7 @@ export interface operations {
                      * @description URL of the document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded document file content */
                     base64?: string;
@@ -508,11 +593,31 @@ export interface operations {
                         [key: string]: unknown;
                     } | string;
                     /**
-                     * @description Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier based on document page count and document complexity. 'nano': Uses lightweight models (likely better than GPT-5-nano). Supports PDF, Word, Excel, CSV. 'mini': Uses mid-range models (likely better than GPT-5-mini). Supports PDF, Word, Excel, CSV. 'pro': Uses capable models (likely better than GPT-5.2). Supports PDF, Word, Excel, CSV, Image. 'max': Uses the most powerful models (likely better than Claude Opus 4.6). Supports PDF, Word, Excel, CSV, Image.
+                     * @description Model tier for extracting structured data.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 2 credits/page. Fastest. Best for simple documents with straightforward schemas.
+                     *     - mini: 4 credits/page. Balanced speed and accuracy. Moderately complex schemas.
+                     *     - pro: 8 credits/page. High accuracy for complex documents with large or nested schemas.
+                     *     - max: 16 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -529,11 +634,16 @@ export interface operations {
                         /** @description Total number of pages in the document */
                         pageCount: number;
                         /**
-                         * @description Model tier used to extract the data. 'nano': Supports PDF, Word, Excel, CSV. 'mini': Supports PDF, Word, Excel, CSV. 'pro': Supports PDF, Word, Excel, CSV, Image. 'max': Supports PDF, Word, Excel, CSV, Image.
+                         * @description Model tier used to extract the data.
+                         *
+                         *     - nano: Fastest, best for simple documents.
+                         *     - mini: Balanced speed and accuracy.
+                         *     - pro: High accuracy for complex documents.
+                         *     - max: Maximum accuracy with deep reasoning.
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
-                        /** @description Number of credits consumed by this API call */
+                        /** @description Number of credits consumed by this API call. Cost per page: nano=2, mini=4, pro=8, max=16. */
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
@@ -562,16 +672,41 @@ export interface operations {
                      * @description URL of the document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded document file content */
                     base64?: string;
                     /**
-                     * @description Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. File up to 1000 pages, up to 500MB in size. Supports PDF, Word, Excel, CSV, Image. 'nano': For simple documents with plain text content. File up to 30 pages, up to 10MB in size. Supports PDF, Word, Excel, CSV. 'mini': For documents with tables and structured content. File up to 30 pages, up to 10MB in size. Supports PDF, Word, Excel, CSV. 'pro': For documents up to 30 pages with tables, handwritten text, figures, math, and Arabic. File up to 30 pages, up to 40MB in size. Supports PDF, Word, Excel, CSV, Image. 'max': For large documents with full Pro capabilities plus enhanced multilingual support. File up to 1000 pages, up to 500MB in size. Supports PDF, Word, Excel, CSV, Image.
+                     * @description Model tier for parsing.
+                     *
+                     *     - auto (default): Intelligent fallback — credits based on the tier selected automatically. Up to 2000 pages, 500MB.
+                     *     - nano: 1 credit/page. Simple plain text documents. Up to 30 pages, 40MB.
+                     *     - mini: 2 credits/page. Documents with tables and structured content. Up to 30 pages, 40MB.
+                     *     - pro: 4 credits/page. Tables, handwritten text, figures, math, Arabic, image support. Up to 30 pages, 40MB.
+                     *     - max: 8 credits/page. Full Pro capabilities + enhanced multilingual. Up to 2000 pages, 500MB.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /**
+                     * @description Set to true to include page-separated markdown in the pages array. Existing markdown output is still returned as the full document text.
+                     * @default false
+                     */
+                    includePages?: boolean | ("true" | "false");
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
                 "multipart/form-data": {
                     /**
@@ -579,16 +714,41 @@ export interface operations {
                      * @description URL of the document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded document file content */
                     base64?: string;
                     /**
-                     * @description Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. File up to 1000 pages, up to 500MB in size. Supports PDF, Word, Excel, CSV, Image. 'nano': For simple documents with plain text content. File up to 30 pages, up to 10MB in size. Supports PDF, Word, Excel, CSV. 'mini': For documents with tables and structured content. File up to 30 pages, up to 10MB in size. Supports PDF, Word, Excel, CSV. 'pro': For documents up to 30 pages with tables, handwritten text, figures, math, and Arabic. File up to 30 pages, up to 40MB in size. Supports PDF, Word, Excel, CSV, Image. 'max': For large documents with full Pro capabilities plus enhanced multilingual support. File up to 1000 pages, up to 500MB in size. Supports PDF, Word, Excel, CSV, Image.
+                     * @description Model tier for parsing.
+                     *
+                     *     - auto (default): Intelligent fallback — credits based on the tier selected automatically. Up to 2000 pages, 500MB.
+                     *     - nano: 1 credit/page. Simple plain text documents. Up to 30 pages, 40MB.
+                     *     - mini: 2 credits/page. Documents with tables and structured content. Up to 30 pages, 40MB.
+                     *     - pro: 4 credits/page. Tables, handwritten text, figures, math, Arabic, image support. Up to 30 pages, 40MB.
+                     *     - max: 8 credits/page. Full Pro capabilities + enhanced multilingual. Up to 2000 pages, 500MB.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /**
+                     * @description Set to true to include page-separated markdown in the pages array. Existing markdown output is still returned as the full document text.
+                     * @default false
+                     */
+                    includePages?: boolean | ("true" | "false");
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -605,11 +765,16 @@ export interface operations {
                         /** @description Total number of pages in the document */
                         pageCount: number;
                         /**
-                         * @description Model tier used to parse the document. 'nano': Supports PDF, Word, Excel, CSV. 'mini': Supports PDF, Word, Excel, CSV. 'pro': Supports PDF, Word, Excel, CSV, Image. 'max': Supports PDF, Word, Excel, CSV, Image.
+                         * @description Model tier used to parse the document.
+                         *
+                         *     - nano: Fastest, best for simple documents.
+                         *     - mini: Balanced speed and accuracy.
+                         *     - pro: High accuracy for complex documents.
+                         *     - max: Maximum accuracy with deep reasoning.
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
-                        /** @description Number of credits consumed by this API call */
+                        /** @description Number of credits consumed by this API call. Cost per page: nano=1, mini=2, pro=4, max=8. */
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
@@ -617,6 +782,13 @@ export interface operations {
                         html?: string;
                         /** @description Document ID if provided via x-pdfvector-document-id header */
                         documentId?: string;
+                        /** @description Page-separated markdown content. Returned only when includePages is true. */
+                        pages?: {
+                            /** @description 1-based page number in the source document */
+                            pageNumber: number;
+                            /** @description Extracted markdown content for this page */
+                            markdown: string;
+                        }[];
                     };
                 };
             };
@@ -640,18 +812,38 @@ export interface operations {
                      * @description URL of the identity document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded identity document file content */
                     base64?: string;
                     /** @description The question to answer about the identity document */
                     question: string;
                     /**
-                     * @description Model tier for answering the question. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models.
+                     * @description Model tier for answering the question.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 6 credits/page. Fastest. Best for simple questions about straightforward documents.
+                     *     - mini: 10 credits/page. Balanced speed and accuracy. Moderately complex questions.
+                     *     - pro: 14 credits/page. High accuracy for nuanced questions about complex documents.
+                     *     - max: 18 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
                 "multipart/form-data": {
                     /**
@@ -659,18 +851,38 @@ export interface operations {
                      * @description URL of the identity document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded identity document file content */
                     base64?: string;
                     /** @description The question to answer about the identity document */
                     question: string;
                     /**
-                     * @description Model tier for answering the question. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models.
+                     * @description Model tier for answering the question.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 6 credits/page. Fastest. Best for simple questions about straightforward documents.
+                     *     - mini: 10 credits/page. Balanced speed and accuracy. Moderately complex questions.
+                     *     - pro: 14 credits/page. High accuracy for nuanced questions about complex documents.
+                     *     - max: 18 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -687,11 +899,16 @@ export interface operations {
                         /** @description Total number of pages in the document */
                         pageCount: number;
                         /**
-                         * @description Model tier used to answer the question
+                         * @description Model tier used to answer the question.
+                         *
+                         *     - nano: Fastest, best for simple questions.
+                         *     - mini: Balanced speed and accuracy.
+                         *     - pro: High accuracy for complex questions.
+                         *     - max: Maximum accuracy with deep reasoning.
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
-                        /** @description Number of credits consumed by this API call */
+                        /** @description Number of credits consumed by this API call. Cost per page: nano=6, mini=10, pro=14, max=18. */
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
@@ -720,7 +937,7 @@ export interface operations {
                      * @description URL of the identity document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded identity document file content */
                     base64?: string;
@@ -731,11 +948,31 @@ export interface operations {
                         [key: string]: unknown;
                     } | string;
                     /**
-                     * @description Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models.
+                     * @description Model tier for extracting structured data.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 6 credits/page. Fastest. Best for simple documents with straightforward schemas.
+                     *     - mini: 10 credits/page. Balanced speed and accuracy. Moderately complex schemas.
+                     *     - pro: 14 credits/page. High accuracy for complex documents with large or nested schemas.
+                     *     - max: 18 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
                 "multipart/form-data": {
                     /**
@@ -743,7 +980,7 @@ export interface operations {
                      * @description URL of the identity document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded identity document file content */
                     base64?: string;
@@ -754,11 +991,31 @@ export interface operations {
                         [key: string]: unknown;
                     } | string;
                     /**
-                     * @description Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models.
+                     * @description Model tier for extracting structured data.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 6 credits/page. Fastest. Best for simple documents with straightforward schemas.
+                     *     - mini: 10 credits/page. Balanced speed and accuracy. Moderately complex schemas.
+                     *     - pro: 14 credits/page. High accuracy for complex documents with large or nested schemas.
+                     *     - max: 18 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -775,11 +1032,16 @@ export interface operations {
                         /** @description Total number of pages in the document */
                         pageCount: number;
                         /**
-                         * @description Model tier used to extract the data
+                         * @description Model tier used to extract the data.
+                         *
+                         *     - nano: Fastest, best for simple documents.
+                         *     - mini: Balanced speed and accuracy.
+                         *     - pro: High accuracy for complex documents.
+                         *     - max: Maximum accuracy with deep reasoning.
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
-                        /** @description Number of credits consumed by this API call */
+                        /** @description Number of credits consumed by this API call. Cost per page: nano=6, mini=10, pro=14, max=18. */
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
@@ -808,16 +1070,30 @@ export interface operations {
                      * @description URL of the identity document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded identity document file content */
                     base64?: string;
                     /**
-                     * @description Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. 'pro': Extracts structured identity document fields with standard accuracy. 'max': Extracts structured identity document fields with highest accuracy.
+                     * @description Model tier for parsing.
+                     *
+                     *     - auto (default): Intelligent fallback — credits based on the tier selected.
+                     *     - pro: 6 credits/page. Extracts structured identity document fields with standard accuracy.
+                     *     - max: 10 credits/page. Extracts structured identity document fields with highest accuracy and fallback.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "pro" | "max" | "auto";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
                 "multipart/form-data": {
                     /**
@@ -825,16 +1101,30 @@ export interface operations {
                      * @description URL of the identity document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded identity document file content */
                     base64?: string;
                     /**
-                     * @description Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. 'pro': Extracts structured identity document fields with standard accuracy. 'max': Extracts structured identity document fields with highest accuracy.
+                     * @description Model tier for parsing.
+                     *
+                     *     - auto (default): Intelligent fallback — credits based on the tier selected.
+                     *     - pro: 6 credits/page. Extracts structured identity document fields with standard accuracy.
+                     *     - max: 10 credits/page. Extracts structured identity document fields with highest accuracy and fallback.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "pro" | "max" | "auto";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -859,7 +1149,7 @@ export interface operations {
                         documentType?: string;
                         /** @description Full HTML representation of the document content. Only available when using the 'max' model. Preserves rich formatting, tables, selection marks, and visual layout that cannot be fully represented in markdown. */
                         html?: string;
-                        /** @description Number of credits consumed by this API call */
+                        /** @description Number of credits consumed by this API call. Cost per page: pro=6, max=10. */
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
@@ -888,18 +1178,38 @@ export interface operations {
                      * @description URL of the invoice file to fetch and parse
                      */
                     url?: string;
-                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded invoice file content */
                     base64?: string;
                     /** @description The question to answer about the invoice */
                     question: string;
                     /**
-                     * @description Model tier for answering the question. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models.
+                     * @description Model tier for answering the question.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 6 credits/page. Fastest. Best for simple questions about straightforward documents.
+                     *     - mini: 10 credits/page. Balanced speed and accuracy. Moderately complex questions.
+                     *     - pro: 14 credits/page. High accuracy for nuanced questions about complex documents.
+                     *     - max: 18 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
                 "multipart/form-data": {
                     /**
@@ -907,18 +1217,38 @@ export interface operations {
                      * @description URL of the invoice file to fetch and parse
                      */
                     url?: string;
-                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded invoice file content */
                     base64?: string;
                     /** @description The question to answer about the invoice */
                     question: string;
                     /**
-                     * @description Model tier for answering the question. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models.
+                     * @description Model tier for answering the question.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 6 credits/page. Fastest. Best for simple questions about straightforward documents.
+                     *     - mini: 10 credits/page. Balanced speed and accuracy. Moderately complex questions.
+                     *     - pro: 14 credits/page. High accuracy for nuanced questions about complex documents.
+                     *     - max: 18 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -935,11 +1265,16 @@ export interface operations {
                         /** @description Total number of pages in the document */
                         pageCount: number;
                         /**
-                         * @description Model tier used to answer the question
+                         * @description Model tier used to answer the question.
+                         *
+                         *     - nano: Fastest, best for simple questions.
+                         *     - mini: Balanced speed and accuracy.
+                         *     - pro: High accuracy for complex questions.
+                         *     - max: Maximum accuracy with deep reasoning.
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
-                        /** @description Number of credits consumed by this API call */
+                        /** @description Number of credits consumed by this API call. Cost per page: nano=6, mini=10, pro=14, max=18. */
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
@@ -968,7 +1303,7 @@ export interface operations {
                      * @description URL of the invoice file to fetch and parse
                      */
                     url?: string;
-                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded invoice file content */
                     base64?: string;
@@ -979,11 +1314,31 @@ export interface operations {
                         [key: string]: unknown;
                     } | string;
                     /**
-                     * @description Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models.
+                     * @description Model tier for extracting structured data.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 6 credits/page. Fastest. Best for simple documents with straightforward schemas.
+                     *     - mini: 10 credits/page. Balanced speed and accuracy. Moderately complex schemas.
+                     *     - pro: 14 credits/page. High accuracy for complex documents with large or nested schemas.
+                     *     - max: 18 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
                 "multipart/form-data": {
                     /**
@@ -991,7 +1346,7 @@ export interface operations {
                      * @description URL of the invoice file to fetch and parse
                      */
                     url?: string;
-                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded invoice file content */
                     base64?: string;
@@ -1002,11 +1357,31 @@ export interface operations {
                         [key: string]: unknown;
                     } | string;
                     /**
-                     * @description Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models.
+                     * @description Model tier for extracting structured data.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 6 credits/page. Fastest. Best for simple documents with straightforward schemas.
+                     *     - mini: 10 credits/page. Balanced speed and accuracy. Moderately complex schemas.
+                     *     - pro: 14 credits/page. High accuracy for complex documents with large or nested schemas.
+                     *     - max: 18 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -1023,11 +1398,16 @@ export interface operations {
                         /** @description Total number of pages in the document */
                         pageCount: number;
                         /**
-                         * @description Model tier used to extract the data
+                         * @description Model tier used to extract the data.
+                         *
+                         *     - nano: Fastest, best for simple documents.
+                         *     - mini: Balanced speed and accuracy.
+                         *     - pro: High accuracy for complex documents.
+                         *     - max: Maximum accuracy with deep reasoning.
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
-                        /** @description Number of credits consumed by this API call */
+                        /** @description Number of credits consumed by this API call. Cost per page: nano=6, mini=10, pro=14, max=18. */
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
@@ -1056,16 +1436,30 @@ export interface operations {
                      * @description URL of the invoice file to fetch and parse
                      */
                     url?: string;
-                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded invoice file content */
                     base64?: string;
                     /**
-                     * @description Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. 'pro': Extracts structured invoice fields with standard accuracy. 'max': Extracts structured invoice fields with highest accuracy and fallback.
+                     * @description Model tier for parsing.
+                     *
+                     *     - auto (default): Intelligent fallback — credits based on the tier selected.
+                     *     - pro: 6 credits/page. Extracts structured invoice fields with standard accuracy.
+                     *     - max: 10 credits/page. Extracts structured invoice fields with highest accuracy and fallback.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "pro" | "max" | "auto";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
                 "multipart/form-data": {
                     /**
@@ -1073,16 +1467,30 @@ export interface operations {
                      * @description URL of the invoice file to fetch and parse
                      */
                     url?: string;
-                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded invoice file content */
                     base64?: string;
                     /**
-                     * @description Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. 'pro': Extracts structured invoice fields with standard accuracy. 'max': Extracts structured invoice fields with highest accuracy and fallback.
+                     * @description Model tier for parsing.
+                     *
+                     *     - auto (default): Intelligent fallback — credits based on the tier selected.
+                     *     - pro: 6 credits/page. Extracts structured invoice fields with standard accuracy.
+                     *     - max: 10 credits/page. Extracts structured invoice fields with highest accuracy and fallback.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "pro" | "max" | "auto";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -1103,7 +1511,7 @@ export interface operations {
                          * @enum {string}
                          */
                         model: "pro" | "max";
-                        /** @description Number of credits consumed by this API call */
+                        /** @description Number of credits consumed by this API call. Cost per page: pro=6, max=10. */
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
@@ -1134,18 +1542,38 @@ export interface operations {
                      * @description URL of the bank statement file to fetch and parse
                      */
                     url?: string;
-                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded bank statement file content */
                     base64?: string;
                     /** @description The question to answer about the bank statement */
                     question: string;
                     /**
-                     * @description Model tier for answering the question. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models.
+                     * @description Model tier for answering the question.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 6 credits/page. Fastest. Best for simple questions about straightforward documents.
+                     *     - mini: 10 credits/page. Balanced speed and accuracy. Moderately complex questions.
+                     *     - pro: 14 credits/page. High accuracy for nuanced questions about complex documents.
+                     *     - max: 18 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
                 "multipart/form-data": {
                     /**
@@ -1153,18 +1581,38 @@ export interface operations {
                      * @description URL of the bank statement file to fetch and parse
                      */
                     url?: string;
-                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded bank statement file content */
                     base64?: string;
                     /** @description The question to answer about the bank statement */
                     question: string;
                     /**
-                     * @description Model tier for answering the question. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models.
+                     * @description Model tier for answering the question.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 6 credits/page. Fastest. Best for simple questions about straightforward documents.
+                     *     - mini: 10 credits/page. Balanced speed and accuracy. Moderately complex questions.
+                     *     - pro: 14 credits/page. High accuracy for nuanced questions about complex documents.
+                     *     - max: 18 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -1181,11 +1629,16 @@ export interface operations {
                         /** @description Total number of pages in the document */
                         pageCount: number;
                         /**
-                         * @description Model tier used to answer the question
+                         * @description Model tier used to answer the question.
+                         *
+                         *     - nano: Fastest, best for simple questions.
+                         *     - mini: Balanced speed and accuracy.
+                         *     - pro: High accuracy for complex questions.
+                         *     - max: Maximum accuracy with deep reasoning.
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
-                        /** @description Number of credits consumed by this API call */
+                        /** @description Number of credits consumed by this API call. Cost per page: nano=6, mini=10, pro=14, max=18. */
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
@@ -1214,7 +1667,7 @@ export interface operations {
                      * @description URL of the bank statement file to fetch and parse
                      */
                     url?: string;
-                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded bank statement file content */
                     base64?: string;
@@ -1225,11 +1678,31 @@ export interface operations {
                         [key: string]: unknown;
                     } | string;
                     /**
-                     * @description Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models.
+                     * @description Model tier for extracting structured data.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 6 credits/page. Fastest. Best for simple documents with straightforward schemas.
+                     *     - mini: 10 credits/page. Balanced speed and accuracy. Moderately complex schemas.
+                     *     - pro: 14 credits/page. High accuracy for complex documents with large or nested schemas.
+                     *     - max: 18 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
                 "multipart/form-data": {
                     /**
@@ -1237,7 +1710,7 @@ export interface operations {
                      * @description URL of the bank statement file to fetch and parse
                      */
                     url?: string;
-                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded bank statement file content */
                     base64?: string;
@@ -1248,11 +1721,31 @@ export interface operations {
                         [key: string]: unknown;
                     } | string;
                     /**
-                     * @description Model tier for extracting structured data. 'auto' (default): Automatically selects the best tier. 'nano': Uses lightweight models. 'mini': Uses mid-range models. 'pro': Uses capable models. 'max': Uses the most powerful models.
+                     * @description Model tier for extracting structured data.
+                     *
+                     *     - auto (default): Automatically selects the best tier — credits based on the tier selected.
+                     *     - nano: 6 credits/page. Fastest. Best for simple documents with straightforward schemas.
+                     *     - mini: 10 credits/page. Balanced speed and accuracy. Moderately complex schemas.
+                     *     - pro: 14 credits/page. High accuracy for complex documents with large or nested schemas.
+                     *     - max: 18 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -1269,11 +1762,16 @@ export interface operations {
                         /** @description Total number of pages in the document */
                         pageCount: number;
                         /**
-                         * @description Model tier used to extract the data
+                         * @description Model tier used to extract the data.
+                         *
+                         *     - nano: Fastest, best for simple documents.
+                         *     - mini: Balanced speed and accuracy.
+                         *     - pro: High accuracy for complex documents.
+                         *     - max: Maximum accuracy with deep reasoning.
                          * @enum {string}
                          */
                         model: "nano" | "mini" | "pro" | "max";
-                        /** @description Number of credits consumed by this API call */
+                        /** @description Number of credits consumed by this API call. Cost per page: nano=6, mini=10, pro=14, max=18. */
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
@@ -1302,16 +1800,30 @@ export interface operations {
                      * @description URL of the bank statement file to fetch and parse
                      */
                     url?: string;
-                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded bank statement file content */
                     base64?: string;
                     /**
-                     * @description Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. 'pro': Extracts structured bank statement fields with standard accuracy. 'max': Extracts structured bank statement fields with highest accuracy and fallback.
+                     * @description Model tier for parsing.
+                     *
+                     *     - auto (default): Intelligent fallback — credits based on the tier selected.
+                     *     - pro: 6 credits/page. Extracts structured bank statement fields with standard accuracy.
+                     *     - max: 10 credits/page. Extracts structured bank statement fields with highest accuracy and fallback.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "pro" | "max" | "auto";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
                 "multipart/form-data": {
                     /**
@@ -1319,16 +1831,30 @@ export interface operations {
                      * @description URL of the bank statement file to fetch and parse
                      */
                     url?: string;
-                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, CSV, PNG, JPG) */
+                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded bank statement file content */
                     base64?: string;
                     /**
-                     * @description Model tier for parsing. 'auto' (default): Automatically selects the best parsing strategy with intelligent fallback. 'pro': Extracts structured bank statement fields with standard accuracy. 'max': Extracts structured bank statement fields with highest accuracy and fallback.
+                     * @description Model tier for parsing.
+                     *
+                     *     - auto (default): Intelligent fallback — credits based on the tier selected.
+                     *     - pro: 6 credits/page. Extracts structured bank statement fields with standard accuracy.
+                     *     - max: 10 credits/page. Extracts structured bank statement fields with highest accuracy and fallback.
                      * @default auto
                      * @enum {string}
                      */
                     model?: "pro" | "max" | "auto";
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -1349,7 +1875,7 @@ export interface operations {
                          * @enum {string}
                          */
                         model: "pro" | "max";
-                        /** @description Number of credits consumed by this API call */
+                        /** @description Number of credits consumed by this API call. Cost per page: pro=6, max=10. */
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
@@ -1376,6 +1902,16 @@ export interface operations {
                     ids: string[];
                     /** @description Specific publication fields to return. If omitted, returns all fields except providerData. */
                     fields?: ("doi" | "title" | "url" | "providerURL" | "authors" | "date" | "year" | "totalCitations" | "totalReferences" | "abstract" | "pdfURL" | "provider" | "providerData")[] | null;
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -1391,7 +1927,7 @@ export interface operations {
                             /** @description Original input identifier */
                             id: string;
                             /** @description Provider that returned this result */
-                            detectedProvider?: string | null;
+                            detectedProvider?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref") | null;
                             doi?: string | null;
                             title?: string | null;
                             url?: string | null;
@@ -1406,7 +1942,7 @@ export interface operations {
                             totalReferences?: number | null;
                             abstract?: string | null;
                             pdfURL?: string | null;
-                            provider?: string | null;
+                            provider?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref") | null;
                             providerData?: {
                                 [key: string]: unknown;
                             } | null;
@@ -1443,6 +1979,16 @@ export interface operations {
                     providers?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref")[];
                     /** @description Specific citation fields to return. If omitted, returns all fields except providerData. */
                     fields?: ("doi" | "title" | "url" | "providerURL" | "authors" | "date" | "year" | "totalCitations" | "totalReferences" | "abstract" | "pdfURL" | "provider" | "providerData")[] | null;
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -1473,7 +2019,7 @@ export interface operations {
                                 totalReferences?: number | null;
                                 abstract?: string | null;
                                 pdfURL?: string | null;
-                                provider?: string | null;
+                                provider?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref") | null;
                                 providerData?: {
                                     [key: string]: unknown;
                                 } | null;
@@ -1483,6 +2029,234 @@ export interface operations {
                         totalCitations: number;
                         errors?: string[] | null;
                         requestId: number;
+                    };
+                };
+            };
+        };
+    };
+    "academic.paperGraph": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Paper identifier. Supports DOI, Semantic Scholar ID, ArXiv ID, PubMed ID, OpenAlex ID, or URL. */
+                    id: string;
+                    /**
+                     * @description Maximum number of citing papers to return
+                     * @default 100
+                     */
+                    citationsLimit?: number;
+                    /**
+                     * @description Maximum number of referenced papers to return
+                     * @default 100
+                     */
+                    referencesLimit?: number;
+                    /**
+                     * @description Pagination offset for citations
+                     * @default 0
+                     */
+                    citationsOffset?: number;
+                    /**
+                     * @description Pagination offset for references
+                     * @default 0
+                     */
+                    referencesOffset?: number;
+                    /** @description Specific publication fields to return. If omitted, returns all fields except providerData. */
+                    fields?: ("doi" | "title" | "url" | "providerURL" | "authors" | "date" | "year" | "totalCitations" | "totalReferences" | "abstract" | "pdfURL" | "provider" | "providerData")[] | null;
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        paper: {
+                            doi?: string | null;
+                            title?: string | null;
+                            url?: string | null;
+                            providerURL?: string | null;
+                            authors?: {
+                                name: string;
+                                url?: string | null;
+                            }[] | null;
+                            date?: string | null;
+                            year?: number | null;
+                            totalCitations?: number | null;
+                            totalReferences?: number | null;
+                            abstract?: string | null;
+                            pdfURL?: string | null;
+                            provider?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref") | null;
+                            providerData?: {
+                                [key: string]: unknown;
+                            } | null;
+                        };
+                        citations: {
+                            doi?: string | null;
+                            title?: string | null;
+                            url?: string | null;
+                            providerURL?: string | null;
+                            authors?: {
+                                name: string;
+                                url?: string | null;
+                            }[] | null;
+                            date?: string | null;
+                            year?: number | null;
+                            totalCitations?: number | null;
+                            totalReferences?: number | null;
+                            abstract?: string | null;
+                            pdfURL?: string | null;
+                            provider?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref") | null;
+                            providerData?: {
+                                [key: string]: unknown;
+                            } | null;
+                        }[];
+                        references: {
+                            doi?: string | null;
+                            title?: string | null;
+                            url?: string | null;
+                            providerURL?: string | null;
+                            authors?: {
+                                name: string;
+                                url?: string | null;
+                            }[] | null;
+                            date?: string | null;
+                            year?: number | null;
+                            totalCitations?: number | null;
+                            totalReferences?: number | null;
+                            abstract?: string | null;
+                            pdfURL?: string | null;
+                            provider?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref") | null;
+                            providerData?: {
+                                [key: string]: unknown;
+                            } | null;
+                        }[];
+                        totalCitations?: number | null;
+                        totalReferences?: number | null;
+                        requestId: number;
+                    };
+                };
+            };
+        };
+    };
+    "academic.parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Publication identifier to resolve and parse. Supports DOI, PubMed ID, ArXiv ID, Semantic Scholar ID, ERIC ID, Europe PMC ID, OpenAlex ID. */
+                    id?: string;
+                    /**
+                     * Format: uri
+                     * @description Publication URL to resolve and parse. Supports known provider URLs such as DOI, ArXiv, PubMed, Semantic Scholar, ERIC, Europe PMC, OpenAlex, Springer, Nature, bioRxiv, and medRxiv.
+                     */
+                    url?: string;
+                    /**
+                     * @description Model tier for parsing.
+                     *
+                     *     - auto (default): Intelligent fallback — credits based on the tier selected automatically. Up to 2000 pages, 500MB.
+                     *     - nano: 1 credit/page. Simple plain text documents. Up to 30 pages, 40MB.
+                     *     - mini: 2 credits/page. Documents with tables and structured content. Up to 30 pages, 40MB.
+                     *     - pro: 4 credits/page. Tables, handwritten text, figures, math, Arabic, image support. Up to 30 pages, 40MB.
+                     *     - max: 8 credits/page. Full Pro capabilities + enhanced multilingual. Up to 2000 pages, 500MB.
+                     *
+                     *     Supported formats by tier:
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     * @default auto
+                     * @enum {string}
+                     */
+                    model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /**
+                     * @description Set to true to include page-separated markdown in the pages array. Existing markdown output is still returned as the full paper text.
+                     * @default false
+                     */
+                    includePages?: boolean;
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Original input identifier or URL */
+                        id: string;
+                        /** @description Publication title, if available */
+                        title?: string | null;
+                        /** @description Publication DOI, if available */
+                        doi?: string | null;
+                        /** @description PDF Vector publication URL, if available */
+                        url?: string | null;
+                        /** @description Provider publication page URL, if available */
+                        providerURL?: string | null;
+                        /** @description Resolved public PDF URL used for parsing */
+                        pdfURL: string;
+                        /** @description Provider detected from the input identifier or URL */
+                        detectedProvider?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref") | null;
+                        /** @description Extracted markdown content from the paper PDF */
+                        markdown: string;
+                        /** @description Total number of pages in the paper PDF */
+                        pageCount: number;
+                        /**
+                         * @description Model tier used to parse the document.
+                         *
+                         *     - nano: Fastest, best for simple documents.
+                         *     - mini: Balanced speed and accuracy.
+                         *     - pro: High accuracy for complex documents.
+                         *     - max: Maximum accuracy with deep reasoning.
+                         * @enum {string}
+                         */
+                        model: "nano" | "mini" | "pro" | "max";
+                        /** @description Number of credits consumed by this API call. Cost per page: nano=1, mini=2, pro=4, max=8. */
+                        credits: number;
+                        /** @description Unique request identifier for this API call */
+                        requestId: number;
+                        /** @description Full HTML representation of the paper content. Only available when using the 'max' model. */
+                        html?: string;
+                        /** @description Page-separated markdown content. Returned only when includePages is true. */
+                        pages?: {
+                            /** @description 1-based page number in the source document */
+                            pageNumber: number;
+                            /** @description Extracted markdown content for this page */
+                            markdown: string;
+                        }[];
                     };
                 };
             };
@@ -1523,6 +2297,16 @@ export interface operations {
                     yearTo?: number | null;
                     /** @description Specific publication fields to return. If omitted, returns all fields except providerData. */
                     fields?: ("doi" | "title" | "url" | "providerURL" | "authors" | "date" | "year" | "totalCitations" | "totalReferences" | "abstract" | "pdfURL" | "provider" | "providerData")[] | null;
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -1556,214 +2340,14 @@ export interface operations {
                             } | null;
                         }[];
                         errors?: {
-                            provider: string;
+                            /** @enum {string} */
+                            provider: "semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref";
                             message: string;
                             code?: string | null;
                             details?: {
                                 [key: string]: unknown;
                             } | null;
                         }[] | null;
-                        requestId: number;
-                    };
-                };
-            };
-        };
-    };
-    "academic.paperGraph": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description Paper identifier. Supports DOI, Semantic Scholar ID, ArXiv ID, PubMed ID, OpenAlex ID, or URL. */
-                    id: string;
-                    /**
-                     * @description Max number of citing papers to return
-                     * @default 100
-                     */
-                    citationsLimit?: number;
-                    /**
-                     * @description Max number of referenced papers to return
-                     * @default 100
-                     */
-                    referencesLimit?: number;
-                    /**
-                     * @description Offset for citing papers pagination
-                     * @default 0
-                     */
-                    citationsOffset?: number;
-                    /**
-                     * @description Offset for referenced papers pagination
-                     * @default 0
-                     */
-                    referencesOffset?: number;
-                    /** @description Specific publication fields to return. If omitted, returns all fields except providerData. */
-                    fields?: ("doi" | "title" | "url" | "providerURL" | "authors" | "date" | "year" | "totalCitations" | "totalReferences" | "abstract" | "pdfURL" | "provider" | "providerData")[] | null;
-                };
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        paper: {
-                            doi?: string | null;
-                            title?: string | null;
-                            url?: string | null;
-                            providerURL?: string | null;
-                            authors?: {
-                                name: string;
-                                url?: string | null;
-                            }[] | null;
-                            date?: string | null;
-                            year?: number | null;
-                            totalCitations?: number | null;
-                            totalReferences?: number | null;
-                            abstract?: string | null;
-                            pdfURL?: string | null;
-                            provider?: string | null;
-                            providerData?: {
-                                [key: string]: unknown;
-                            } | null;
-                        };
-                        citations: {
-                            doi?: string | null;
-                            title?: string | null;
-                            url?: string | null;
-                            providerURL?: string | null;
-                            authors?: {
-                                name: string;
-                                url?: string | null;
-                            }[] | null;
-                            date?: string | null;
-                            year?: number | null;
-                            totalCitations?: number | null;
-                            totalReferences?: number | null;
-                            abstract?: string | null;
-                            pdfURL?: string | null;
-                            provider?: string | null;
-                            providerData?: {
-                                [key: string]: unknown;
-                            } | null;
-                        }[];
-                        references: {
-                            doi?: string | null;
-                            title?: string | null;
-                            url?: string | null;
-                            providerURL?: string | null;
-                            authors?: {
-                                name: string;
-                                url?: string | null;
-                            }[] | null;
-                            date?: string | null;
-                            year?: number | null;
-                            totalCitations?: number | null;
-                            totalReferences?: number | null;
-                            abstract?: string | null;
-                            pdfURL?: string | null;
-                            provider?: string | null;
-                            providerData?: {
-                                [key: string]: unknown;
-                            } | null;
-                        }[];
-                        totalCitations?: number | null;
-                        totalReferences?: number | null;
-                        requestId: number;
-                    };
-                };
-            };
-        };
-    };
-    "academic.similarPapers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description Paper identifier. Supports DOI, Semantic Scholar ID, ArXiv ID, PubMed ID, OpenAlex ID, or URL. */
-                    id: string;
-                    /**
-                     * @description Max number of similar papers to return
-                     * @default 30
-                     */
-                    limit?: number;
-                    /**
-                     * @description Include citation graph edges (citingIds, citedByIds) in results
-                     * @default false
-                     */
-                    includeEdges?: boolean;
-                    /** @description Specific publication fields to return. If omitted, returns all fields except providerData. */
-                    fields?: ("doi" | "title" | "url" | "providerURL" | "authors" | "date" | "year" | "totalCitations" | "totalReferences" | "abstract" | "pdfURL" | "provider" | "providerData")[] | null;
-                };
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        seed: {
-                            doi?: string | null;
-                            title?: string | null;
-                            url?: string | null;
-                            providerURL?: string | null;
-                            authors?: {
-                                name: string;
-                                url?: string | null;
-                            }[] | null;
-                            date?: string | null;
-                            year?: number | null;
-                            totalCitations?: number | null;
-                            totalReferences?: number | null;
-                            abstract?: string | null;
-                            pdfURL?: string | null;
-                            provider?: string | null;
-                            providerData?: {
-                                [key: string]: unknown;
-                            } | null;
-                        };
-                        results: {
-                            publication: {
-                                doi?: string | null;
-                                title?: string | null;
-                                url?: string | null;
-                                providerURL?: string | null;
-                                authors?: {
-                                    name: string;
-                                    url?: string | null;
-                                }[] | null;
-                                date?: string | null;
-                                year?: number | null;
-                                totalCitations?: number | null;
-                                totalReferences?: number | null;
-                                abstract?: string | null;
-                                pdfURL?: string | null;
-                                provider?: string | null;
-                                providerData?: {
-                                    [key: string]: unknown;
-                                } | null;
-                            };
-                            similarity: number;
-                            pageRank?: number | null;
-                            distance?: number | null;
-                            citingIds?: string[] | null;
-                            citedByIds?: string[] | null;
-                        }[];
                         requestId: number;
                     };
                 };
@@ -1783,7 +2367,7 @@ export interface operations {
                     /** @description Search query string for grants */
                     query: string;
                     /**
-                     * @description Grant databases to search
+                     * @description Grant databases to search. Defaults to all providers.
                      * @default [
                      *       "grants-gov",
                      *       "nih-reporter",
@@ -1793,25 +2377,35 @@ export interface operations {
                      */
                     providers?: ("grants-gov" | "nih-reporter" | "cordis" | "ukri")[];
                     /**
-                     * @description Results offset
+                     * @description Results offset for pagination
                      * @default 0
                      */
                     offset?: number;
                     /**
-                     * @description Results per provider
+                     * @description Maximum results per provider
                      * @default 10
                      */
                     limit?: number;
-                    /** @description Filter grants with deadline on or after this date (YYYY-MM-DD) */
+                    /** @description Filter grants with deadlines from this date (ISO format, e.g. 2026-01-01) */
                     deadlineFrom?: string | null;
-                    /** @description Filter grants with deadline on or before this date (YYYY-MM-DD) */
+                    /** @description Filter grants with deadlines up to this date (ISO format, e.g. 2026-12-31) */
                     deadlineTo?: string | null;
-                    /** @description Minimum funding amount */
+                    /** @description Minimum funding amount filter */
                     fundingMin?: number | null;
-                    /** @description Maximum funding amount */
+                    /** @description Maximum funding amount filter */
                     fundingMax?: number | null;
                     /** @description Specific grant fields to return. If omitted, returns all fields except providerData. */
                     fields?: ("sourceId" | "title" | "url" | "agency" | "program" | "description" | "eligibility" | "fundingAmountMin" | "fundingAmountMax" | "currency" | "deadlineDate" | "openDate" | "closeDate" | "grantType" | "region" | "keywords" | "piName" | "organizationName" | "provider" | "providerData")[] | null;
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
                 };
             };
         };
@@ -1849,13 +2443,117 @@ export interface operations {
                             } | null;
                         }[];
                         errors?: {
-                            provider: string;
+                            /** @enum {string} */
+                            provider: "grants-gov" | "nih-reporter" | "cordis" | "ukri";
                             message: string;
                             code?: string | null;
                             details?: {
                                 [key: string]: unknown;
                             } | null;
                         }[] | null;
+                        requestId: number;
+                    };
+                };
+            };
+        };
+    };
+    "academic.similarPapers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Seed paper identifier. Supports DOI, Semantic Scholar ID, ArXiv ID, PubMed ID, OpenAlex ID, or URL. */
+                    id: string;
+                    /**
+                     * @description Maximum number of similar papers to return
+                     * @default 30
+                     */
+                    limit?: number;
+                    /**
+                     * @description Whether to include citing/cited_by edge data for graph construction
+                     * @default false
+                     */
+                    includeEdges?: boolean;
+                    /** @description Specific publication fields to return. If omitted, returns all fields except providerData. */
+                    fields?: ("doi" | "title" | "url" | "providerURL" | "authors" | "date" | "year" | "totalCitations" | "totalReferences" | "abstract" | "pdfURL" | "provider" | "providerData")[] | null;
+                    /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
+                    callback?: {
+                        /**
+                         * Format: uri
+                         * @description Webhook URL where results will be POSTed when processing completes
+                         */
+                        url: string;
+                        /** @description Callback type identifier (e.g. 'zapier') */
+                        type?: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        seed: {
+                            doi?: string | null;
+                            title?: string | null;
+                            url?: string | null;
+                            providerURL?: string | null;
+                            authors?: {
+                                name: string;
+                                url?: string | null;
+                            }[] | null;
+                            date?: string | null;
+                            year?: number | null;
+                            totalCitations?: number | null;
+                            totalReferences?: number | null;
+                            abstract?: string | null;
+                            pdfURL?: string | null;
+                            provider?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref") | null;
+                            providerData?: {
+                                [key: string]: unknown;
+                            } | null;
+                        };
+                        results: {
+                            publication: {
+                                doi?: string | null;
+                                title?: string | null;
+                                url?: string | null;
+                                providerURL?: string | null;
+                                authors?: {
+                                    name: string;
+                                    url?: string | null;
+                                }[] | null;
+                                date?: string | null;
+                                year?: number | null;
+                                totalCitations?: number | null;
+                                totalReferences?: number | null;
+                                abstract?: string | null;
+                                pdfURL?: string | null;
+                                provider?: ("semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref") | null;
+                                providerData?: {
+                                    [key: string]: unknown;
+                                } | null;
+                            };
+                            /** @description Combined similarity score from citation network analysis */
+                            similarity: number;
+                            /** @description Citation network importance score */
+                            pageRank?: number | null;
+                            /** @description Graph distance from seed paper */
+                            distance?: number | null;
+                            /** @description OpenAlex IDs of papers in result set that cite this paper (only if includeEdges=true) */
+                            citingIds?: string[] | null;
+                            /** @description OpenAlex IDs of papers in result set cited by this paper (only if includeEdges=true) */
+                            citedByIds?: string[] | null;
+                        }[];
                         requestId: number;
                     };
                 };

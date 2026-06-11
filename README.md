@@ -34,6 +34,8 @@ Parse, ask, and extract from generic documents (PDF, Word, Excel, CSV, Image).
 | **Ask** | Ask a question about the document and get an AI answer |
 | **Extract** | Extract structured data using a JSON Schema |
 
+Document Parse includes an optional **Include Pages** toggle. Enable it to return page-separated markdown in the `pages` array while still receiving the full document markdown.
+
 ### Identity Document
 
 Parse, ask, and extract from identity documents (passports, driver's licenses, ID cards).

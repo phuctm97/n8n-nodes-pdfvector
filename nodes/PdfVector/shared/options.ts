@@ -47,6 +47,7 @@ export function makeDocumentProperties(
 	label: string,
 	parseModelOptions: ReadonlyArray<OptionValue<string>>,
 	askExtractModelOptions: ReadonlyArray<OptionValue<string>>,
+	includePagesOption = false,
 ): INodeProperties[] {
 	return [
 		{
@@ -125,6 +126,19 @@ export function makeDocumentProperties(
 			displayOptions: { show: { resource: [resource], operation: ['parse'] } },
 			description: 'AI model tier for parsing. Higher tiers support more complex documents but cost more credits.',
 		},
+		...(includePagesOption
+			? [
+					{
+						displayName: 'Include Pages',
+						name: 'includePages',
+						type: 'boolean',
+						default: false,
+						displayOptions: { show: { resource: [resource], operation: ['parse'] } },
+						description:
+							'Whether to include page-separated markdown in the pages array. The full document markdown is still returned.',
+					} satisfies INodeProperties,
+				]
+			: []),
 		{
 			displayName: 'Model',
 			name: 'model',
