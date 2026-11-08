@@ -49,6 +49,16 @@ export async function apiRequest<Path extends ApiPath>(
 		})) as JsonResponseBody<Path>;
 	} catch (error) {
 		const apiMessage = extractApiErrorMessage(error);
+		if (error instanceof NodeApiError) {
+			// n8n's request helpers already throw a NodeApiError headed by a generic status text
+			// ("Payment required - perhaps check your payment details?"); lead with the API's message.
+			if (apiMessage && error.message !== apiMessage) {
+				error.messages.push(error.message);
+				error.message = apiMessage;
+				if (error.description === apiMessage) error.description = undefined;
+			}
+			throw error;
+		}
 		throw new NodeApiError(ef.getNode(), error as JsonObject, {
 			...(apiMessage ? { message: apiMessage } : {}),
 		});
@@ -58,6 +68,7 @@ export async function apiRequest<Path extends ApiPath>(
 function extractApiErrorMessage(error: unknown): string | undefined {
 	if (!error || typeof error !== 'object') return undefined;
 	const err = error as Record<string, unknown>;
+	if (error instanceof NodeApiError) return extractApiErrorMessage({ data: error.context.data });
 	// n8n HTTP helpers put the response body in error.error (string or object)
 	for (const key of ['error', 'body', 'data']) {
 		let val = err[key];

@@ -32,6 +32,7 @@
 		"dev": "n8n-node dev",
 		"generate": "openapi-typescript https://global.pdfvector.com/api/reference.json -o nodes/PdfVector/shared/pdfvector-api.types.ts",
 		"lint": "n8n-node lint",
+		"test": "node --test test/*.test.mjs",
 		"lint:fix": "n8n-node lint --fix",
 		"release": "n8n-node release",
 		"prepublishOnly": "n8n-node prerelease"
