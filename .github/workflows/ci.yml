@@ -21,7 +21,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          # lts/* is Node 26 since Oct 2026; isolated-vm (via @n8n/node-cli) does not compile there, so npm ci fails
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
