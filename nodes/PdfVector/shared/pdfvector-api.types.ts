@@ -436,6 +436,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -475,6 +477,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -514,7 +518,7 @@ export interface operations {
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
-                        /** @description Document ID if provided via x-pdfvector-document-id header */
+                        /** @description Document ID if provided via x-pdfvector-document-id header or request body */
                         documentId?: string;
                     };
                 };
@@ -565,6 +569,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -608,6 +614,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -647,7 +655,7 @@ export interface operations {
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
-                        /** @description Document ID if provided via x-pdfvector-document-id header */
+                        /** @description Document ID if provided via x-pdfvector-document-id header or request body */
                         documentId?: string;
                     };
                 };
@@ -697,6 +705,8 @@ export interface operations {
                      * @default false
                      */
                     includePages?: boolean | ("true" | "false");
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -739,6 +749,8 @@ export interface operations {
                      * @default false
                      */
                     includePages?: boolean | ("true" | "false");
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -760,6 +772,18 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /**
+                         * @description Detected native document format when supplied by the parser.
+                         * @enum {string}
+                         */
+                        documentFormat?: "pdf" | "docx" | "xlsx" | "pptx" | "odt" | "ods" | "odp" | "txt" | "md" | "html" | "csv" | "tsv" | "xml" | "json" | "rtf" | "vtt";
+                        /**
+                         * @description Billing/output unit: physical PDF page, worksheet, slide, or logical text chunk of at most 4000 Unicode characters; not a rendered Office page.
+                         * @enum {string}
+                         */
+                        pageUnit?: "page" | "sheet" | "slide" | "chunk";
+                        /** @description Extraction limitations and best-effort accuracy warnings when supplied by the parser. */
+                        warnings?: string[];
                         /** @description Extracted text content from the document */
                         markdown: string;
                         /** @description Total number of pages in the document */
@@ -780,7 +804,7 @@ export interface operations {
                         requestId: number;
                         /** @description Full HTML representation of the document content. Only available when using the 'max' model. Preserves rich formatting, tables, selection marks, and visual layout that cannot be fully represented in markdown. */
                         html?: string;
-                        /** @description Document ID if provided via x-pdfvector-document-id header */
+                        /** @description Document ID if provided via x-pdfvector-document-id header or request body */
                         documentId?: string;
                         /** @description Page-separated markdown content. Returned only when includePages is true. */
                         pages?: {
@@ -834,6 +858,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -873,6 +899,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -912,7 +940,7 @@ export interface operations {
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
-                        /** @description Document ID if provided via x-pdfvector-document-id header */
+                        /** @description Document ID if provided via x-pdfvector-document-id header or request body */
                         documentId?: string;
                     };
                 };
@@ -963,6 +991,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1006,6 +1036,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1045,7 +1077,7 @@ export interface operations {
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
-                        /** @description Document ID if provided via x-pdfvector-document-id header */
+                        /** @description Document ID if provided via x-pdfvector-document-id header or request body */
                         documentId?: string;
                     };
                 };
@@ -1084,6 +1116,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "pro" | "max" | "auto";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1115,6 +1149,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "pro" | "max" | "auto";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1153,7 +1189,7 @@ export interface operations {
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
-                        /** @description Document ID if provided via x-pdfvector-document-id header */
+                        /** @description Document ID if provided via x-pdfvector-document-id header or request body */
                         documentId?: string;
                     };
                 };
@@ -1200,6 +1236,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1239,6 +1277,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1278,7 +1318,7 @@ export interface operations {
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
-                        /** @description Document ID if provided via x-pdfvector-document-id header */
+                        /** @description Document ID if provided via x-pdfvector-document-id header or request body */
                         documentId?: string;
                     };
                 };
@@ -1329,6 +1369,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1372,6 +1414,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1411,7 +1455,7 @@ export interface operations {
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
-                        /** @description Document ID if provided via x-pdfvector-document-id header */
+                        /** @description Document ID if provided via x-pdfvector-document-id header or request body */
                         documentId?: string;
                     };
                 };
@@ -1450,6 +1494,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "pro" | "max" | "auto";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1481,6 +1527,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "pro" | "max" | "auto";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1517,7 +1565,7 @@ export interface operations {
                         requestId: number;
                         /** @description Full HTML representation of the document content. Only available when using the 'max' model. Preserves rich formatting, tables, selection marks, and visual layout that cannot be fully represented in markdown. */
                         html?: string;
-                        /** @description Document ID if provided via x-pdfvector-document-id header */
+                        /** @description Document ID if provided via x-pdfvector-document-id header or request body */
                         documentId?: string;
                     };
                 };
@@ -1564,6 +1612,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1603,6 +1653,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1642,7 +1694,7 @@ export interface operations {
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
-                        /** @description Document ID if provided via x-pdfvector-document-id header */
+                        /** @description Document ID if provided via x-pdfvector-document-id header or request body */
                         documentId?: string;
                     };
                 };
@@ -1693,6 +1745,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1736,6 +1790,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "auto" | "nano" | "mini" | "pro" | "max";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1775,7 +1831,7 @@ export interface operations {
                         credits: number;
                         /** @description Unique request identifier for this API call */
                         requestId: number;
-                        /** @description Document ID if provided via x-pdfvector-document-id header */
+                        /** @description Document ID if provided via x-pdfvector-document-id header or request body */
                         documentId?: string;
                     };
                 };
@@ -1814,6 +1870,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "pro" | "max" | "auto";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1845,6 +1903,8 @@ export interface operations {
                      * @enum {string}
                      */
                     model?: "pro" | "max" | "auto";
+                    /** @description Optional external document ID for usage attribution. The x-pdfvector-document-id header takes precedence when both are provided. */
+                    documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
                         /**
@@ -1881,7 +1941,7 @@ export interface operations {
                         requestId: number;
                         /** @description Full HTML representation of the document content. Only available when using the 'max' model. Preserves rich formatting, tables, selection marks, and visual layout that cannot be fully represented in markdown. */
                         html?: string;
-                        /** @description Document ID if provided via x-pdfvector-document-id header */
+                        /** @description Document ID if provided via x-pdfvector-document-id header or request body */
                         documentId?: string;
                     };
                 };
