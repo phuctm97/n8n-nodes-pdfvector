@@ -387,7 +387,30 @@ export interface paths {
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: never;
+    schemas: {
+        PaymentRequiredError: {
+            /** @enum {string} */
+            code: "PAYMENT_REQUIRED";
+            /** @enum {integer} */
+            status: 402;
+            message: string;
+            data: {
+                /** @enum {string} */
+                code: "CREDITS_EXHAUSTED" | "BILLING_UNPAID_INVOICE" | "BILLING_PAYMENT_METHOD_REQUIRED" | "BILLING_DISPUTE" | "BILLING_LINKED_UNPAID_BALANCE" | "BILLING_ACCOUNT_HOLD";
+                reason?: string;
+                invoiceCount?: number;
+                amountDue?: number;
+                currency?: string;
+                /** Format: uri */
+                billingUrl?: string;
+                /** Format: uri */
+                payUrl?: string | null;
+                total?: number;
+                remaining?: number;
+                resetsAt?: string | null;
+            };
+        };
+    };
     responses: never;
     parameters: never;
     requestBodies: never;
