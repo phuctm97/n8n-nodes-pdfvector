@@ -26,6 +26,17 @@ export async function getDocumentInput(ef: IExecuteFunctions, i: number): Promis
 	return { base64: buffer.toString('base64') };
 }
 
+// n8n's request helpers already throw a NodeApiError headed by a generic status text
+// ("Payment required - perhaps check your payment details?"); lead with the API's message.
+function leadWithApiMessage(error: NodeApiError, apiMessage: string | undefined): NodeApiError {
+	if (apiMessage && error.message !== apiMessage) {
+		error.messages.push(error.message);
+		error.message = apiMessage;
+		if (error.description === apiMessage) error.description = undefined;
+	}
+	return error;
+}
+
 export async function apiRequest<Path extends ApiPath>(
 	ef: IExecuteFunctions,
 	domain: string,
@@ -49,16 +60,7 @@ export async function apiRequest<Path extends ApiPath>(
 		})) as JsonResponseBody<Path>;
 	} catch (error) {
 		const apiMessage = extractApiErrorMessage(error);
-		if (error instanceof NodeApiError) {
-			// n8n's request helpers already throw a NodeApiError headed by a generic status text
-			// ("Payment required - perhaps check your payment details?"); lead with the API's message.
-			if (apiMessage && error.message !== apiMessage) {
-				error.messages.push(error.message);
-				error.message = apiMessage;
-				if (error.description === apiMessage) error.description = undefined;
-			}
-			throw error;
-		}
+		if (error instanceof NodeApiError) throw leadWithApiMessage(error, apiMessage);
 		const wrapped = new NodeApiError(ef.getNode(), error as JsonObject, {
 			...(apiMessage ? { message: apiMessage } : {}),
 		});

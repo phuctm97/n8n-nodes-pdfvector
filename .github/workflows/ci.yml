@@ -16,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           # lts/* is Node 26 since Oct 2026; isolated-vm (via @n8n/node-cli) does not compile there, so npm ci fails
           node-version: '24'

@@ -14,6 +14,13 @@ import { identityProperties, executeIdentity } from './identity/index.js';
 import { invoiceProperties, executeInvoice } from './invoice/index.js';
 import { apiErrorDetails } from './shared/helpers.js';
 
+function withItemIndex<T extends object>(error: T, itemIndex: number): T {
+	const errorWithContext = error as { context?: { itemIndex?: number } };
+	errorWithContext.context ??= {};
+	errorWithContext.context.itemIndex = itemIndex;
+	return error;
+}
+
 export class PdfVector implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'PDF Vector',
@@ -104,10 +111,7 @@ export class PdfVector implements INodeType {
 					continue;
 				}
 				if (error && typeof error === 'object' && 'context' in error) {
-					const errorWithContext = error as { context?: { itemIndex?: number } };
-					errorWithContext.context ??= {};
-					errorWithContext.context.itemIndex = i;
-					throw error;
+					throw withItemIndex(error, i);
 				}
 				if (
 					error &&
