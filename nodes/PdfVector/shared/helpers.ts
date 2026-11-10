@@ -1,4 +1,4 @@
-import type { IExecuteFunctions, JsonObject } from 'n8n-workflow';
+import type { IDataObject, IExecuteFunctions, JsonObject } from 'n8n-workflow';
 import { NodeApiError, NodeOperationError } from 'n8n-workflow';
 import type { ApiPath, DocumentInput, JsonRequestBody, JsonResponseBody } from './api.js';
 
@@ -59,16 +59,20 @@ export async function apiRequest<Path extends ApiPath>(
 			}
 			throw error;
 		}
-		throw new NodeApiError(ef.getNode(), error as JsonObject, {
+		const wrapped = new NodeApiError(ef.getNode(), error as JsonObject, {
 			...(apiMessage ? { message: apiMessage } : {}),
 		});
+		// Keep the API body so apiErrorDetails() can read it, as for errors n8n wraps itself.
+		const body = extractApiErrorBody(error);
+		if (body && wrapped.context.data === undefined) wrapped.context.data = body;
+		throw wrapped;
 	}
 }
 
-function extractApiErrorMessage(error: unknown): string | undefined {
+function extractApiErrorBody(error: unknown): Record<string, unknown> | undefined {
 	if (!error || typeof error !== 'object') return undefined;
 	const err = error as Record<string, unknown>;
-	if (error instanceof NodeApiError) return extractApiErrorMessage({ data: error.context.data });
+	if (error instanceof NodeApiError) return extractApiErrorBody({ data: error.context.data });
 	// n8n HTTP helpers put the response body in error.error (string or object)
 	for (const key of ['error', 'body', 'data']) {
 		let val = err[key];
@@ -79,9 +83,39 @@ function extractApiErrorMessage(error: unknown): string | undefined {
 				continue;
 			}
 		}
-		if (val && typeof val === 'object' && typeof (val as Record<string, unknown>).message === 'string') {
-			return (val as Record<string, unknown>).message as string;
+		if (
+			val &&
+			typeof val === 'object' &&
+			typeof (val as Record<string, unknown>).message === 'string'
+		) {
+			return val as Record<string, unknown>;
 		}
 	}
 	return undefined;
+}
+
+function extractApiErrorMessage(error: unknown): string | undefined {
+	return extractApiErrorBody(error)?.message as string | undefined;
+}
+
+/**
+ * Machine-readable fields of a PDF Vector API error for "Continue (using error output)" items, e.g.
+ * { code: 'BILLING_UNPAID_INVOICE', httpCode: 402, payUrl, billingUrl, amountDue, ... } or
+ * { code: 'CREDITS_EXHAUSTED', httpCode: 402, total, remaining, resetsAt }.
+ */
+export function apiErrorDetails(error: unknown): IDataObject {
+	const body = extractApiErrorBody(error);
+	if (!body) return {};
+	const details: IDataObject = {};
+	const status = body.status ?? (error as { httpCode?: unknown }).httpCode;
+	if (status !== undefined && Number.isFinite(Number(status))) details.httpCode = Number(status);
+	if (typeof body.code === 'string') details.code = body.code;
+	const data = body.data;
+	if (data && typeof data === 'object' && !Array.isArray(data)) {
+		for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
+			if (key === 'userError' || value === undefined) continue;
+			details[key] = value as IDataObject[string];
+		}
+	}
+	return details;
 }

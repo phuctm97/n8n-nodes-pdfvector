@@ -12,6 +12,7 @@ import { bankStatementProperties, executeBankStatement } from './bankStatement/i
 import { documentProperties, executeDocument } from './document/index.js';
 import { identityProperties, executeIdentity } from './identity/index.js';
 import { invoiceProperties, executeInvoice } from './invoice/index.js';
+import { apiErrorDetails } from './shared/helpers.js';
 
 export class PdfVector implements INodeType {
 	description: INodeTypeDescription = {
@@ -96,7 +97,10 @@ export class PdfVector implements INodeType {
 					} else {
 						message = String(error);
 					}
-					returnData.push({ json: { error: message }, pairedItem: { item: i } });
+					returnData.push({
+						json: { error: message, ...apiErrorDetails(error) },
+						pairedItem: { item: i },
+					});
 					continue;
 				}
 				if (error && typeof error === 'object' && 'context' in error) {
