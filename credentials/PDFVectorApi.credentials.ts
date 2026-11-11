@@ -9,7 +9,7 @@ export class PDFVectorApi implements ICredentialType {
 	name = 'pdfVectorApi';
 	displayName = 'PDF Vector API';
 	documentationUrl = 'https://global.pdfvector.com/api/reference';
-	icon = 'file:icon.svg' as const;
+	icon = { light: 'file:icon.svg', dark: 'file:icon.dark.svg' } as const;
 	properties: INodeProperties[] = [
 		{
 			displayName: 'API Key',

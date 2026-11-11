@@ -25,7 +25,7 @@ export class PdfVector implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'PDF Vector',
 		name: 'pdfVector',
-		icon: 'file:icon.svg',
+		icon: { light: 'file:icon.svg', dark: 'file:icon.dark.svg' },
 		group: ['transform'],
 		usableAsTool: true,
 		version: 2,
