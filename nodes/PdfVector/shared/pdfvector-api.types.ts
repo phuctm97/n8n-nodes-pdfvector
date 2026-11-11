@@ -15,7 +15,7 @@ export interface paths {
         put?: never;
         /**
          * Ask a question about a document
-         * @description Parse a document and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 1000 pages and up to 500MB in size. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse a document and answer a question about its content using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 1000 pages and up to 500MB in size. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["document.ask"];
         delete?: never;
@@ -35,7 +35,7 @@ export interface paths {
         put?: never;
         /**
          * Extract structured data from a document
-         * @description Parse a document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 1000 pages and up to 500MB in size. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse a document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 1000 pages and up to 500MB in size. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["document.extract"];
         delete?: never;
@@ -55,7 +55,7 @@ export interface paths {
         put?: never;
         /**
          * Parse a document
-         * @description Extract text and page count from a document. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Extract text and page count from a document. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["document.parse"];
         delete?: never;
@@ -75,7 +75,7 @@ export interface paths {
         put?: never;
         /**
          * Ask a question about an identity document
-         * @description Parse an identity document and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse an identity document and answer a question about its content using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["identity.ask"];
         delete?: never;
@@ -95,7 +95,7 @@ export interface paths {
         put?: never;
         /**
          * Extract structured data from an identity document
-         * @description Parse an identity document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse an identity document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["identity.extract"];
         delete?: never;
@@ -115,7 +115,7 @@ export interface paths {
         put?: never;
         /**
          * Parse an identity document
-         * @description Extract text and structured data from an identity document. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Extract text and structured data from an identity document. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["identity.parse"];
         delete?: never;
@@ -135,7 +135,7 @@ export interface paths {
         put?: never;
         /**
          * Ask a question about an invoice
-         * @description Parse an invoice and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse an invoice and answer a question about its content using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["invoice.ask"];
         delete?: never;
@@ -155,7 +155,7 @@ export interface paths {
         put?: never;
         /**
          * Extract structured data from an invoice
-         * @description Parse an invoice and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse an invoice and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["invoice.extract"];
         delete?: never;
@@ -175,7 +175,7 @@ export interface paths {
         put?: never;
         /**
          * Parse an invoice
-         * @description Extract text and structured data from an invoice. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Extract text and structured data from an invoice. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["invoice.parse"];
         delete?: never;
@@ -195,7 +195,7 @@ export interface paths {
         put?: never;
         /**
          * Ask a question about a bank statement
-         * @description Parse a bank statement and answer a question about its content using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse a bank statement and answer a question about its content using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["bankStatement.ask"];
         delete?: never;
@@ -215,7 +215,7 @@ export interface paths {
         put?: never;
         /**
          * Extract structured data from a bank statement
-         * @description Parse a bank statement and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse a bank statement and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["bankStatement.extract"];
         delete?: never;
@@ -235,7 +235,7 @@ export interface paths {
         put?: never;
         /**
          * Parse a bank statement
-         * @description Extract text and structured data from a bank statement. Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Extract text and structured data from a bank statement. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["bankStatement.parse"];
         delete?: never;
@@ -437,7 +437,7 @@ export interface operations {
                      * @description URL of the document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded document file content */
                     base64?: string;
@@ -453,8 +453,9 @@ export interface operations {
                      *     - max: 16 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -478,7 +479,7 @@ export interface operations {
                      * @description URL of the document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded document file content */
                     base64?: string;
@@ -494,8 +495,9 @@ export interface operations {
                      *     - max: 16 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -566,7 +568,7 @@ export interface operations {
                      * @description URL of the document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded document file content */
                     base64?: string;
@@ -586,8 +588,9 @@ export interface operations {
                      *     - max: 16 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -611,7 +614,7 @@ export interface operations {
                      * @description URL of the document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded document file content */
                     base64?: string;
@@ -631,8 +634,9 @@ export interface operations {
                      *     - max: 16 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -703,7 +707,7 @@ export interface operations {
                      * @description URL of the document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded document file content */
                     base64?: string;
@@ -717,8 +721,9 @@ export interface operations {
                      *     - max: 8 credits/page. Full Pro capabilities + enhanced multilingual. Up to 2000 pages, 500MB.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -747,7 +752,7 @@ export interface operations {
                      * @description URL of the document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded document file content */
                     base64?: string;
@@ -761,8 +766,9 @@ export interface operations {
                      *     - max: 8 credits/page. Full Pro capabilities + enhanced multilingual. Up to 2000 pages, 500MB.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -859,7 +865,7 @@ export interface operations {
                      * @description URL of the identity document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded identity document file content */
                     base64?: string;
@@ -875,8 +881,9 @@ export interface operations {
                      *     - max: 18 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -900,7 +907,7 @@ export interface operations {
                      * @description URL of the identity document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded identity document file content */
                     base64?: string;
@@ -916,8 +923,9 @@ export interface operations {
                      *     - max: 18 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -988,7 +996,7 @@ export interface operations {
                      * @description URL of the identity document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded identity document file content */
                     base64?: string;
@@ -1008,8 +1016,9 @@ export interface operations {
                      *     - max: 18 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -1033,7 +1042,7 @@ export interface operations {
                      * @description URL of the identity document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded identity document file content */
                     base64?: string;
@@ -1053,8 +1062,9 @@ export interface operations {
                      *     - max: 18 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -1125,7 +1135,7 @@ export interface operations {
                      * @description URL of the identity document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded identity document file content */
                     base64?: string;
@@ -1158,7 +1168,7 @@ export interface operations {
                      * @description URL of the identity document file to fetch and parse
                      */
                     url?: string;
-                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded identity document file content */
                     base64?: string;
@@ -1237,7 +1247,7 @@ export interface operations {
                      * @description URL of the invoice file to fetch and parse
                      */
                     url?: string;
-                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded invoice file content */
                     base64?: string;
@@ -1253,8 +1263,9 @@ export interface operations {
                      *     - max: 18 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -1278,7 +1289,7 @@ export interface operations {
                      * @description URL of the invoice file to fetch and parse
                      */
                     url?: string;
-                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded invoice file content */
                     base64?: string;
@@ -1294,8 +1305,9 @@ export interface operations {
                      *     - max: 18 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -1366,7 +1378,7 @@ export interface operations {
                      * @description URL of the invoice file to fetch and parse
                      */
                     url?: string;
-                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded invoice file content */
                     base64?: string;
@@ -1386,8 +1398,9 @@ export interface operations {
                      *     - max: 18 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -1411,7 +1424,7 @@ export interface operations {
                      * @description URL of the invoice file to fetch and parse
                      */
                     url?: string;
-                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded invoice file content */
                     base64?: string;
@@ -1431,8 +1444,9 @@ export interface operations {
                      *     - max: 18 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -1503,7 +1517,7 @@ export interface operations {
                      * @description URL of the invoice file to fetch and parse
                      */
                     url?: string;
-                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded invoice file content */
                     base64?: string;
@@ -1536,7 +1550,7 @@ export interface operations {
                      * @description URL of the invoice file to fetch and parse
                      */
                     url?: string;
-                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded invoice file content */
                     base64?: string;
@@ -1613,7 +1627,7 @@ export interface operations {
                      * @description URL of the bank statement file to fetch and parse
                      */
                     url?: string;
-                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded bank statement file content */
                     base64?: string;
@@ -1629,8 +1643,9 @@ export interface operations {
                      *     - max: 18 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -1654,7 +1669,7 @@ export interface operations {
                      * @description URL of the bank statement file to fetch and parse
                      */
                     url?: string;
-                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded bank statement file content */
                     base64?: string;
@@ -1670,8 +1685,9 @@ export interface operations {
                      *     - max: 18 credits/page. Maximum accuracy. Best for difficult questions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -1742,7 +1758,7 @@ export interface operations {
                      * @description URL of the bank statement file to fetch and parse
                      */
                     url?: string;
-                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded bank statement file content */
                     base64?: string;
@@ -1762,8 +1778,9 @@ export interface operations {
                      *     - max: 18 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -1787,7 +1804,7 @@ export interface operations {
                      * @description URL of the bank statement file to fetch and parse
                      */
                     url?: string;
-                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded bank statement file content */
                     base64?: string;
@@ -1807,8 +1824,9 @@ export interface operations {
                      *     - max: 18 credits/page. Maximum accuracy. Best for difficult extractions requiring deep reasoning.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -1879,7 +1897,7 @@ export interface operations {
                      * @description URL of the bank statement file to fetch and parse
                      */
                     url?: string;
-                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded bank statement file content */
                     base64?: string;
@@ -1912,7 +1930,7 @@ export interface operations {
                      * @description URL of the bank statement file to fetch and parse
                      */
                     url?: string;
-                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
+                    /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
                     /** @description Base64-encoded bank statement file content */
                     base64?: string;
@@ -2267,8 +2285,9 @@ export interface operations {
                      *     - max: 8 credits/page. Full Pro capabilities + enhanced multilingual. Up to 2000 pages, 500MB.
                      *
                      *     Supported formats by tier:
-                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
+                     *     - All tiers: PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Word, Excel and PowerPoint 97-2003 (.doc, .xls, .ppt), CSV, Text (.txt, .md, .tsv, .xml), HTML, RTF, OpenDocument (.odt, .ods, .odp), EPUB, Bibliography (.bib, .ris, .nbib, .enw).
                      *     - Pro/Max/Auto adds: Image (PNG, JPG, TIFF, BMP, HEIF). Image dimensions must be between 50×50 and 10000×10000 pixels.
+                     *     How pages are counted: PDF and TIFF pages as they are; Word (.docx, .doc), Excel (.xlsx, .xls), RTF, OpenDocument text and spreadsheets, HTML and EPUB: every 3,000 characters of text is one page; PowerPoint (.pptx, .ppt) and OpenDocument presentations: one page per slide; images: one page per image; CSV and plain text: every 3,000 characters is one page; bibliographies: every 10 entries is one page. Credits follow the requested tier, whichever engine reads the file. Auto bills the tier it selects for the document, but at most mini when a local engine reads it without OCR (text PDFs, CSV, spreadsheets, Office and text files); scans, images and provider parses bill the tier that ran.
                      * @default auto
                      * @enum {string}
                      */
@@ -2422,6 +2441,7 @@ export interface operations {
                                 [key: string]: unknown;
                             } | null;
                         }[];
+                        /** @description Providers that failed for this request (for example rate limited or unavailable). When present, `results` only contain papers from the providers that succeeded, so treat the response as partial. Credits are the same either way. */
                         errors?: {
                             /** @enum {string} */
                             provider: "semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref";
