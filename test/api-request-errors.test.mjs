@@ -4,7 +4,11 @@ import { test } from 'node:test';
 
 const require = createRequire(import.meta.url);
 const { NodeApiError } = require('n8n-workflow');
-const { apiRequest, apiErrorDetails } = require('../dist/nodes/PdfVector/shared/helpers.js');
+const {
+	apiRequest,
+	apiErrorDetails,
+	continueOnFailItem,
+} = require('../dist/nodes/PdfVector/shared/helpers.js');
 
 const node = {
 	id: 'node-1',
@@ -171,4 +175,20 @@ test('exposes CREDITS_EXHAUSTED details from a raw request error', async () => {
 
 test('returns no details for a non-API error', () => {
 	assert.deepEqual(apiErrorDetails(new Error('socket hang up')), {});
+});
+
+const holdDetails = { httpCode: 402, code: 'BILLING_UNPAID_INVOICE', payUrl: 'https://invoice.stripe.com/i/x' };
+
+test('keeps the API fields flat on the regular output and never sets item.error', () => {
+	for (const onError of ['continueRegularOutput', undefined]) {
+		const item = continueOnFailItem('held', holdDetails, 2, onError);
+		assert.deepEqual(item, { json: { error: 'held', ...holdDetails }, pairedItem: { item: 2 } });
+	}
+});
+
+test('nests the API fields under details so n8n routes the item to the error output', () => {
+	const item = continueOnFailItem('held', holdDetails, 0, 'continueErrorOutput');
+	assert.deepEqual(item, { json: { error: 'held', details: holdDetails }, pairedItem: { item: 0 } });
+	assert.equal(item.error, undefined);
+	assert.ok(Object.keys(item.json).every((key) => ['error', 'message', 'details'].includes(key)));
 });

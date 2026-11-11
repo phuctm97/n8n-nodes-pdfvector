@@ -12,7 +12,7 @@ import { bankStatementProperties, executeBankStatement } from './bankStatement/i
 import { documentProperties, executeDocument } from './document/index.js';
 import { identityProperties, executeIdentity } from './identity/index.js';
 import { invoiceProperties, executeInvoice } from './invoice/index.js';
-import { apiErrorDetails } from './shared/helpers.js';
+import { apiErrorDetails, continueOnFailItem } from './shared/helpers.js';
 
 function withItemIndex<T extends object>(error: T, itemIndex: number): T {
 	const errorWithContext = error as { context?: { itemIndex?: number } };
@@ -104,14 +104,9 @@ export class PdfVector implements INodeType {
 					} else {
 						message = String(error);
 					}
-					// `error` on the item lets n8n route it to the error output when the node uses
-					// "Continue (using error output)"; n8n only routes json-only errors whose keys are
-					// error/message/details, and ours also carry httpCode/code.
-					returnData.push({
-						json: { error: message, ...apiErrorDetails(error) },
-						error: new NodeOperationError(this.getNode(), message, { itemIndex: i }),
-						pairedItem: { item: i },
-					});
+					returnData.push(
+						continueOnFailItem(message, apiErrorDetails(error), i, this.getNode().onError),
+					);
 					continue;
 				}
 				if (error && typeof error === 'object' && 'context' in error) {
