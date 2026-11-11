@@ -8,29 +8,29 @@ export const allModelOptions: Array<OptionValue<JsonRequestModel<'/document/ask'
 		name: 'Auto',
 		value: 'auto',
 		description:
-			'Automatically selects the best model. Supports PDF, Word, Excel, CSV, Image. Up to 1000 pages, 500MB.',
+			'Automatically selects the best model. All supported formats, including images. Up to 2000 pages, 500MB.',
 	},
 	{
 		name: 'Nano',
 		value: 'nano',
-		description: 'Lightweight. PDF, Word, Excel, CSV only. Up to 30 pages, 10MB.',
+		description: 'Lightweight. All supported formats except images. Up to 30 pages, 40MB.',
 	},
 	{
 		name: 'Mini',
 		value: 'mini',
-		description: 'Tables & structured content. PDF, Word, Excel, CSV only. Up to 30 pages, 10MB.',
+		description: 'Tables & structured content. All supported formats except images. Up to 30 pages, 40MB.',
 	},
 	{
 		name: 'Pro',
 		value: 'pro',
 		description:
-			'Images, handwriting, math, Arabic. PDF, Word, Excel, CSV, Image. Up to 30 pages, 40MB.',
+			'Images, handwriting, math, Arabic. All supported formats, including images. Up to 30 pages, 40MB.',
 	},
 	{
 		name: 'Max',
 		value: 'max',
 		description:
-			'Full capabilities + enhanced multilingual + HTML output. PDF, Word, Excel, CSV, Image. Up to 1000 pages, 500MB.',
+			'Full capabilities + enhanced multilingual + HTML output. All supported formats, including images. Up to 2000 pages, 500MB.',
 	},
 ];
 
