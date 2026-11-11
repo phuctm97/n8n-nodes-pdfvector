@@ -1,4 +1,4 @@
-import type { IDataObject, IExecuteFunctions, JsonObject } from 'n8n-workflow';
+import type { IDataObject, IExecuteFunctions, INodeExecutionData, JsonObject } from 'n8n-workflow';
 import { NodeApiError, NodeOperationError } from 'n8n-workflow';
 import type { ApiPath, DocumentInput, JsonRequestBody, JsonResponseBody } from './api.js';
 
@@ -120,4 +120,21 @@ export function apiErrorDetails(error: unknown): IDataObject {
 		}
 	}
 	return details;
+}
+
+/**
+ * The item for a failed call when the node continues on error. n8n routes an item to the error output
+ * only when its json has just error/message/details keys (or it has `item.error`, but then n8n replaces
+ * the json with `{ error }` and drops the API fields), so the error output nests them under `details`;
+ * the regular output keeps them flat next to `error`.
+ */
+export function continueOnFailItem(
+	message: string,
+	details: IDataObject,
+	itemIndex: number,
+	onError: string | undefined,
+): INodeExecutionData {
+	const json: IDataObject =
+		onError === 'continueErrorOutput' ? { error: message, details } : { error: message, ...details };
+	return { json, pairedItem: { item: itemIndex } };
 }
