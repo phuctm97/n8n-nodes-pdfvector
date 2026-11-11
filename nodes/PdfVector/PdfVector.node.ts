@@ -104,8 +104,12 @@ export class PdfVector implements INodeType {
 					} else {
 						message = String(error);
 					}
+					// `error` on the item lets n8n route it to the error output when the node uses
+					// "Continue (using error output)"; n8n only routes json-only errors whose keys are
+					// error/message/details, and ours also carry httpCode/code.
 					returnData.push({
 						json: { error: message, ...apiErrorDetails(error) },
+						error: new NodeOperationError(this.getNode(), message, { itemIndex: i }),
 						pairedItem: { item: i },
 					});
 					continue;
