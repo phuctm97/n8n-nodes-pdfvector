@@ -72,11 +72,11 @@ Search, fetch, and find citations across academic databases.
 
 | Operation | Description |
 |-----------|-------------|
-| **Search** | Search for papers across 7 academic databases |
+| **Search** | Search for papers across 8 academic databases |
 | **Fetch** | Fetch specific papers by DOI, PubMed ID, ArXiv ID, etc. |
 | **Find Citations** | Find relevant citations for a paragraph of text |
 
-**Supported providers:** Semantic Scholar, PubMed, ArXiv, Google Scholar, OpenAlex, ERIC, Europe PMC.
+**Supported providers:** Semantic Scholar, PubMed, ArXiv, Google Scholar, OpenAlex, ERIC, Europe PMC, Crossref.
 
 ## Model Tiers
 
@@ -84,11 +84,11 @@ All document operations support model selection:
 
 | Tier | Best for | Max pages | Max size |
 |------|----------|-----------|----------|
-| **Auto** | Automatic selection (default) | 1000 | 500MB |
-| **Nano** | Simple text documents | 30 | 10MB |
-| **Mini** | Tables, structured content | 30 | 10MB |
+| **Auto** | Automatic selection (default) | 2000 | 500MB |
+| **Nano** | Simple text documents | 30 | 40MB |
+| **Mini** | Tables, structured content | 30 | 40MB |
 | **Pro** | Complex docs, images, handwriting | 30 | 40MB |
-| **Max** | Large docs, full capabilities + HTML | 1000 | 500MB |
+| **Max** | Large docs, full capabilities + HTML | 2000 | 500MB |
 
 Identity, Invoice, and Bank Statement **parse** operations only support Auto, Pro, and Max.
 
