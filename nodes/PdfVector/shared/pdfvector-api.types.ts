@@ -15,7 +15,7 @@ export interface paths {
         put?: never;
         /**
          * Ask a question about a document
-         * @description Parse a document and answer a question about its content using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 1000 pages and up to 500MB in size. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse a document and answer a question about its content using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 2,000 pages and 500MB with the auto and max models; nano, mini and pro accept up to 30 pages and 40MB. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["document.ask"];
         delete?: never;
@@ -35,7 +35,7 @@ export interface paths {
         put?: never;
         /**
          * Extract structured data from a document
-         * @description Parse a document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 1000 pages and up to 500MB in size. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse a document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 2,000 pages and 500MB with the auto and max models; nano, mini and pro accept up to 30 pages and 40MB. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["document.extract"];
         delete?: never;
