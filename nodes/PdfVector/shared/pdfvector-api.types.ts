@@ -315,7 +315,7 @@ export interface paths {
         put?: never;
         /**
          * Parse an academic paper to markdown
-         * @description Resolve an academic paper URL or identifier to a public PDF URL, parse the PDF, and return markdown using the same model tiers as document.parse. Returns NOT_FOUND when the paper cannot be found or no public PDF is available.
+         * @description Resolve an academic paper URL or identifier to a public PDF URL, parse the PDF, and return markdown using the same model tiers as document.parse. When the first copy cannot be downloaded (for example a publisher that blocks automated downloads), other open-access copies are tried: arXiv, PubMed Central, and repository copies listed by OpenAlex; pdfURL in the response is the copy that was parsed. Returns NOT_FOUND when the paper cannot be found or no public PDF is available.
          */
         post: operations["academic.parse"];
         delete?: never;
