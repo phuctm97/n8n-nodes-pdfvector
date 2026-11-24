@@ -15,7 +15,7 @@ export interface paths {
         put?: never;
         /**
          * Ask a question about a document
-         * @description Parse a document and answer a question about its content using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 2,000 pages and 500MB with the auto and max models; nano, mini and pro accept up to 30 pages and 40MB. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse a document and answer a question about its content using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 2,000 pages and 500MB with the auto and max models; nano, mini and pro accept up to 30 pages and 40MB. When the chosen model cannot handle the document (a scanned PDF on nano, an image on nano or mini, a file over the page or size limit, an unusable answer), the error response's `data.suggestedModel` names the model to retry with: the next tier up, `auto` for files over the tier's page or size limit that fit auto's, or the lowest tier that supports the file type. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["document.ask"];
         delete?: never;
@@ -35,7 +35,7 @@ export interface paths {
         put?: never;
         /**
          * Extract structured data from a document
-         * @description Parse a document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 2,000 pages and 500MB with the auto and max models; nano, mini and pro accept up to 30 pages and 40MB. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse a document and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Files up to 2,000 pages and 500MB with the auto and max models; nano, mini and pro accept up to 30 pages and 40MB. When the chosen model cannot handle the document (a scanned PDF on nano, an image on nano or mini, a file over the page or size limit, an unusable answer), the error response's `data.suggestedModel` names the model to retry with: the next tier up, `auto` for files over the tier's page or size limit that fit auto's, or the lowest tier that supports the file type. Provide the document via file upload, a public URL, or a base64-encoded string.
          */
         post: operations["document.extract"];
         delete?: never;
@@ -55,7 +55,7 @@ export interface paths {
         put?: never;
         /**
          * Parse a document
-         * @description Extract text and page count from a document. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Extract text and page count from a document. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string. When the chosen model cannot handle the document (a scanned PDF on nano, an image on nano or mini, a file over the page or size limit, an unusable answer), the error response's `data.suggestedModel` names the model to retry with: the next tier up, `auto` for files over the tier's page or size limit that fit auto's, or the lowest tier that supports the file type.
          */
         post: operations["document.parse"];
         delete?: never;
@@ -335,7 +335,7 @@ export interface paths {
         put?: never;
         /**
          * Search academic papers
-         * @description Search for academic publications across multiple databases with relevance ranking. Costs 2 credits per request.
+         * @description Search for academic publications across multiple databases with relevance ranking. Costs 2 credits per request, also when no papers match. If every provider fails, it returns HTTP 503 and charges nothing.
          */
         post: operations["academic.search"];
         delete?: never;
@@ -2441,7 +2441,7 @@ export interface operations {
                                 [key: string]: unknown;
                             } | null;
                         }[];
-                        /** @description Providers that failed for this request (for example rate limited or unavailable). When present, `results` only contain papers from the providers that succeeded, so treat the response as partial. Credits are the same either way. */
+                        /** @description Providers that failed for this request (for example rate limited or unavailable). When present, `results` only contain papers from the providers that succeeded, so treat the response as partial; it is billed like any successful search. If every provider fails, the request fails with HTTP 503 (`SERVICE_UNAVAILABLE`, `data.code` `ALL_PROVIDERS_FAILED`, per-provider `data.errors`) and is not charged. */
                         errors?: {
                             /** @enum {string} */
                             provider: "semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref";
