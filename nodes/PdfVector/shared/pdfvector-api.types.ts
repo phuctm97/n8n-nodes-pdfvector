@@ -155,7 +155,7 @@ export interface paths {
         put?: never;
         /**
          * Extract structured data from an invoice
-         * @description Parse an invoice and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string.
+         * @description Parse an invoice and extract structured data matching a provided JSON Schema using AI. Supports PDF, Word (.docx, .doc), Excel (.xlsx, .xls), PowerPoint (.pptx, .ppt), CSV, Image (.png, .jpg, .tiff, .bmp, .heif), Plain Text (.txt, .md, .tsv, .xml), RTF, HTML, OpenDocument (.odt, .ods, .odp), EPUB, and Bibliography (.bib, .ris, .nbib, .enw) files. Provide the document via file upload, a public URL, or a base64-encoded string. For a file that holds several invoices, make the schema an object with an array property of invoice objects (see the "Many invoices in one PDF" example) to get one item per invoice.
          */
         post: operations["invoice.extract"];
         delete?: never;
