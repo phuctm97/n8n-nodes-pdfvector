@@ -23,7 +23,7 @@
 #   1. Log in to npmjs.com and open your package's settings.
 #   2. Under "Publish access" → "Trusted Publishers", click "Add a publisher".
 #   3. Select GitHub Actions and fill in:
-#        Repository owner: phuctm97
+#        Repository owner: orchestero
 #        Repository name:  n8n-nodes-pdfvector
 #        Workflow name:    publish.yml
 #        Environment:      (leave blank unless you use GitHub Environments)
