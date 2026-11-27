@@ -2441,7 +2441,7 @@ export interface operations {
                                 [key: string]: unknown;
                             } | null;
                         }[];
-                        /** @description Providers that failed for this request (for example rate limited or unavailable). When present, `results` only contain papers from the providers that succeeded, so treat the response as partial; it is billed like any successful search. If every provider fails, the request fails with HTTP 503 (`SERVICE_UNAVAILABLE`, `data.code` `ALL_PROVIDERS_FAILED`, per-provider `data.errors`) and is not charged. */
+                        /** @description Providers that failed for this request (for example rate limited or unavailable). When present, `results` only contain papers from the providers that succeeded, so treat the response as partial; it is billed like any successful search. If every requested provider fails and they include `europe-pmc` but not `pubmed`, the search falls back to `pubmed` with the time left: `results` then come from PubMed (each result's `provider` says so) and each failed provider's entry here has `details.fallbackProvider` `pubmed`; it is billed like any successful search. If every provider fails (including that fallback, whose entry then has `details.fallback` `true`), the request fails with HTTP 503 (`SERVICE_UNAVAILABLE`, `data.code` `ALL_PROVIDERS_FAILED`, per-provider `data.errors`) and is not charged. */
                         errors?: {
                             /** @enum {string} */
                             provider: "semantic-scholar" | "pubmed" | "arxiv" | "google-scholar" | "eric" | "europe-pmc" | "openalex" | "crossref";
