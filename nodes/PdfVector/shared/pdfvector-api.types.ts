@@ -432,10 +432,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /**
-                     * Format: uri
-                     * @description URL of the document file to fetch and parse
-                     */
+                    /** @description URL of the document file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -464,20 +461,14 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
                     };
                 };
                 "multipart/form-data": {
-                    /**
-                     * Format: uri
-                     * @description URL of the document file to fetch and parse
-                     */
+                    /** @description URL of the document file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -506,10 +497,7 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
@@ -563,10 +551,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /**
-                     * Format: uri
-                     * @description URL of the document file to fetch and parse
-                     */
+                    /** @description URL of the document file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -599,20 +584,14 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
                     };
                 };
                 "multipart/form-data": {
-                    /**
-                     * Format: uri
-                     * @description URL of the document file to fetch and parse
-                     */
+                    /** @description URL of the document file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -645,10 +624,7 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
@@ -702,10 +678,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /**
-                     * Format: uri
-                     * @description URL of the document file to fetch and parse
-                     */
+                    /** @description URL of the document file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -737,20 +710,14 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
                     };
                 };
                 "multipart/form-data": {
-                    /**
-                     * Format: uri
-                     * @description URL of the document file to fetch and parse
-                     */
+                    /** @description URL of the document file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -782,10 +749,7 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
@@ -860,10 +824,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /**
-                     * Format: uri
-                     * @description URL of the identity document file to fetch and parse
-                     */
+                    /** @description URL of the identity document file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -892,20 +853,14 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
                     };
                 };
                 "multipart/form-data": {
-                    /**
-                     * Format: uri
-                     * @description URL of the identity document file to fetch and parse
-                     */
+                    /** @description URL of the identity document file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -934,10 +889,7 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
@@ -991,10 +943,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /**
-                     * Format: uri
-                     * @description URL of the identity document file to fetch and parse
-                     */
+                    /** @description URL of the identity document file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1027,20 +976,14 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
                     };
                 };
                 "multipart/form-data": {
-                    /**
-                     * Format: uri
-                     * @description URL of the identity document file to fetch and parse
-                     */
+                    /** @description URL of the identity document file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1073,10 +1016,7 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
@@ -1130,10 +1070,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /**
-                     * Format: uri
-                     * @description URL of the identity document file to fetch and parse
-                     */
+                    /** @description URL of the identity document file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1153,20 +1090,14 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
                     };
                 };
                 "multipart/form-data": {
-                    /**
-                     * Format: uri
-                     * @description URL of the identity document file to fetch and parse
-                     */
+                    /** @description URL of the identity document file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Identity document file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1186,10 +1117,7 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
@@ -1242,10 +1170,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /**
-                     * Format: uri
-                     * @description URL of the invoice file to fetch and parse
-                     */
+                    /** @description URL of the invoice file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1274,20 +1199,14 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
                     };
                 };
                 "multipart/form-data": {
-                    /**
-                     * Format: uri
-                     * @description URL of the invoice file to fetch and parse
-                     */
+                    /** @description URL of the invoice file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1316,10 +1235,7 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
@@ -1373,10 +1289,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /**
-                     * Format: uri
-                     * @description URL of the invoice file to fetch and parse
-                     */
+                    /** @description URL of the invoice file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1409,20 +1322,14 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
                     };
                 };
                 "multipart/form-data": {
-                    /**
-                     * Format: uri
-                     * @description URL of the invoice file to fetch and parse
-                     */
+                    /** @description URL of the invoice file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1455,10 +1362,7 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
@@ -1512,10 +1416,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /**
-                     * Format: uri
-                     * @description URL of the invoice file to fetch and parse
-                     */
+                    /** @description URL of the invoice file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1535,20 +1436,14 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
                     };
                 };
                 "multipart/form-data": {
-                    /**
-                     * Format: uri
-                     * @description URL of the invoice file to fetch and parse
-                     */
+                    /** @description URL of the invoice file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Invoice file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1568,10 +1463,7 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
@@ -1622,10 +1514,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /**
-                     * Format: uri
-                     * @description URL of the bank statement file to fetch and parse
-                     */
+                    /** @description URL of the bank statement file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1654,20 +1543,14 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
                     };
                 };
                 "multipart/form-data": {
-                    /**
-                     * Format: uri
-                     * @description URL of the bank statement file to fetch and parse
-                     */
+                    /** @description URL of the bank statement file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1696,10 +1579,7 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
@@ -1753,10 +1633,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /**
-                     * Format: uri
-                     * @description URL of the bank statement file to fetch and parse
-                     */
+                    /** @description URL of the bank statement file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1789,20 +1666,14 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
                     };
                 };
                 "multipart/form-data": {
-                    /**
-                     * Format: uri
-                     * @description URL of the bank statement file to fetch and parse
-                     */
+                    /** @description URL of the bank statement file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1835,10 +1706,7 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
@@ -1892,10 +1760,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /**
-                     * Format: uri
-                     * @description URL of the bank statement file to fetch and parse
-                     */
+                    /** @description URL of the bank statement file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1915,20 +1780,14 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
                     };
                 };
                 "multipart/form-data": {
-                    /**
-                     * Format: uri
-                     * @description URL of the bank statement file to fetch and parse
-                     */
+                    /** @description URL of the bank statement file to fetch and parse. A URL without a scheme (example.com/file.pdf) is fetched over https. */
                     url?: string;
                     /** @description Bank statement file upload via multipart form-data (PDF, DOCX, XLSX, PPTX, DOC, XLS, PPT, CSV, PNG, JPG, TIFF, BMP, HEIF, TXT, MD, TSV, XML, RTF, HTML, ODT, ODS, ODP, EPUB, BIB, RIS, NBIB, ENW) */
                     file?: string;
@@ -1948,10 +1807,7 @@ export interface operations {
                     documentId?: string;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
@@ -2270,10 +2126,7 @@ export interface operations {
                 "application/json": {
                     /** @description Publication identifier to resolve and parse. Supports DOI, PubMed ID, ArXiv ID, Semantic Scholar ID, ERIC ID, Europe PMC ID, OpenAlex ID. */
                     id?: string;
-                    /**
-                     * Format: uri
-                     * @description Publication URL to resolve and parse. Supports known provider URLs such as DOI, ArXiv, PubMed, Semantic Scholar, ERIC, Europe PMC, OpenAlex, Springer, Nature, bioRxiv, and medRxiv.
-                     */
+                    /** @description Publication URL to resolve and parse. Supports known provider URLs such as DOI, ArXiv, PubMed, Semantic Scholar, ERIC, Europe PMC, OpenAlex, Springer, Nature, bioRxiv, and medRxiv. A URL without a scheme is fetched over https. */
                     url?: string;
                     /**
                      * @description Model tier for parsing.
@@ -2299,10 +2152,7 @@ export interface operations {
                     includePages?: boolean;
                     /** @description Optional webhook callback for async processing. When provided, the server returns 202 immediately and POSTs the full response payload to the callback URL when processing completes. On error, the callback receives a POST with X-Pdfvector-Callback-Failed: true header and error details in the body. Useful for long-running operations that may exceed client timeout limits. */
                     callback?: {
-                        /**
-                         * Format: uri
-                         * @description Webhook URL where results will be POSTed when processing completes
-                         */
+                        /** @description Webhook URL where results will be POSTed when processing completes */
                         url: string;
                         /** @description Callback type identifier (e.g. 'zapier') */
                         type?: string;
